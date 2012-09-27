@@ -164,11 +164,17 @@ void LinkedList_insertBefore(LinkedList* self, Node* node, void* item)
 
 void* LinkedList_getLast(LinkedList* self)
 {
-    return self->last->item;
+    assert(_invariant(self));
+    return LinkedList_isEmpty(self) ? NULL : self->last->item;
 }
 
 void* LinkedList_popLast(LinkedList* self)
 {
+    assert(_invariant(self));
+    if (LinkedList_isEmpty(self))
+    {
+        return NULL;
+    }
     void* data = self->last->item;
     LinkedList_remove(self, self->last);
     return data;
@@ -176,11 +182,17 @@ void* LinkedList_popLast(LinkedList* self)
 
 void* LinkedList_getFirst(LinkedList* self)
 {
-    return self->first->item;
+    assert(_invariant(self));
+    return LinkedList_isEmpty(self) ? NULL : self->first->item;
 }
 
 void* LinkedList_popFirst(LinkedList* self)
 {
+    assert(_invariant(self));
+    if (LinkedList_isEmpty(self))
+    {
+        return NULL;
+    }
     void* data = self->first->item;
     LinkedList_remove(self, self->first);
     return data;
@@ -351,6 +363,7 @@ static BOOL _pointerCompare(void* ptr)
 
 BOOL LinkedList_elementExists(LinkedList* self, void* elem)
 {
+    assert(_invariant(self));
     pointerToCompare = elem;
     return LinkedList_exists(self, _pointerCompare);
 }

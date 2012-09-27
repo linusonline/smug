@@ -1,12 +1,19 @@
 #include <linkedlist.h>
 #include <CuTest.h>
 
-BOOL isEven(void* i)
+static int testCounter = 0;
+
+static void incrementCounter(void* number)
+{
+    testCounter += *(int*)number;
+}
+
+static BOOL isEven(void* i)
 {
     return (*(int*)i % 2) == 0;
 }
 
-BOOL isOdd(void* i)
+static BOOL isOdd(void* i)
 {
     return (*(int*)i % 2) == 1;
 }
@@ -90,6 +97,18 @@ void LinkedList_addFirst_itemShouldBeAddedFirst(CuTest* tc)
     CuAssertTrue(tc, (int*)LinkedList_getFirst(ll) == &two);
 }
 
+void LinkedList_getFirst_shouldReturnNullOnEmptyList(CuTest* tc)
+{
+    LinkedList* ll = LinkedList_new();
+    CuAssertTrue(tc, LinkedList_getFirst(ll) == NULL);
+}
+
+void LinkedList_getLast_shouldReturnNullOnEmptyList(CuTest* tc)
+{
+    LinkedList* ll = LinkedList_new();
+    CuAssertTrue(tc, LinkedList_getLast(ll) == NULL);
+}
+
 void LinkedList_elementExists_shouldFindAddedElement(CuTest* tc)
 {
     LinkedList* ll = LinkedList_new();
@@ -110,6 +129,13 @@ void LinkedList_elementExists_shouldNotFindMissingElement(CuTest* tc)
     LinkedList_addFirst(ll, &one);
     LinkedList_addFirst(ll, &two);
     CuAssertTrue(tc, !LinkedList_elementExists(ll, &three));
+}
+
+void LinkedList_removeAll_shouldWorkOnEmptyList(CuTest* tc)
+{
+    LinkedList* ll = LinkedList_new();
+    LinkedList_removeAll(ll);
+    CuAssertTrue(tc, LinkedList_isEmpty(ll));
 }
 
 void LinkedList_removeAll_shouldEmptyList(CuTest* tc)
@@ -159,6 +185,12 @@ void LinkedList_removeItem_shouldRemoveCorrectItem(CuTest* tc)
     CuAssertTrue(tc, !LinkedList_elementExists(ll, &one));
 }
 
+void LinkedList_popLast_shouldReturnNullOnEmptyList(CuTest* tc)
+{
+    LinkedList* ll = LinkedList_new();
+    CuAssertTrue(tc, LinkedList_popLast(ll) == NULL);
+}
+
 void LinkedList_popLast_shouldRemoveLastItem(CuTest* tc)
 {
     LinkedList* ll = LinkedList_new();
@@ -179,6 +211,12 @@ void LinkedList_popLast_shouldReturnLastItem(CuTest* tc)
     LinkedList_addFirst(ll, &two);
     LinkedList_addFirst(ll, &one);
     CuAssertTrue(tc, (int*)LinkedList_popLast(ll) == &two);
+}
+
+void LinkedList_popFirst_shouldReturnNullOnEmptyList(CuTest* tc)
+{
+    LinkedList* ll = LinkedList_new();
+    CuAssertTrue(tc, LinkedList_popFirst(ll) == NULL);
 }
 
 void LinkedList_popFirst_shouldRemoveLastItem(CuTest* tc)
@@ -277,6 +315,30 @@ void LinkedList_exists_shouldReturnFalseWhenAllFalse(CuTest* tc)
     CuAssertTrue(tc, !LinkedList_exists(ll, isOdd));
 }
 
+void LinkedList_doList_shouldWorkOnEmptyList(CuTest* tc)
+{
+    LinkedList* ll = LinkedList_new();
+    testCounter = 0;
+    LinkedList_doList(ll, incrementCounter);
+    CuAssertTrue(tc, testCounter == 0);
+}
+
+void LinkedList_doList_shouldDoForEachItem(CuTest* tc)
+{
+    LinkedList* ll = LinkedList_new();
+    int one = 1;
+    int two = 2;
+    int four = 4;
+    int eight = 8;
+    LinkedList_addFirst(ll, &one);
+    LinkedList_addFirst(ll, &two);
+    LinkedList_addFirst(ll, &four);
+    LinkedList_addFirst(ll, &eight);
+    testCounter = 0;
+    LinkedList_doList(ll, incrementCounter);
+    CuAssertTrue(tc, testCounter == 15);
+}
+
 CuSuite* LinkedListTest_GetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -291,14 +353,19 @@ CuSuite* LinkedListTest_GetSuite()
 	SUITE_ADD_TEST(suite, LinkedList_addFirst_shouldMakeNewListNonEmpty);
 	SUITE_ADD_TEST(suite, LinkedList_addFirst_shouldIncreaseLength);
 	SUITE_ADD_TEST(suite, LinkedList_addFirst_itemShouldBeAddedFirst);
+	SUITE_ADD_TEST(suite, LinkedList_getFirst_shouldReturnNullOnEmptyList);
+	SUITE_ADD_TEST(suite, LinkedList_getLast_shouldReturnNullOnEmptyList);
 	SUITE_ADD_TEST(suite, LinkedList_elementExists_shouldFindAddedElement);
 	SUITE_ADD_TEST(suite, LinkedList_elementExists_shouldNotFindMissingElement);
+	SUITE_ADD_TEST(suite, LinkedList_removeAll_shouldWorkOnEmptyList);
 	SUITE_ADD_TEST(suite, LinkedList_removeAll_shouldEmptyList);
 	SUITE_ADD_TEST(suite, LinkedList_removeItem_shouldDecreaseLengthWhenItemFound);
 	SUITE_ADD_TEST(suite, LinkedList_removeItem_shouldNotDecreaseLengthWhenItemNotFound);
 	SUITE_ADD_TEST(suite, LinkedList_removeItem_shouldRemoveCorrectItem);
+	SUITE_ADD_TEST(suite, LinkedList_popLast_shouldReturnNullOnEmptyList);
 	SUITE_ADD_TEST(suite, LinkedList_popLast_shouldRemoveLastItem);
 	SUITE_ADD_TEST(suite, LinkedList_popLast_shouldReturnLastItem);
+	SUITE_ADD_TEST(suite, LinkedList_popFirst_shouldReturnNullOnEmptyList);
 	SUITE_ADD_TEST(suite, LinkedList_popFirst_shouldRemoveLastItem);
 	SUITE_ADD_TEST(suite, LinkedList_popFirst_shouldReturnLastItem);
 	SUITE_ADD_TEST(suite, LinkedList_forAll_shouldReturnTrueForEmptyList);
@@ -309,6 +376,8 @@ CuSuite* LinkedListTest_GetSuite()
 	SUITE_ADD_TEST(suite, LinkedList_exists_shouldReturnTrueWhenAllTrue);
 	SUITE_ADD_TEST(suite, LinkedList_exists_shouldReturnTrueWhenSomeTrue);
 	SUITE_ADD_TEST(suite, LinkedList_exists_shouldReturnFalseWhenAllFalse);
+	SUITE_ADD_TEST(suite, LinkedList_doList_shouldWorkOnEmptyList);
+	SUITE_ADD_TEST(suite, LinkedList_doList_shouldDoForEachItem);
 
 	return suite;
 }
