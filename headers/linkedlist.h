@@ -78,7 +78,7 @@ void LinkedList_delete(LinkedList* self);
  * Check if a list is empty or not.
  * @relates LinkedList
  */
-int LinkedList_isEmpty(LinkedList* self);
+BOOL LinkedList_isEmpty(LinkedList* self);
 
 /**
  * Get the length of a list.
@@ -155,7 +155,7 @@ void LinkedList_removeAll(LinkedList* self);
  * @param item The item to remove.
  * @return TRUE if an item was removed.
  */
-int LinkedList_removeItem(LinkedList* self, void* item);
+BOOL LinkedList_removeItem(LinkedList* self, void* item);
 
 /**
  * Get the last item in a list.
@@ -226,7 +226,7 @@ void LinkedList_doList(LinkedList* self, void (*func)(void*));
  * @param func The function to call.
  * @param pred The predicate function.
  */
-void LinkedList_doListIf(LinkedList* self, void (*func)(void*), int (*pred)(void*));
+void LinkedList_doListIf(LinkedList* self, void (*func)(void*), BOOL (*pred)(void*));
 
 /**
  * Returns a new list of those elements in list matching the predicate function.
@@ -239,7 +239,7 @@ void LinkedList_doListIf(LinkedList* self, void (*func)(void*), int (*pred)(void
  * @param self The list.
  * @param pred The predicate function.
  */
-LinkedList* LinkedList_getThose(LinkedList* self, int (*pred)(void*));
+LinkedList* LinkedList_getThose(LinkedList* self, BOOL (*pred)(void*));
 
 /**
  * Returns a mapping of the list according to a mapping function.
@@ -257,7 +257,7 @@ LinkedList* LinkedList_map(LinkedList* self, void* (*func)(void*));
  * @param self The list.
  * @param pred The predicate function.
  */
-int LinkedList_forAll(LinkedList* self, int(*pred)(void*));
+BOOL LinkedList_forAll(LinkedList* self, BOOL(*pred)(void*));
 
 /**
  * Returns true if at least one of the list elements satisfies the predicate.
@@ -266,7 +266,7 @@ int LinkedList_forAll(LinkedList* self, int(*pred)(void*));
  * @param self The list.
  * @param pred The predicate function.
  */
-int LinkedList_exists(LinkedList* self, int(*pred)(void*));
+BOOL LinkedList_exists(LinkedList* self, BOOL(*pred)(void*));
 
 /**
  * Returns true if the passed element is in the list.
@@ -275,7 +275,7 @@ int LinkedList_exists(LinkedList* self, int(*pred)(void*));
  * @param self The list.
  * @param elem The element to look for.
  */
-int LinkedList_elementExists(LinkedList* self, void* elem);
+BOOL LinkedList_elementExists(LinkedList* self, void* elem);
 
 /**
  * Concatenates two lists together.
