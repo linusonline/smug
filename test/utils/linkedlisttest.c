@@ -1,4 +1,5 @@
 #include <linkedlist.h>
+#include <stdlib.h>
 #include <CuTest.h>
 
 static int accumulatedItems = 0;
@@ -8,6 +9,19 @@ static void accumulateItems(void* number)
 {
     calledTimes++;
     accumulatedItems += *(int*)number;
+}
+
+static void freeInt(void* number)
+{
+    free((int*)number);
+}
+
+static void* doubleNumber(void* number)
+{
+    calledTimes++;
+    int* intptr = (int*)malloc(sizeof(int));
+    *intptr = (*(int*)number) * 2;
+    return intptr;
 }
 
 static BOOL isEven(void* i)
@@ -475,7 +489,31 @@ void LinkedList_getThose_shouldReturnResultsInOriginalOrder(CuTest* tc)
     LinkedList_delete(l2);
 }
 
-// LinkedList_map
+void LinkedList_map_shouldReturnEmptyListOnEmptyList(CuTest* tc)
+{
+    LinkedList* ll = LinkedList_new();
+    LinkedList* l2 = LinkedList_map(ll, doubleNumber);
+    CuAssertTrue(tc, LinkedList_isEmpty(l2));
+    LinkedList_delete(ll);
+    LinkedList_delete(l2);
+}
+
+void LinkedList_map_shouldReturnCorrectResult(CuTest* tc)
+{
+    LinkedList* ll = LinkedList_new();
+    int two = 2;
+    int three = 3;
+    LinkedList_addLast(ll, &two);
+    LinkedList_addLast(ll, &three);
+    LinkedList* l2 = LinkedList_map(ll, doubleNumber);
+    CuAssertTrue(tc, LinkedList_length(l2) == 2);
+    CuAssertTrue(tc, *(int*)LinkedList_getFirst(l2) == 4);
+    CuAssertTrue(tc, *(int*)LinkedList_getLast(l2) == 6);
+    LinkedList_deleteContents(l2, freeInt);
+    LinkedList_delete(ll);
+    LinkedList_delete(l2);
+}
+
 // LinkedList_concat
 
 CuSuite* LinkedListTest_GetSuite()
@@ -523,6 +561,8 @@ CuSuite* LinkedListTest_GetSuite()
 	SUITE_ADD_TEST(suite, LinkedList_getThose_shouldReturnEmptyListOnNoMatches);
 	SUITE_ADD_TEST(suite, LinkedList_getThose_shouldReturnAllPositives);
 	SUITE_ADD_TEST(suite, LinkedList_getThose_shouldReturnResultsInOriginalOrder);
+	SUITE_ADD_TEST(suite, LinkedList_map_shouldReturnEmptyListOnEmptyList);
+	SUITE_ADD_TEST(suite, LinkedList_map_shouldReturnCorrectResult);
 
 	return suite;
 }
