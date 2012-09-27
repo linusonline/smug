@@ -1,0 +1,5 @@
+## The following cache entries should always be used when generating build files
+## for Smug with CMake.
+
+//Flags used by the compiler during all build types.
+CMAKE_C_FLAGS:STRING=-std=c99 -DNULL=(0) -DFALSE=(0) -DTRUE=(1) -DBOOL=int
