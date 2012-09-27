@@ -7,5 +7,5 @@ project (SmugUtils)
 # Directory for library header files.
 include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 
-# Add a target to build the library "Linus" from the specified sources.
+# Add a target to build the library "SmugUtils" from the specified sources.
 add_library(SmugUtils linkedlist.c)
