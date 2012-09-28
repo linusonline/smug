@@ -1,4 +1,4 @@
-#include <linkedlist.h>
+#include <utils/linkedlist.h>
 #include <stdlib.h>
 #include <CuTest.h>
 

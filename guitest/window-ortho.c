@@ -1,5 +1,6 @@
 #include <GL/glfw.h>
 #include <stdlib.h>
+#include <graphics/vertexarray.h>
 
 void GLFWCALL windowResize(int width, int height)
 {
@@ -29,7 +30,12 @@ void initGlWindow()
     }
     glfwSetWindowSizeCallback(windowResize);
     glClearColor(0.5, 0.0, 0.5, 0.0);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    initVertexArray();
 }
+
+
 
 void runMainLoop()
 {
