@@ -1,5 +1,6 @@
 #include <graphics/colorarray.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <string.h>
 
 static const int COLOR_ARRAY_INITIAL_SIZE = 30;
@@ -11,6 +12,14 @@ static int addedColors = 0;
 
 #define allocate(type) ((type*)malloc(sizeof(type)))
 #define allocatev(type, size) ((type*)malloc(sizeof(type) * size))
+
+static BOOL _invariant()
+{
+    return  colorArray != 0 &&
+            colorArrayMaxSize >= COLOR_ARRAY_INITIAL_SIZE &&
+            colorArrayMaxSize >= colorArraySize &&
+            addedColors * 2 == colorArraySize;
+}
 
 static void setGlArray()
 {
@@ -30,42 +39,63 @@ static void expandColorArrayIfNeeded(int neededSpace)
     }
 }
 
-void initColorArray()
+void ColorArray_init()
 {
+    if (colorArray != NULL)
+    {
+        ColorArray_release();
+    }
     colorArray = allocatev(GLfloat, COLOR_ARRAY_INITIAL_SIZE);
     colorArrayMaxSize = COLOR_ARRAY_INITIAL_SIZE;
+    assert(_invariant);
+    glEnableClientState(GL_COLOR_ARRAY);
     setGlArray();
 }
 
-void addColorToArray(GLfloat r, GLfloat g, GLfloat b)
+void ColorArray_addColor(GLfloat r, GLfloat g, GLfloat b)
 {
     expandColorArrayIfNeeded(3);
     colorArray[colorArraySize++] = r;
     colorArray[colorArraySize++] = g;
     colorArray[colorArraySize++] = b;
     addedColors++;
+    assert(_invariant);
 }
 
-void addUnicolorRectToColorArray(GLfloat r, GLfloat g, GLfloat b)
+void ColorArray_addUnicolorRect(GLfloat r, GLfloat g, GLfloat b)
 {
-    addColorToArray(r, g, b);
-    addColorToArray(r, g, b);
-    addColorToArray(r, g, b);
-    addColorToArray(r, g, b);
+    ColorArray_addColor(r, g, b);
+    ColorArray_addColor(r, g, b);
+    ColorArray_addColor(r, g, b);
+    ColorArray_addColor(r, g, b);
+    assert(_invariant);
 }
 
-int getNumberOfAddedColors()
+int ColorArray_getNumberOfAddedColors()
 {
+    assert(_invariant);
     return addedColors;
 }
 
-void clearColorArray()
+void ColorArray_clear()
 {
     colorArraySize = 0;
     addedColors = 0;
+    assert(_invariant);
 }
 
-void releaseColorArray()
+void ColorArray_release()
 {
+    ColorArray_clear();
+    glDisableClientState(GL_COLOR_ARRAY);
     free(colorArray);
+    colorArray = NULL;
+    colorArrayMaxSize = 0;
 }
+
+#ifdef GREY_BOX
+GLfloat* getColorArray()
+{
+    return colorArray;
+}
+#endif

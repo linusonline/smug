@@ -3,10 +3,16 @@
 
 #include <GL/glfw.h>
 
-void initVertexArray(void);
-void addRectToVertexArray(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2);
-int getNumberOfAddedVertices(void);
-void clearVertexArray(void);
-void releaseVertexArray(void);
+/* Requires openGL to be initialized. */
+
+void VertexArray_init(void);
+void VertexArray_addRect(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2);
+int VertexArray_getNumberOfAddedVertices(void);
+void VertexArray_clear(void);
+void VertexArray_release(void);
+
+#ifdef GREY_BOX
+GLfloat* getVertexArray();
+#endif
 
 #endif /* VERTEXARRAY_H */

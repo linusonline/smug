@@ -1,5 +1,6 @@
 #include <graphics/vertexarray.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <string.h>
 
 static const int VERTEX_ARRAY_INITIAL_SIZE = 32;
@@ -11,6 +12,14 @@ static int addedVertices = 0;
 
 #define allocate(type) ((type*)malloc(sizeof(type)))
 #define allocatev(type, size) ((type*)malloc(sizeof(type) * size))
+
+static BOOL _invariant()
+{
+    return  vertexArray != 0 &&
+            vertexArrayMaxSize >= VERTEX_ARRAY_INITIAL_SIZE &&
+            vertexArrayMaxSize >= vertexArraySize &&
+            addedVertices * 2 == vertexArraySize;
+}
 
 static void setGlArray()
 {
@@ -38,33 +47,53 @@ static void addVertexToArray(GLfloat x, GLfloat y)
     addedVertices++;
 }
 
-void initVertexArray()
+void VertexArray_init()
 {
+    if (vertexArray != NULL)
+    {
+        VertexArray_release();
+    }
     vertexArray = allocatev(GLfloat, VERTEX_ARRAY_INITIAL_SIZE);
     vertexArrayMaxSize = VERTEX_ARRAY_INITIAL_SIZE;
+    assert(_invariant);
+    glEnableClientState(GL_VERTEX_ARRAY);
     setGlArray();
 }
 
-void addRectToVertexArray(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2)
+void VertexArray_addRect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
     addVertexToArray(x1, y1);
     addVertexToArray(x1, y2);
     addVertexToArray(x2, y2);
     addVertexToArray(x2, y1);
+    assert(_invariant);
 }
 
-int getNumberOfAddedVertices()
+int VertexArray_getNumberOfAddedVertices()
 {
+    assert(_invariant);
     return addedVertices;
 }
 
-void clearVertexArray()
+void VertexArray_clear()
 {
     vertexArraySize = 0;
     addedVertices = 0;
+    assert(_invariant);
 }
 
-void releaseVertexArray()
+void VertexArray_release()
 {
+    VertexArray_clear();
+    glDisableClientState(GL_VERTEX_ARRAY);
     free(vertexArray);
+    vertexArray = NULL;
+    vertexArrayMaxSize = 0;
 }
+
+#ifdef GREY_BOX
+GLfloat* getVertexArray()
+{
+    return vertexArray;
+}
+#endif

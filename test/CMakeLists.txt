@@ -9,9 +9,10 @@ include_directories ("${PROJECT_SOURCE_DIR}/headers")
 
 # Add individual test modules
 add_subdirectory (utils)
+add_subdirectory (graphics)
 
 # Add a target to build the executable "SmugTest" from the specified sources.
 add_executable(SmugTest AllTests.c CuTest.c)
 
 # Library "SmugTest" will depend on "Smug" (or "Smug*") as well as "Smug*Test" libraries.
-target_link_libraries (SmugTest SmugUtils SmugUtilsTest)
+target_link_libraries (SmugTest SmugUtils SmugUtilsTest SmugGraphics SmugGraphicsTest)
