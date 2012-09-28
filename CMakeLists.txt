@@ -8,3 +8,4 @@ project (AllSmug)
 ## Build the sub-projects in these directories. Each has its own CMakeLists.txt.
 add_subdirectory (src/utils)
 add_subdirectory (test)
+add_subdirectory (guitest)
