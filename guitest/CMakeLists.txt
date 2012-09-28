@@ -8,11 +8,9 @@ project (SmugGuiTest)
 include_directories ("${PROJECT_SOURCE_DIR}/../headers")
 
 # Add a target to build the executable "SmugGuiTest" from the specified sources.
-add_executable(SmugGuiTest guitest.c)
-
-# Program "SmugGuiTest" will depend on "SmugUtils".
-target_link_libraries (SmugGuiTest SmugUtils)
-target_link_libraries (SmugGuiTest glfw)
+add_executable(WindowTest window.c)
+add_executable(FullscreenTest fullscreen.c)
 
 find_package(OpenGL)
-target_link_libraries(SmugGuiTest ${OPENGL_LIBRARIES})
+target_link_libraries(WindowTest glfw ${OPENGL_LIBRARIES})
+target_link_libraries(FullscreenTest glfw ${OPENGL_LIBRARIES})
