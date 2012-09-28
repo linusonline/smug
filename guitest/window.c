@@ -1,6 +1,8 @@
 #include <GL/glfw.h>
 #include <stdlib.h>
 
+#include <common.h>
+
 void initGlWindow()
 {
     // int glfwInit( void )

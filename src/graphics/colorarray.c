@@ -1,7 +1,9 @@
-#include <graphics/colorarray.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+
+#include <graphics/colorarray.h>
+#include <common.h>
 
 static const int COLOR_ARRAY_INITIAL_SIZE = 30;
 
@@ -9,9 +11,6 @@ static GLfloat* colorArray = NULL;
 static int colorArrayMaxSize = 0;
 static int colorArraySize = 0;
 static int addedColors = 0;
-
-#define allocate(type) ((type*)malloc(sizeof(type)))
-#define allocatev(type, size) ((type*)malloc(sizeof(type) * size))
 
 static BOOL _invariant()
 {

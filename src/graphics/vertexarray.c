@@ -1,7 +1,9 @@
-#include <graphics/vertexarray.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+
+#include <graphics/vertexarray.h>
+#include <common.h>
 
 static const int VERTEX_ARRAY_INITIAL_SIZE = 32;
 
@@ -9,9 +11,6 @@ static GLfloat* vertexArray = NULL;
 static int vertexArrayMaxSize = 0;
 static int vertexArraySize = 0;
 static int addedVertices = 0;
-
-#define allocate(type) ((type*)malloc(sizeof(type)))
-#define allocatev(type, size) ((type*)malloc(sizeof(type) * size))
 
 static BOOL _invariant()
 {
