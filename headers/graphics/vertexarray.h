@@ -6,6 +6,7 @@
 void initVertexArray(void);
 void addRectToVertexArray(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2);
 int getNumberOfAddedVertices(void);
+void clearVertexArray(void);
 void releaseVertexArray(void);
 
 #endif /* VERTEXARRAY_H */

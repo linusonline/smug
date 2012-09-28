@@ -7,4 +7,4 @@ project (SmugGraphics)
 # Directory for library header files.
 include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 
-add_library(SmugGraphics vertexarray.c)
+add_library(SmugGraphics vertexarray.c colorarray.c)

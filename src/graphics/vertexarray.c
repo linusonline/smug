@@ -53,15 +53,15 @@ void addRectToVertexArray(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2)
     addVertexToArray(x2, y1);
 }
 
+int getNumberOfAddedVertices()
+{
+    return addedVertices;
+}
+
 void clearVertexArray()
 {
     vertexArraySize = 0;
     addedVertices = 0;
-}
-
-int getNumberOfAddedVertices()
-{
-    return addedVertices;
 }
 
 void releaseVertexArray()
