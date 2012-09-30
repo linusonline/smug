@@ -8,7 +8,7 @@
 
 static int STRING_CONSOLE_MAX_SIZE = 1024;
 
-void Log_init_shoudlInitializeLog(CuTest* tc)
+void Log_init_shouldInitializeLog(CuTest* tc)
 {
     Console* console = NullConsole_new();
     CuAssertTrue(tc, Log_init(console));
@@ -17,7 +17,7 @@ void Log_init_shoudlInitializeLog(CuTest* tc)
     NullConsole_delete(console);
 }
 
-void Log_terminate_shoudlTerminateLog(CuTest* tc)
+void Log_terminate_shouldTerminateLog(CuTest* tc)
 {
     Console* console = NullConsole_new();
     Log_init(console);
@@ -97,8 +97,8 @@ CuSuite* LogTest_GetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
 
-	SUITE_ADD_TEST(suite, Log_init_shoudlInitializeLog);
-	SUITE_ADD_TEST(suite, Log_terminate_shoudlTerminateLog);
+	SUITE_ADD_TEST(suite, Log_init_shouldInitializeLog);
+	SUITE_ADD_TEST(suite, Log_terminate_shouldTerminateLog);
 	SUITE_ADD_TEST(suite, Log_setLevel_shouldSetSuppliedLogLevel);
 	SUITE_ADD_TEST(suite, Log_addEntry_shouldUseHardCodedFormatString);
 	SUITE_ADD_TEST(suite, Log_addEntry_shouldHandleEmptyMessage);
