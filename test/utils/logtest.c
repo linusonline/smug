@@ -93,6 +93,59 @@ void Log_addEntry_shouldNotPrintWrongScope(CuTest* tc)
     StringConsole_delete(console);
 }
 
+void Log_indent_shouldIncreaseIndentation(CuTest* tc)
+{
+    Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
+
+    Log_init(console);
+    Log_setIndentationString("test");
+    Log_setLevel(LOG_DEBUG);
+    Log_indent();
+    Log_addEntry(LOG_DEBUG, "filename", 6, "message");
+    Log_terminate();
+
+    char* result = StringConsole_getBuffer();
+    CuAssertTrue(tc, strcmp("test[filename:6][DEBUG] message\n", result) == 0);
+    StringConsole_delete(console);
+}
+
+void Log_indent_shouldIncreaseIndentationMoreThanOnce(CuTest* tc)
+{
+    Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
+
+    Log_init(console);
+    Log_setIndentationString("test");
+    Log_setLevel(LOG_DEBUG);
+    Log_indent();
+    Log_indent();
+    Log_addEntry(LOG_DEBUG, "filename", 6, "message");
+    Log_terminate();
+
+    char* result = StringConsole_getBuffer();
+    CuAssertTrue(tc, strcmp("testtest[filename:6][DEBUG] message\n", result) == 0);
+    StringConsole_delete(console);
+}
+
+void Log_dedent_shouldDecreaseIndentation(CuTest* tc)
+{
+    Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
+
+    Log_init(console);
+    Log_setIndentationString("test");
+    Log_setLevel(LOG_DEBUG);
+    Log_indent();
+    Log_indent();
+    Log_indent();
+    Log_dedent();
+    Log_dedent();
+    Log_addEntry(LOG_DEBUG, "filename", 6, "message");
+    Log_terminate();
+
+    char* result = StringConsole_getBuffer();
+    CuAssertTrue(tc, strcmp("test[filename:6][DEBUG] message\n", result) == 0);
+    StringConsole_delete(console);
+}
+
 CuSuite* LogTest_GetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -103,6 +156,9 @@ CuSuite* LogTest_GetSuite()
 	SUITE_ADD_TEST(suite, Log_addEntry_shouldUseHardCodedFormatString);
 	SUITE_ADD_TEST(suite, Log_addEntry_shouldHandleEmptyMessage);
 	SUITE_ADD_TEST(suite, Log_addEntry_shouldNotPrintWrongScope);
+	SUITE_ADD_TEST(suite, Log_indent_shouldIncreaseIndentation);
+	SUITE_ADD_TEST(suite, Log_indent_shouldIncreaseIndentationMoreThanOnce);
+	SUITE_ADD_TEST(suite, Log_dedent_shouldDecreaseIndentation);
 
 	return suite;
 }
