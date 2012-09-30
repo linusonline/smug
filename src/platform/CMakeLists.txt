@@ -2,9 +2,10 @@
 ## with CMake. Use root folder's config file instead.
 
 cmake_minimum_required (VERSION 2.6)
-project (SmugGraphics)
+project (SmugPlatform)
 
 # Directory for library header files.
 include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 
-add_library(SmugGraphics vertexarray.c colorarray.c image.c texture.c lodepng/lodepng.c)
+# Add a target to build the library "SmugUtils" from the specified sources.
+add_library(SmugPlatform file.c)
