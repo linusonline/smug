@@ -22,6 +22,10 @@ typedef double TIME;
     #define NULL (0)
 #endif
 
+#define smug_assert assert
+#include <assert.h>
+
+#include <stdlib.h>
 #define allocate(type) ((type*)malloc(sizeof(type)))
 #define allocatev(type, size) ((type*)malloc(sizeof(type) * size))
 
