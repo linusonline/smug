@@ -8,4 +8,4 @@ project (SmugUtils)
 include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 
 # Add a target to build the library "SmugUtils" from the specified sources.
-add_library(SmugUtils linkedlist.c log.c stdout_console.c string_console.c)
+add_library(SmugUtils linkedlist.c log.c stdout_console.c string_console.c null_console.c)

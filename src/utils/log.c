@@ -19,7 +19,7 @@ static Console* gConsole = NULL;
 
 static BOOL _isInitialized(void)
 {
-    return NULL != gPrefixStack;
+    return gPrefixStack != NULL && gConsole != NULL;
 }
 
 BOOL Log_init(Console* console)
@@ -50,7 +50,8 @@ void Log_terminate(void)
 {
     smug_assert(_isInitialized());
     LinkedList_delete(gPrefixStack);
-    StdoutConsole_delete(gConsole);
+    gPrefixStack = NULL;
+    gConsole = NULL;
 }
 
 void Log_addEntry(int level, char* file, int line, char* fmt, ...)
@@ -92,11 +93,15 @@ void Log_addEntryVa(int level, char* file, int line, char* fmt, va_list args)
     {
         char message[MAX_MESSAGE_SIZE];
         // Print formatted string to the message buffer
-        vsprintf(message, fmt, args);
+        int written = vsprintf(message, fmt, args);
+        if (written >= 0)
+        {
+            message[written] = 0;
 
-        // Static log version: "%indent%[%file%:%line%][%scope%] %message%"
-        LinkedList_doList(gPrefixStack, Console_writeVoid);
-        gConsole->writeLine("[%s:%n][] %s", file, line, getScopeString(level), message);
+            // Static log version: "%indent%[%file%:%line%][%scope%] %message%"
+            LinkedList_doList(gPrefixStack, Console_writeVoid);
+            gConsole->writeLine("[%s:%i][%s] %s", file, line, getScopeString(level), message);
+        }
     }
 }
 
