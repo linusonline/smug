@@ -9,7 +9,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 # Local header files for tests.
 include_directories ("${PROJECT_SOURCE_DIR}/../headers")
 
-add_library(SmugGraphicsTest vertexarraytest.c colorarraytest.c)
+add_library(SmugGraphicsTest vertexarraytest.c colorarraytest.c imagetest.c)
 
 find_package(OpenGL)
-target_link_libraries (SmugGraphicsTest SmugGraphics glfw ${OPENGL_LIBRARIES})
+target_link_libraries (SmugGraphicsTest SmugGraphics SmugPlatform glfw ${OPENGL_LIBRARIES})

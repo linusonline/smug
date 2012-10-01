@@ -84,12 +84,20 @@ static void Console_writeVoid(void* chars)
     gConsole->write((char*)chars);
 }
 
+static BOOL _isScopeActive(int scope)
+{
+    return gCurrentLogLevel & scope;
+}
+
 void Log_addEntryVa(int level, char* file, int line, char* fmt, va_list args)
 {
-    smug_assert(_isInitialized());
+    if (!_isInitialized())
+    {
+        return;
+    }
 
     // Only print log if correct log level is set
-    if (gCurrentLogLevel & level)
+    if (_isScopeActive(level))
     {
         char message[MAX_MESSAGE_SIZE];
         // Print formatted string to the message buffer
@@ -108,6 +116,22 @@ void Log_addEntryVa(int level, char* file, int line, char* fmt, va_list args)
 void Log_setLevel(int level)
 {
     smug_assert(_isInitialized());
+    gCurrentLogLevel = 0;
+    switch (level)
+    {
+        case LOG_ALL:
+        case LOG_DEBUG:
+            gCurrentLogLevel |= LOG_DEBUG;
+        case LOG_NOTIFICATION:
+            gCurrentLogLevel |= LOG_NOTIFICATION;
+        case LOG_WARNING:
+            gCurrentLogLevel |= LOG_WARNING;
+        case LOG_ERROR:
+            gCurrentLogLevel |= LOG_ERROR;
+        case LOG_NONE:
+        default:
+            SMUG_NOOP();
+    }
     gCurrentLogLevel = level;
 }
 
