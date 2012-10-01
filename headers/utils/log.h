@@ -20,10 +20,10 @@
 #include <utils/console.h>
 
 // Predefined log levels
-#define LOG_DEBUG           0x01
-#define LOG_NOTIFICATION    0x02
-#define LOG_WARNING         0x04
-#define LOG_ERROR           0x08
+#define LOG_ERROR           0x01
+#define LOG_WARNING         0x03
+#define LOG_NOTIFICATION    0x07
+#define LOG_DEBUG           0x0F
 #define LOG_ALL             0xFF
 #define LOG_NONE            0x00
 
