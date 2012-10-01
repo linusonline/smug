@@ -28,6 +28,12 @@ static int getClosestGreaterPowerOfTwo(int number)
     return floor(power + 0.5);
 }
 
+void Texture_activate(Texture* self)
+{
+    smug_assert(glIsTexture(self->texid) == GL_TRUE);
+    glBindTexture(GL_TEXTURE_2D, self->texid);
+}
+
 static Texture* loadTextureFromImage(Texture* tex, Image* image)
 {
     smug_assert(image != NULL);
@@ -41,11 +47,12 @@ static Texture* loadTextureFromImage(Texture* tex, Image* image)
 #ifdef SMUG_GLES
     glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-#endif
-#ifndef SMUG_GLES
+#else
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 #endif
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
 #ifndef SMUG_GLES /* OpenGL ES 1.0 does not support glIsTexture */
     if (glIsTexture(texid) != GL_TRUE)

@@ -30,6 +30,8 @@ Texture* Texture_new(unsigned int width, unsigned int height);
  */
 Texture* Texture_newFromImage(Image* image);
 
+void Texture_activate(Texture* self);
+
 /**
  * @relates _Texture
  */

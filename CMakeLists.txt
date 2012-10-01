@@ -11,3 +11,5 @@ add_subdirectory (src/graphics)
 add_subdirectory (src/platform)
 add_subdirectory (test)
 add_subdirectory (guitest)
+
+file(COPY "${PROJECT_SOURCE_DIR}/res" DESTINATION "${PROJECT_BINARY_DIR}")

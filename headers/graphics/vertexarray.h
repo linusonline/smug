@@ -6,7 +6,7 @@
 /* Requires openGL to be initialized. */
 
 void VertexArray_init(void);
-void VertexArray_addRect(GLfloat x1, GLfloat x2, GLfloat y1, GLfloat y2);
+void VertexArray_addRect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
 int VertexArray_getNumberOfAddedVertices(void);
 void VertexArray_clear(void);
 void VertexArray_release(void);
