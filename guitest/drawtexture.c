@@ -3,12 +3,17 @@
 #include <assert.h>
 
 #include <graphics/vertexarray.h>
-#include <graphics/texcoordarray.h>
+#include <graphics/renderbatch.h>
 #include <graphics/texture.h>
+#include <utils/log.h>
+#include <utils/stdout_console.h>
 #include <common.h>
 
 static Image* image = NULL;
 static Texture* texture = NULL;
+static RenderBatch* renderBatch = NULL;
+
+static Console* console = NULL;
 
 void GLFWCALL windowResize(int width, int height)
 {
@@ -20,14 +25,13 @@ void GLFWCALL windowResize(int width, int height)
 
 void drawStuff()
 {
-    VertexArray_addRect(0, 0, 200, 200);
-    TexCoordArray_addRect(0.0, 0.0, 1.0, 1.0);
+    RenderBatch_addTexturedRect(renderBatch, 0, 0, 200, 200, 0.0, 0.0, 1.0, 1.0);
+    RenderBatch_addTexturedRect(renderBatch, 200, 100, 300, 200, 1.0, 0.0, 0.0, 1.0);
 }
 
 void afterDrawing()
 {
-    TexCoordArray_clear();
-    VertexArray_clear();
+    RenderBatch_clear(renderBatch);
 }
 
 void init()
@@ -50,8 +54,8 @@ void init()
     }
     glfwSetWindowSizeCallback(windowResize);
     glClearColor(0.5, 0.0, 0.5, 0.0);
-    VertexArray_init();
-    TexCoordArray_init();
+
+    renderBatch = RenderBatch_new(4, TRUE);
 
     image = Image_new();
     Image_loadFromFile(image, "res/box.png");
@@ -59,6 +63,13 @@ void init()
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glEnable(GL_TEXTURE_2D);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    console = StdoutConsole_new();
+    Log_init(console);
+    Log_setLevel(LOG_ALL);
 }
 
 void runMainLoop()
@@ -70,9 +81,8 @@ void runMainLoop()
         glClear(GL_COLOR_BUFFER_BIT);
 
         drawStuff();
-        assert(VertexArray_getNumberOfAddedVertices() == TexCoordArray_getNumberOfAddedPairs());
         Texture_activate(texture);
-        glDrawArrays(GL_QUADS, 0, VertexArray_getNumberOfAddedVertices());
+        RenderBatch_render(renderBatch);
 
         // Swap front and back rendering buffers
         glfwSwapBuffers();
@@ -86,9 +96,10 @@ void runMainLoop()
 
 void deinit()
 {
-    TexCoordArray_release();
-    VertexArray_release();
+    RenderBatch_delete(renderBatch);
     glfwTerminate();
+    Log_terminate();
+    StdoutConsole_delete(console);
 }
 
 int main()
