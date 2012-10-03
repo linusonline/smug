@@ -26,6 +26,7 @@ typedef struct Image
     unsigned int size;
     unsigned int width;
     unsigned int height;
+    unsigned int bpp;
     int channels;
 } Image;
 
@@ -37,14 +38,18 @@ Image* Image_new(void);
 
 /**
  * Create an image based on raw image data.
- * @param data The image data.
+ * @param data The image data. Must be 4 bytes per pixel.
  * @param size Number of bytes needed to store the image data in memory.
  * @param width Width of the image in pixels.
  * @param height Height of the image in pixels.
- * @param channels Number of bytes per pixel.
+ * @param alpha Use alpha data in image.
  * @relates Image
  */
-Image* Image_newFromData(unsigned char* data, unsigned int size, unsigned int width, unsigned int height, int channels);
+Image* Image_newFromData(unsigned char* data, unsigned int size, unsigned int width, unsigned int height, BOOL alpha);
+
+Image* Image_copy(Image* self);
+
+void Image_fillOut(Image* image, int newWidth, int newHeight);
 
 /**
  * Delete an image and its associated image data.

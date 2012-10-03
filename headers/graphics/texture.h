@@ -62,6 +62,9 @@ unsigned int Texture_getWidth(Texture* self);
  */
 unsigned int Texture_getHeight(Texture* self);
 
+float Texture_pixelToTextureCoordX(Texture* self, float pixel);
+float Texture_pixelToTextureCoordY(Texture* self, float pixel);
+
 #endif /* SMUG_GRAPHICS_TEXTURE_H */
 
 /**@}*/

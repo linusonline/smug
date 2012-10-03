@@ -8,35 +8,85 @@
 
 #include <graphics/image.h>
 
-Image* Image_new(void)
+BOOL _invariant(Image* self)
 {
-    Image* ret = (Image*)malloc(sizeof(Image));
-    ret->data = NULL;
-    ret->file = NULL;
-    ret->size = 0;
-    ret->width = 0;
-    ret->height = 0;
-    ret->channels = 0;
-
-    return ret;
+    return
+        self != NULL &&
+        self->width * self->height * self->bpp == self->size &&
+        self->width > 0 &&
+        self->height > 0 &&
+        self->bpp == 4 &&
+        (self->channels == 4 || self->channels == 3);
 }
 
-Image* Image_newFromData(unsigned char* data, unsigned int size, unsigned int width, unsigned int height, int channels)
+Image* Image_new(void)
 {
-    Image* ret = (Image*)malloc(sizeof(Image));
-    ret->size = size;
-    ret->channels = channels;
-    ret->width = width;
-    ret->height = height;
-    if (ret->channels * ret->width * ret->height != ret->size)
+    Image* newImage = allocate(Image);
+    newImage->data = NULL;
+    newImage->file = NULL;
+    newImage->size = 0;
+    newImage->width = 0;
+    newImage->height = 0;
+    newImage->channels = 0;
+    newImage->bpp = 4;
+
+    return newImage;
+}
+
+Image* Image_newFromData(unsigned char* data, unsigned int size, unsigned int width, unsigned int height, BOOL alpha)
+{
+    smug_assert(size == width * height * 4); // Only support 32 bit images right now.
+    Image* newImage = allocate(Image);
+    newImage->size = size;
+    newImage->channels = alpha ? 4 : 3;
+    newImage->width = width;
+    newImage->height = height;
+    newImage->bpp = 4;
+    newImage->data = allocatev(unsigned char, newImage->size);
+    memcpy(newImage->data, data, newImage->size);
+    newImage->file = NULL;
+    smug_assert(_invariant(newImage));
+    // TODO: Set all alpha bytes to 255 in image data.
+    DEBUG("New image. Width: %i, height: %i, alpha: %s, size %i", newImage->width, newImage->height, alpha ? "TRUE" : "FALSE", newImage->size);
+    return newImage;
+}
+
+Image* Image_copy(Image* self)
+{
+    smug_assert(_invariant(self));
+    Image* copy = Image_new();
+    copy->file = self->file;
+    copy->size = self->size;
+    copy->width = self->width;
+    copy->height = self->height;
+    copy->channels = self->channels;
+
+    copy->data = allocatev(unsigned char, copy->size);
+    memcpy(copy->data, self->data, copy->size);
+    smug_assert(_invariant(copy));
+    return copy;
+}
+
+void Image_fillOut(Image* image, int newWidth, int newHeight)
+{
+    smug_assert(_invariant(image));
+    smug_assert(newWidth >= image->width && newHeight >= image->height);
+    int newSize = newWidth * newHeight * image->bpp;
+    unsigned char* newData = allocatev(unsigned char, newSize);
+    memset(newData, 0, newSize);
+
+    int oldByteWidth = image->width * image->bpp;
+    int newByteWidth = newWidth * image->bpp;
+    for (int y = 0; y < image->height; y++)
     {
-        WARNING("Size of data does not match dimensions of image.");
-        DEBUG("Image width: %i, height: %i, channels: %i, size %i", ret->width, ret->height, ret->channels, ret->size);
+        memcpy(newData + newByteWidth * y, image->data + oldByteWidth * y, oldByteWidth);
     }
-    ret->data = (unsigned char*)malloc(sizeof(unsigned char) * ret->size);
-    memcpy(ret->data, data, ret->size);
-    ret->file = NULL;
-    return ret;
+    free(image->data);
+    image->data = newData;
+    image->width = newWidth;
+    image->height = newHeight;
+    image->size = newWidth * newHeight * image->bpp;
+    smug_assert(_invariant(image));
 }
 
 void Image_delete(Image* self)
@@ -126,6 +176,8 @@ static BOOL _decodePNG(Image* image, unsigned char* buffer, unsigned int buffers
     image->height = decoder.infoPng.height;
     image->channels = LodePNG_InfoColor_getChannels(&decoder.infoPng.color);
 
+    DEBUG("Loaded PNG. Size %i x %i, %i channels. Size %i", image->width, image->height, image->channels, image->size);
+
     LodePNG_Decoder_cleanup(&decoder);
 
     return TRUE;
@@ -183,6 +235,7 @@ BOOL Image_loadFromFile(Image* self, const char* filename)
     }
 
     DEBUG("Successfully loaded image");
+    smug_assert(_invariant(self));
     return TRUE;
 }
 

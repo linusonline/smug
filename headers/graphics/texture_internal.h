@@ -24,8 +24,8 @@ typedef struct _Texture
     unsigned int texid;
     unsigned int width;
     unsigned int height;
-    float px;
-    float py;
+    unsigned int internalWidth;
+    unsigned int internalHeight;
     BOOL loaded;
 } _Texture;
 
