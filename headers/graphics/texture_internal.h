@@ -20,7 +20,6 @@
  */
 typedef struct _Texture
 {
-    Image* image;
     unsigned int texid;
     unsigned int width;
     unsigned int height;

@@ -40,11 +40,6 @@ void Texture_release(Texture* texture);
 /**
  * @relates _Texture
  */
-void Texture_reload(Texture* texture);
-
-/**
- * @relates _Texture
- */
 void Texture_delete(void* texture);
 
 /**

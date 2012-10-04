@@ -35,7 +35,6 @@ static BOOL _invariant(Texture* self)
           _getClosestGreaterPowerOfTwo(self->internalWidth) == self->internalWidth &&
           self->texid > 0) ||
          (!self->loaded &&
-          self->image == NULL &&
           self->width == 0 &&
           self->height == 0 &&
           self->internalWidth == 0 &&
@@ -96,7 +95,6 @@ static Texture* loadTextureFromImage(Texture* tex, Image* image)
     glBindTexture(GL_TEXTURE_2D, 0);
 
     tex->texid = texid;
-    tex->image = image;
     tex->internalWidth = neededWidth;
     tex->internalHeight = neededHeight;
     tex->width = image->width;
@@ -127,7 +125,6 @@ static BOOL loadEmptyTexture(Texture* tex, unsigned int width, unsigned height)
     printGLError();
 
     tex->texid = texid;
-    tex->image = NULL;
     tex->width = width;
     tex->height = height;
     tex->internalWidth = neededWidth;
@@ -174,24 +171,6 @@ void Texture_release(Texture* self)
 	glDeleteTextures(1, &self->texid);
     printGLError();
 	self->loaded = FALSE;
-}
-
-void Texture_reload(Texture* self)
-{
-    smug_assert(_invariant(self));
-    if (FALSE != self->loaded)
-    {
-        Texture_release(self);
-    }
-
-    if (self->image != NULL)
-    {
-       loadTextureFromImage(self, self->image);
-    }
-    else
-    {
-        loadEmptyTexture(self, self->width, self->height);
-    }
 }
 
 void Texture_delete(void* self)
