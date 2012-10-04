@@ -9,6 +9,7 @@ CuSuite* StringConsoleTest_GetSuite();
 CuSuite* vertexArrayTest_GetSuite();
 CuSuite* colorArrayTest_GetSuite();
 CuSuite* ImageTest_GetSuite();
+CuSuite* RenderBatchTest_GetSuite();
 
 void RunAllTests(void)
 {
@@ -22,6 +23,7 @@ void RunAllTests(void)
 	CuSuiteAddSuite(suite, vertexArrayTest_GetSuite());
 	CuSuiteAddSuite(suite, colorArrayTest_GetSuite());
 	CuSuiteAddSuite(suite, ImageTest_GetSuite());
+	CuSuiteAddSuite(suite, RenderBatchTest_GetSuite());
 
 	CuSuiteRun(suite);
 	CuSuiteSummary(suite, output);

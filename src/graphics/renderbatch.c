@@ -61,6 +61,7 @@ static void _expandArraysIfNeeded(RenderBatch* self, int neededSpace)
 
 RenderBatch* RenderBatch_new(unsigned int initialSize, BOOL useTexture)
 {
+    smug_assert(initialSize > 0);
     RenderBatch* self = allocate(RenderBatch);
     self->vertexArray = allocatev(GLfloat, initialSize * PRIMITIVES_PER_VERTEX);
     if (useTexture)
@@ -170,3 +171,21 @@ void RenderBatch_render(RenderBatch* self)
     }
     glDrawArrays(GL_QUADS, 0, self->addedElements);
 }
+
+#ifdef GREY_BOX
+float* RenderBatch_getVertexArray(RenderBatch* self)
+{
+    return self->vertexArray;
+}
+
+float* RenderBatch_getColorArray(RenderBatch* self)
+{
+    return self->colorArray;
+}
+
+float* RenderBatch_getTexCoordArray(RenderBatch* self)
+{
+    return self->textureArray;
+}
+#endif
+
