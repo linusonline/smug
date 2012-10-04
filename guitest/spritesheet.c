@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include <graphics/vertexarray.h>
 #include <graphics/renderbatch.h>
 #include <graphics/texture.h>
 #include <utils/log.h>

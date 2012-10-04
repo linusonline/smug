@@ -1,8 +1,6 @@
 #include <GL/glfw.h>
 #include <stdlib.h>
 
-#include <graphics/vertexarray.h>
-#include <graphics/colorarray.h>
 #include <common.h>
 
 void GLFWCALL windowResize(int width, int height)
