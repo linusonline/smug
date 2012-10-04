@@ -147,22 +147,13 @@ void RenderBatch_addColoredRect(RenderBatch* self,
     self->vertexArray[start + 6] = x2;
     self->vertexArray[start + 7] = y1;
     start = self->addedElements * PRIMITIVES_PER_COLOR;
-    self->colorArray[start + 0] = r;
-    self->colorArray[start + 1] = g;
-    self->colorArray[start + 2] = b;
-    self->colorArray[start + 3] = a;
-    self->colorArray[start + 4] = r;
-    self->colorArray[start + 5] = g;
-    self->colorArray[start + 6] = b;
-    self->colorArray[start + 7] = a;
-    self->colorArray[start + 0] = r;
-    self->colorArray[start + 1] = g;
-    self->colorArray[start + 2] = b;
-    self->colorArray[start + 3] = a;
-    self->colorArray[start + 4] = r;
-    self->colorArray[start + 5] = g;
-    self->colorArray[start + 6] = b;
-    self->colorArray[start + 7] = a;
+    for (int offset = start; offset < start + 16;)
+    {
+        self->colorArray[offset++] = r;
+        self->colorArray[offset++] = g;
+        self->colorArray[offset++] = b;
+        self->colorArray[offset++] = a;
+    }
     self->addedElements += 4;
 }
 
