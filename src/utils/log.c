@@ -17,17 +17,20 @@ static LinkedList* gPrefixStack = NULL;
 static const int MAX_MESSAGE_SIZE = 1024;
 static Console* gConsole = NULL;
 
-static BOOL _isInitialized(void)
+static BOOL _isInitialized()
 {
     return gPrefixStack != NULL && gConsole != NULL;
 }
 
 BOOL Log_init(Console* console)
 {
+    smug_assert(console != NULL);
+
     gConsole = console;
 
     // Allocate memory for prefix stack
     gPrefixStack = LinkedList_new();
+    smug_assert(_isInitialized());
 
     // Set default format string
     #ifdef NDEBUG
@@ -41,12 +44,12 @@ BOOL Log_init(Console* console)
     return NULL != gPrefixStack;
 }
 
-BOOL Log_isInitialized(void)
+BOOL Log_isInitialized()
 {
 	return _isInitialized();
 }
 
-void Log_terminate(void)
+void Log_terminate()
 {
     smug_assert(_isInitialized());
     LinkedList_delete(gPrefixStack);
@@ -135,7 +138,7 @@ void Log_setLevel(int level)
     gCurrentLogLevel = level;
 }
 
-int Log_getLevel(void)
+int Log_getLevel()
 {
     return gCurrentLogLevel;
 }
@@ -152,18 +155,18 @@ void Log_pushPrefix(char* prefix)
     LinkedList_addLast(gPrefixStack, prefix);
 }
 
-char* Log_popPrefix(void)
+char* Log_popPrefix()
 {
     smug_assert(_isInitialized());
     return (char*)LinkedList_popLast(gPrefixStack);
 }
 
-void Log_indent(void)
+void Log_indent()
 {
     Log_pushPrefix(gIndentString);
 }
 
-void Log_dedent(void)
+void Log_dedent()
 {
     Log_popPrefix();
 }
