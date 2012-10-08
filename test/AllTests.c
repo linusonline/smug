@@ -3,6 +3,7 @@
 #include <CuTest.h>
 
 CuSuite* LinkedListTest_GetSuite();
+CuSuite* BinaryTreeTest_GetSuite();
 CuSuite* LogTest_GetSuite();
 CuSuite* StringConsoleTest_GetSuite();
 
@@ -15,6 +16,7 @@ void RunAllTests(void)
 	CuSuite* suite = CuSuiteNew();
 
 	CuSuiteAddSuite(suite, LinkedListTest_GetSuite());
+	CuSuiteAddSuite(suite, BinaryTreeTest_GetSuite());
 	CuSuiteAddSuite(suite, LogTest_GetSuite());
 	CuSuiteAddSuite(suite, StringConsoleTest_GetSuite());
 
