@@ -61,6 +61,22 @@ void Map_get_shouldFindAddedElement(CuTest* tc)
     Map_delete(m);
 }
 
+void Map_removeAll_shouldEmptyMap(CuTest* tc)
+{
+    Map* m = Map_new(_compareInts);
+    int a = 0;
+    int b = 0;
+    int c = 0;
+    Map_set(m, &a, &a);
+    Map_set(m, &b, &b);
+    Map_set(m, &c, &c);
+    Map_removeAll(m);
+    CuAssertTrue(tc, Map_get(m, &a) == NULL);
+    CuAssertTrue(tc, Map_get(m, &b) == NULL);
+    CuAssertTrue(tc, Map_get(m, &c) == NULL);
+    Map_delete(m);
+}
+
 CuSuite* MapTest_GetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -71,6 +87,7 @@ CuSuite* MapTest_GetSuite()
 	SUITE_ADD_TEST(suite, Map_get_shouldReturnNullOnEmptyMap);
 	SUITE_ADD_TEST(suite, Map_get_shouldReturnNullOnMissingElement);
 	SUITE_ADD_TEST(suite, Map_get_shouldFindAddedElement);
+	SUITE_ADD_TEST(suite, Map_removeAll_shouldEmptyMap);
 
 	return suite;
 }
