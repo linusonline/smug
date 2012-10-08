@@ -8,7 +8,7 @@
 
 #include <graphics/image.h>
 
-BOOL _invariant(Image* self)
+static BOOL _invariant(Image* self)
 {
     return
         self != NULL &&
