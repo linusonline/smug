@@ -36,9 +36,19 @@ static BOOL _invariant(BinaryTree* self)
 {
     return
         self != NULL &&
-        self->compare != NULL &&
+        (self->compare != NULL || self->comparePredicated != NULL) &&
         (self->root == NULL ||
         (self->root->parent == NULL && _invariantRec(self->root)));
+}
+
+static BOOL _isPredicated(BinaryTree* self)
+{
+    return self->comparePredicated != NULL;
+}
+
+static int _compare(BinaryTree* self, void* item1, void* item2)
+{
+    return _isPredicated(self) ? self->comparePredicated(self->predicateData, item1, item2) : self->compare(item1, item2);
 }
 
 static int _findNode(BinaryTree* self, void* item, BinaryTreeNode** node)
@@ -54,7 +64,7 @@ static int _findNode(BinaryTree* self, void* item, BinaryTreeNode** node)
     int leftOrRight = 0;
     while (TRUE)
     {
-        comp = self->compare(item, current->item);
+        comp = _compare(self, item, current->item);
         if (comp == 0)
         {
             *node = current;
@@ -94,12 +104,40 @@ static void _deleteWithChildren(BinaryTreeNode* node)
     free(node);
 }
 
+static void _deleteContentsWithChildren(BinaryTreeNode* node, void (*deleter)(void* item))
+{
+    if (node->left != NULL)
+    {
+        _deleteContentsWithChildren(node->left, deleter);
+    }
+    if (node->right != NULL)
+    {
+        _deleteContentsWithChildren(node->right, deleter);
+    }
+    deleter(node->item);
+    free(node);
+}
+
+BinaryTree* BinaryTree_newPredicated(int (*comparePredicated)(void*, void*, void*), void* predicateData)
+{
+    smug_assert(comparePredicated != NULL);
+    BinaryTree* newTree = allocate(BinaryTree);
+    newTree->root = NULL;
+    newTree->compare = NULL;
+    newTree->comparePredicated = comparePredicated;
+    newTree->predicateData = predicateData;
+    smug_assert(_invariant(newTree));
+    return newTree;
+}
+
 BinaryTree* BinaryTree_new(int (*compare)(void*, void*))
 {
     smug_assert(compare != NULL);
     BinaryTree* newTree = allocate(BinaryTree);
     newTree->root = NULL;
     newTree->compare = compare;
+    newTree->comparePredicated = NULL;
+    newTree->predicateData = NULL;
     smug_assert(_invariant(newTree));
     return newTree;
 }
@@ -124,7 +162,7 @@ void BinaryTree_insert(BinaryTree* self, void* item)
     int comp;
     while (TRUE)
     {
-        comp = self->compare(item, current->item);
+        comp = _compare(self, item, current->item);
         if (comp == 0)
         {
             return;
@@ -243,6 +281,17 @@ void BinaryTree_removeAll(BinaryTree* self)
     if (!BinaryTree_isEmpty(self))
     {
         _deleteWithChildren(self->root);
+        self->root = NULL;
+        smug_assert(_invariant(self));
+    }
+}
+
+void BinaryTree_deleteAll(BinaryTree* self, void (*deleter)(void* item))
+{
+    smug_assert(_invariant(self));
+    if (!BinaryTree_isEmpty(self))
+    {
+        _deleteContentsWithChildren(self->root, deleter);
         self->root = NULL;
         smug_assert(_invariant(self));
     }

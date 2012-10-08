@@ -19,6 +19,8 @@
 typedef struct BinaryTree {
     struct BinaryTreeNode* root;
     int (*compare)(void*, void*);
+    int (*comparePredicated)(void*, void*, void*);
+    void* predicateData;
 } BinaryTree;
 
 /**
@@ -39,6 +41,8 @@ typedef struct BinaryTree {
 
 BinaryTree* BinaryTree_new(int (*compare)(void*, void*));
 
+BinaryTree* BinaryTree_newPredicated(int (*comparePredicated)(void*, void*, void*), void* predicateData);
+
 void BinaryTree_delete(BinaryTree* self);
 
 BOOL BinaryTree_isEmpty(BinaryTree* self);
@@ -52,6 +56,8 @@ void* BinaryTree_find(BinaryTree* self, void* item);
 // void BinaryTree_remove(BinaryTree* self, void* item);
 
 void BinaryTree_removeAll(BinaryTree* self);
+
+void BinaryTree_deleteAll(BinaryTree* self, void (*deleter)(void* item));
 
 #endif /* SMUG_UTILS_BINARYTREE_H */
 

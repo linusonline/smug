@@ -10,7 +10,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 include_directories ("${PROJECT_SOURCE_DIR}/../headers")
 
 # Add a target to build the library "SmugUtilsTest" from the specified sources.
-add_library(SmugUtilsTest linkedlisttest.c binarytreetest.c logtest.c stringconsoletest.c)
+add_library(SmugUtilsTest linkedlisttest.c binarytreetest.c maptest.c logtest.c stringconsoletest.c)
 
 # Library "SmugUtilsTest" depends on "SmugUtils".
 target_link_libraries (SmugUtilsTest SmugUtils)
