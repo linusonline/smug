@@ -10,13 +10,18 @@ static BOOL _invariant(Drawable* self)
 
 Drawable* Drawable_newFromSprite(Sprite* sprite)
 {
+    // TODO: Default to sprite pixel size?
+    Drawable_newFromSpriteAndDimensions(sprite, 0, 0, 0, 0);
+}
+
+Drawable* Drawable_newFromSpriteAndDimensions(Sprite* sprite, int width, int height, int posX, int posY)
+{
     Drawable* newDrawable = allocate(Drawable);
     newDrawable->sprite = sprite;
-    newDrawable->positionX = 0;
-    newDrawable->positionY = 0;
-    // TODO: Default to sprite pixel size?
-    newDrawable->width = 0;
-    newDrawable->height = 0;
+    newDrawable->positionX = posX;
+    newDrawable->positionY = posY;
+    newDrawable->width = width;
+    newDrawable->height = height;
     smug_assert(_invariant(newDrawable));
     return newDrawable;
 }
