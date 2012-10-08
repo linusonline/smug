@@ -77,6 +77,72 @@ void Map_removeAll_shouldEmptyMap(CuTest* tc)
     Map_delete(m);
 }
 
+void Map_getIterator_shouldReturnNonNull(CuTest* tc)
+{
+    Map* m = Map_new(_compareInts);
+    MapIterator* iter = Map_getIterator(m);
+    CuAssertTrue(tc, iter != NULL);
+    MapIterator_delete(iter);
+    Map_delete(m);
+}
+
+void MapIterator_getNextPair_shouldReturnNullOnEmptyMap(CuTest* tc)
+{
+    Map* m = Map_new(_compareInts);
+    MapIterator* iter = Map_getIterator(m);
+    CuAssertTrue(tc, MapIterator_getNextPair(iter) == NULL);
+    MapIterator_delete(iter);
+    Map_delete(m);
+}
+
+void MapIterator_getNextPair_shouldReturnSingleKey(CuTest* tc)
+{
+    Map* m = Map_new(_compareInts);
+    int a = 0;
+    Map_set(m, &a, &a);
+    MapIterator* iter = Map_getIterator(m);
+
+    CuAssertTrue(tc, MapIterator_getNextKey(iter) == &a);
+    CuAssertTrue(tc, MapIterator_getNextKey(iter) == NULL);
+    MapIterator_delete(iter);
+    Map_delete(m);
+}
+
+void MapIterator_getNextPair_shouldReturnKeysInOrder1(CuTest* tc)
+{
+    Map* m = Map_new(_compareInts);
+    int a = 0;
+    int b = 1;
+    Map_set(m, &a, &a);
+    Map_set(m, &b, &b);
+    MapIterator* iter = Map_getIterator(m);
+
+    CuAssertTrue(tc, MapIterator_getNextKey(iter) == &a);
+    CuAssertTrue(tc, MapIterator_getNextKey(iter) == &b);
+    CuAssertTrue(tc, MapIterator_getNextKey(iter) == NULL);
+    MapIterator_delete(iter);
+    Map_delete(m);
+}
+
+void MapIterator_getNextPair_shouldReturnKeysInOrder2(CuTest* tc)
+{
+    Map* m = Map_new(_compareInts);
+    int a = 0;
+    int b = 1;
+    int c = 2;
+    Map_set(m, &c, &c);
+    Map_set(m, &a, &a);
+    Map_set(m, &b, &b);
+    MapIterator* iter = Map_getIterator(m);
+
+    CuAssertTrue(tc, MapIterator_getNextKey(iter) == &a);
+    CuAssertTrue(tc, MapIterator_getNextKey(iter) == &b);
+    CuAssertTrue(tc, MapIterator_getNextKey(iter) == &c);
+    CuAssertTrue(tc, MapIterator_getNextKey(iter) == NULL);
+    MapIterator_delete(iter);
+    Map_delete(m);
+}
+
 CuSuite* MapTest_GetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -88,6 +154,11 @@ CuSuite* MapTest_GetSuite()
 	SUITE_ADD_TEST(suite, Map_get_shouldReturnNullOnMissingElement);
 	SUITE_ADD_TEST(suite, Map_get_shouldFindAddedElement);
 	SUITE_ADD_TEST(suite, Map_removeAll_shouldEmptyMap);
+	SUITE_ADD_TEST(suite, Map_getIterator_shouldReturnNonNull);
+	SUITE_ADD_TEST(suite, MapIterator_getNextPair_shouldReturnNullOnEmptyMap);
+	SUITE_ADD_TEST(suite, MapIterator_getNextPair_shouldReturnSingleKey);
+	SUITE_ADD_TEST(suite, MapIterator_getNextPair_shouldReturnKeysInOrder1);
+	SUITE_ADD_TEST(suite, MapIterator_getNextPair_shouldReturnKeysInOrder2);
 
 	return suite;
 }

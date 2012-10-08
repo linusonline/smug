@@ -1,4 +1,5 @@
 #include <common.h>
+#include <utils/log.h>
 #include <utils/binarytree.h>
 
 typedef struct BinaryTreeNode {
@@ -317,16 +318,27 @@ void BinaryTree_deleteAll(BinaryTree* self, void (*deleter)(void* item))
 
 BinaryTreeIterator* BinaryTree_getIterator(BinaryTree* self)
 {
+    smug_assert(_invariant(self));
     BinaryTreeIterator* newIter = allocate(BinaryTreeIterator);
     newIter->current = self->root;
+    if (self->root == NULL)
+    {
+        return newIter;
+    }
     while (newIter->current->left != NULL)
     {
         newIter->current = newIter->current->left;
     }
+    return newIter;
 }
 
 void* BinaryTreeIterator_getNext(BinaryTreeIterator* self)
 {
+    smug_assert(self != NULL);
+    if (self->current == NULL)
+    {
+        return NULL;
+    }
     void* item = self->current->item;
     // We have already traversed all the left children of the node. Find the
     // lowest node in the right subtree, if there is one.
