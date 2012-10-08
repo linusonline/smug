@@ -22,9 +22,6 @@ typedef double TIME;
     #define NULL (0)
 #endif
 
-#define smug_assert assert
-#include <assert.h>
-
 #include <stdlib.h>
 #define allocate(type) ((type*)malloc(sizeof(type)))
 #define allocatev(type, size) ((type*)malloc(sizeof(type) * size))
@@ -37,6 +34,13 @@ typedef double TIME;
 #ifndef SMUGEXPORT
     #define SMUGEXPORT
 #endif /* SMUGEXPORT */
+
+// #include <utils/log.h>
+// For some reason, this unleashes the devil.
+// #define smug_assert(condition) do {ERROR("Assertion failure");} while (0)
+
+#define smug_assert assert
+#include <assert.h>
 
 #endif /* SMUG_COMMON_H */
 
