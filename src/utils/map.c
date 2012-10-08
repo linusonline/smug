@@ -1,12 +1,6 @@
 #include <utils/map.h>
 #include <utils/binarytree.h>
 
-typedef struct MapPair
-{
-  void* key;
-  void* value;
-} MapPair;
-
 static MapPair* MapPair_new(void* key, void* value)
 {
     MapPair* newPair = allocate(MapPair);
@@ -49,6 +43,11 @@ Map* Map_new(int (*keyCompare)(void* key1, void* key2))
     newMap->keyCompare = keyCompare;
     newMap->data = BinaryTree_newPredicated(_pairCompare, newMap);
     return newMap;
+}
+
+int Map_compareInts(void* intKey1, void* intKey2)
+{
+    return *((int*)intKey1) == *((int*)intKey2) ? 0 : (*((int*)intKey1) < *((int*)intKey2) ? -1 : 1);
 }
 
 void Map_delete(Map* map)
@@ -96,4 +95,48 @@ void* Map_get(Map* self, void* key)
 void Map_removeAll(Map* self)
 {
     BinaryTree_deleteAll(self->data, MapPair_deleteVoid);
+}
+
+void Map_doForEach(Map* self, void (*function)(void* key, void* value))
+{
+    MapIterator* iter = Map_getIterator(self);
+    MapPair* item = (MapPair*)BinaryTreeIterator_getNext(iter);
+    while (item != NULL)
+    {
+        function(item->key, item->value);
+        item = (MapPair*)MapIterator_getNextValue(iter);
+    }
+    MapIterator_delete(iter);
+}
+
+MapIterator* Map_getIterator(Map* self)
+{
+    return BinaryTree_getIterator(self->data);
+}
+
+void* MapIterator_getNextValue(MapIterator* self)
+{
+    MapPair* p = (MapPair*)BinaryTreeIterator_getNext(self);
+    return p->value;
+}
+
+void* MapIterator_getNextKey(MapIterator* self)
+{
+    MapPair* p = (MapPair*)BinaryTreeIterator_getNext(self);
+    return p == NULL ? NULL : p->value;
+}
+
+MapPair* MapIterator_getNextPair(MapIterator* self)
+{
+    return (MapPair*)BinaryTreeIterator_getNext(self);
+}
+
+BOOL MapIterator_hasMore(MapIterator* self)
+{
+    return BinaryTreeIterator_hasMore(self);
+}
+
+void MapIterator_delete(MapIterator* self)
+{
+    BinaryTreeIterator_delete(self);
 }

@@ -23,6 +23,11 @@ typedef struct BinaryTree {
     void* predicateData;
 } BinaryTree;
 
+typedef struct BinaryTreeIterator
+{
+    struct BinaryTreeNode* current;
+} BinaryTreeIterator;
+
 /**
  * Creates and returns a new empty node.
  *
@@ -58,6 +63,14 @@ void* BinaryTree_find(BinaryTree* self, void* item);
 void BinaryTree_removeAll(BinaryTree* self);
 
 void BinaryTree_deleteAll(BinaryTree* self, void (*deleter)(void* item));
+
+BinaryTreeIterator* BinaryTree_getIterator(BinaryTree* self);
+
+void* BinaryTreeIterator_getNext(BinaryTreeIterator* self);
+
+BOOL BinaryTreeIterator_hasMore(BinaryTreeIterator* self);
+
+void BinaryTreeIterator_delete(BinaryTreeIterator* self);
 
 #endif /* SMUG_UTILS_BINARYTREE_H */
 

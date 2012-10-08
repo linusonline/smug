@@ -51,6 +51,24 @@ static int _compare(BinaryTree* self, void* item1, void* item2)
     return _isPredicated(self) ? self->comparePredicated(self->predicateData, item1, item2) : self->compare(item1, item2);
 }
 
+static int _isLeftOrRightChild(BinaryTreeNode* node)
+{
+    if (node->parent == NULL)
+    {
+        return 0;
+    }
+    if (node->parent->left == node)
+    {
+        return -1;
+    }
+    if (node->parent->right == node)
+    {
+        return 1;
+    }
+    smug_assert(FALSE);
+    return 0;
+}
+
 static int _findNode(BinaryTree* self, void* item, BinaryTreeNode** node)
 {
     *node = NULL;
@@ -295,4 +313,57 @@ void BinaryTree_deleteAll(BinaryTree* self, void (*deleter)(void* item))
         self->root = NULL;
         smug_assert(_invariant(self));
     }
+}
+
+BinaryTreeIterator* BinaryTree_getIterator(BinaryTree* self)
+{
+    BinaryTreeIterator* newIter = allocate(BinaryTreeIterator);
+    newIter->current = self->root;
+    while (newIter->current->left != NULL)
+    {
+        newIter->current = newIter->current->left;
+    }
+}
+
+void* BinaryTreeIterator_getNext(BinaryTreeIterator* self)
+{
+    void* item = self->current->item;
+    // We have already traversed all the left children of the node. Find the
+    // lowest node in the right subtree, if there is one.
+    if (self->current->right != NULL)
+    {
+        self->current = self->current->right;
+        while (self->current->left != NULL)
+        {
+            self->current = self->current->left;
+        }
+    }
+    else
+    {
+        // If there is no right subtree, move up the parent chain until we get
+        // to the root or a left-child node.
+        while (_isLeftOrRightChild(self->current) == 1)
+        {
+            self->current = self->current->parent;
+        }
+        if (_isLeftOrRightChild(self->current) == -1)
+        {
+            self->current = self->current->parent;
+        }
+        else
+        {
+            self->current = NULL; // No more elements.
+        }
+    }
+    return item;
+}
+
+BOOL BinaryTreeIterator_hasMore(BinaryTreeIterator* self)
+{
+    return self->current != NULL;
+}
+
+void BinaryTreeIterator_delete(BinaryTreeIterator* self)
+{
+    free(self);
 }
