@@ -31,6 +31,8 @@
  */
 Sprite* Sprite_newFromPixelCoords(Texture* texture, int x, int y, int w, int h);
 
+Sprite* Sprite_newEmpty();
+
 void Sprite_addRenderData(Sprite* self, RenderBatch* renderBatch, float posX, float posY, float width, float height);
 
 /**

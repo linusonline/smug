@@ -15,6 +15,14 @@ static Sprite* Sprite_newFromPixelCoordsRect(Texture* texture, Rectangle rect)
     return newSprite;
 }
 
+Sprite* Sprite_newEmpty()
+{
+    Sprite* newSprite = allocate(Sprite);
+    newSprite->texture = NULL;
+    newSprite->rect = Rectangle_create(0, 0, 0, 0);
+    return newSprite;
+}
+
 Sprite* Sprite_newFromPixelCoords(Texture* texture, int x, int y, int w, int h)
 {
     return Sprite_newFromPixelCoordsRect(texture, Rectangle_create(x, y, w, h));
@@ -22,6 +30,10 @@ Sprite* Sprite_newFromPixelCoords(Texture* texture, int x, int y, int w, int h)
 
 void Sprite_addRenderData(Sprite* self, RenderBatch* renderBatch, float posX, float posY, float width, float height)
 {
+    if (self->texture == NULL)
+    {
+        return;
+    }
     RenderBatch_addTexturedRect(renderBatch,
                                 posX, posY, posX + width, posY + height,
                                 Texture_pixelToTextureCoordX(self->texture, self->rect.x),
@@ -39,7 +51,7 @@ Texture* Sprite_getTexture(Sprite* self)
 unsigned int Sprite_getTextureId(Sprite* self)
 {
     smug_assert(self != NULL);
-    return Texture_getId(self->texture);
+    return self->texture == NULL ? 0 : Texture_getId(self->texture);
 }
 
 void Sprite_delete(void* sprite)
