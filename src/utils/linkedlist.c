@@ -20,7 +20,7 @@ static void _clear(LinkedList* self)
     self->length = 0;
     self->first = NULL;
     self->last = NULL;
-
+    self->current = NULL;
 
     // Alternative implementation
 /*     Node* node = list->first;
@@ -78,6 +78,7 @@ LinkedList* LinkedList_new()
     new_list->first = NULL;
     new_list->last = NULL;
     new_list->length = 0;
+    new_list->current = NULL;
 
     smug_assert(_invariant(new_list));
 
@@ -177,7 +178,26 @@ void* LinkedList_popLast(LinkedList* self)
 void* LinkedList_getFirst(LinkedList* self)
 {
     smug_assert(_invariant(self));
-    return LinkedList_isEmpty(self) ? NULL : self->first->item;
+    if (LinkedList_isEmpty(self))
+    {
+        return NULL;
+    }
+    else
+    {
+        self->current = self->first;
+        return self->first->item;
+    }
+}
+
+void* LinkedList_getNext(LinkedList* self)
+{
+    smug_assert(_invariant(self));
+    if (self->current == NULL)
+    {
+        return NULL;
+    }
+    self->current = self->current->next;
+    return self->current == NULL ? NULL : self->current->item;
 }
 
 void* LinkedList_popFirst(LinkedList* self)
@@ -230,6 +250,7 @@ void LinkedList_remove(LinkedList* self, Node* node)
 
     Node_delete(node);
     self->length--;
+    self->current = NULL;
 }
 
 void LinkedList_removeAll(LinkedList* self)
@@ -364,6 +385,7 @@ BOOL LinkedList_elementExists(LinkedList* self, void* elem)
 
 void LinkedList_concat(LinkedList* self, LinkedList* other)
 {
+    // TODO: A bit dangerous. What should one do with 'other' after this?
     smug_assert(_invariant(self));
     smug_assert(_invariant(other));
     self->last->next = other->first;
@@ -373,7 +395,6 @@ void LinkedList_concat(LinkedList* self, LinkedList* other)
 void LinkedList_interleave(LinkedList* self, void* item, void* (*itemCopier)(void*))
 {
     Node* iter;
-    //void* itemCopy; is not used
 
     smug_assert(_invariant(self));
 
@@ -408,6 +429,6 @@ LinkedList* LinkedList_deepCopy(LinkedList* self, void* (*itemCopier)(void*))
 void LinkedList_deleteContents(LinkedList* self, void (*deleter)(void*))
 {
     smug_assert(_invariant(self));
-    //LinkedList_traverse(self, deleter);
+    LinkedList_doList(self, deleter);
     _clear(self);
 }

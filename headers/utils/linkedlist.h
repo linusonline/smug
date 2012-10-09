@@ -38,6 +38,7 @@ typedef struct LinkedList {
     Node* first;         /**< First node in list. */
     Node* last;         /**< Last node in list */
     int length;
+    Node* current;
 } LinkedList;
 
 /**
@@ -168,6 +169,8 @@ void* LinkedList_getLast(LinkedList* self);
  * @relates LinkedList
  */
 void* LinkedList_getFirst(LinkedList* self);
+
+void* LinkedList_getNext(LinkedList* self);
 
 /**
  * Get the last item in a list, then remove it from the list.
