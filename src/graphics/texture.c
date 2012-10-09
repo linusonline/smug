@@ -104,48 +104,6 @@ static Texture* loadTextureFromImage(Texture* tex, Image* image)
     return tex;
 }
 
-static BOOL loadEmptyTexture(Texture* tex, unsigned int width, unsigned height)
-{
-    unsigned int texid;
-
-    glGenTextures(1, &texid);
-    glBindTexture(GL_TEXTURE_2D, texid);
-
-    int neededWidth = _getClosestGreaterPowerOfTwo(width);
-    int neededHeight = _getClosestGreaterPowerOfTwo(height);
-    glTexImage2D(GL_TEXTURE_2D, GL_RGBA, 4, neededWidth, neededHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    if (glIsTexture(texid) != GL_TRUE)
-    {
-        ERROR("Could not load empty texture.");
-        return FALSE;
-    }
-    printGLError();
-
-    tex->texid = texid;
-    tex->width = width;
-    tex->height = height;
-    tex->internalWidth = neededWidth;
-    tex->internalHeight = neededHeight;
-    tex->loaded = TRUE;
-
-    return TRUE;
-}
-
-Texture* Texture_new(unsigned int width, unsigned int height)
-{
-    Texture* tex = allocate(Texture);
-    if (loadEmptyTexture(tex, width, height))
-    {
-        smug_assert(_invariant(tex));
-        return tex;
-    }
-    free(tex);
-    return NULL;
-}
-
 Texture* Texture_newFromImage(Image* image)
 {
     Texture* tex = allocate(Texture);

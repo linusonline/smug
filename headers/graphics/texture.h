@@ -19,12 +19,6 @@
 #include <graphics/texture_type.h>
 
 /**
- * Creates a new texture with the specified size.
- * @relates _Texture
- */
-Texture* Texture_new(unsigned int width, unsigned int height);
-
-/**
  * Creates a new texture from a loaded image.
  * @relates _Texture
  */
