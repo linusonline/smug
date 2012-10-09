@@ -44,7 +44,6 @@ static BOOL _invariant(Texture* self)
 static Texture* loadTextureFromImage(Texture* tex, Image* image)
 {
     smug_assert(image != NULL);
-    smug_assert(image->data != NULL);
     DEBUG("Loading texture from image...");
 
     unsigned int texid;
@@ -60,25 +59,35 @@ static Texture* loadTextureFromImage(Texture* tex, Image* image)
     }
 #endif
 
+    int imgWidth = Image_getWidth(image);
+    int imgHeight = Image_getHeight(image);
     /* OpenGL is a bitch for only allowing width and height that are powers of
      * two. It means we have to fill out the image to the nearest
      * such power before using it as a texture.
      */
-    int neededWidth = _getClosestGreaterPowerOfTwo(image->width);
-    int neededHeight = _getClosestGreaterPowerOfTwo(image->height);
+    int neededWidth = _getClosestGreaterPowerOfTwo(imgWidth);
+    int neededHeight = _getClosestGreaterPowerOfTwo(imgHeight);
     Image* imageForTexture = image;
-    if (image->width != neededWidth ||
-        image->height != neededHeight)
+    if (imgWidth != neededWidth ||
+        imgHeight != neededHeight)
     {
         imageForTexture = Image_copy(image);
         Image_fillOut(imageForTexture, neededWidth, neededHeight);
-        DEBUG("Had to rescale image for OpenGL texture. (%i x %i) -> (%i x %i)", image->width, image->height, imageForTexture->width, imageForTexture->height);
+        DEBUG("Had to rescale image for OpenGL texture. (%i x %i) -> (%i x %i)", imgWidth, imgHeight, Image_getWidth(imageForTexture), Image_getWidth(imageForTexture));
     }
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageForTexture->width, imageForTexture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageForTexture->data);
+    glTexImage2D(GL_TEXTURE_2D,
+                 0,
+                 GL_RGBA,
+                 Image_getWidth(imageForTexture),
+                 Image_getWidth(imageForTexture),
+                 0,
+                 GL_RGBA,
+                 GL_UNSIGNED_BYTE,
+                 Image_getData(imageForTexture));
 
-    if (image->width != neededWidth ||
-        image->height != neededHeight)
+    if (imgWidth != neededWidth ||
+        imgHeight != neededHeight)
     {
         Image_delete(imageForTexture);
     }
@@ -97,8 +106,8 @@ static Texture* loadTextureFromImage(Texture* tex, Image* image)
     tex->texid = texid;
     tex->internalWidth = neededWidth;
     tex->internalHeight = neededHeight;
-    tex->width = image->width;
-    tex->height = image->height;
+    tex->width = imgWidth;
+    tex->height = imgHeight;
     tex->loaded = TRUE;
 
     return tex;

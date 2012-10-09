@@ -51,6 +51,12 @@ Image* Image_copy(Image* self);
 
 void Image_fillOut(Image* image, int newWidth, int newHeight);
 
+int Image_getWidth(Image* self);
+
+int Image_getHeight(Image* self);
+
+unsigned char* Image_getData(Image* self);
+
 /**
  * Delete an image and its associated image data.
  * @param self The image to delete.

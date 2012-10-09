@@ -89,6 +89,24 @@ void Image_fillOut(Image* image, int newWidth, int newHeight)
     smug_assert(_invariant(image));
 }
 
+int Image_getWidth(Image* self)
+{
+    smug_assert(_invariant(self));
+    return self->width;
+}
+
+int Image_getHeight(Image* self)
+{
+    smug_assert(_invariant(self));
+    return self->height;
+}
+
+unsigned char* Image_getData(Image* self)
+{
+    smug_assert(_invariant(self));
+    return self->data;
+}
+
 void Image_delete(Image* self)
 {
     if (self->data)
