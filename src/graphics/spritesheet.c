@@ -37,12 +37,15 @@ SpriteSheet* SpriteSheet_new(char* imageFile, char* dataFile)
     {
         return NULL;
     }
+    DEBUG("Successfully parsed Spritesheet data file.");
 
     Image* spritesImage = Image_new();
     Image_loadFromFile(spritesImage, imageFile);
     Texture* texture = Texture_newFromImage(spritesImage);
     Image_delete(spritesImage);
     spritesImage = NULL;
+
+    DEBUG("Successfully loaded Spritesheet image file.");
 
     int indexWidth = Texture_getWidth(texture) / spriteWidth;
     int indexHeight = Texture_getHeight(texture) / spriteHeight;
@@ -62,11 +65,14 @@ SpriteSheet* SpriteSheet_new(char* imageFile, char* dataFile)
         }
     }
 
+    DEBUG("Successfully created Sprites for Spritesheet.");
+
     SpriteSheet* newSheet = allocate(SpriteSheet);
     newSheet->sprites = sprites;
     newSheet->nrSprites = indexWidth * indexHeight;
     newSheet->indexWidth = indexWidth;
     newSheet->texture = texture;
+    DEBUG("Successfully created Spritesheet.");
     return newSheet;
 }
 

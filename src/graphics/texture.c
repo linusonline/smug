@@ -43,7 +43,7 @@ static BOOL _invariant(Texture* self)
 static Texture* loadTextureFromImage(Texture* tex, Image* image)
 {
     smug_assert(image != NULL);
-    DEBUG("Loading texture from image...");
+    DEBUG("Loading texture from image..."); Log_indent();
 
     unsigned int texid;
 
@@ -109,6 +109,7 @@ static Texture* loadTextureFromImage(Texture* tex, Image* image)
     tex->height = imgHeight;
     tex->loaded = TRUE;
 
+    Log_dedent(); DEBUG("...done.");
     return tex;
 }
 
