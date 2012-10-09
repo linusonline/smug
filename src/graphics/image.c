@@ -19,7 +19,7 @@ static BOOL _invariant(Image* self)
         (self->channels == 4 || self->channels == 3);
 }
 
-Image* Image_new(void)
+Image* Image_new()
 {
     Image* newImage = allocate(Image);
     newImage->data = NULL;
@@ -67,26 +67,26 @@ Image* Image_copy(Image* self)
     return copy;
 }
 
-void Image_fillOut(Image* image, int newWidth, int newHeight)
+void Image_fillOut(Image* self, int newWidth, int newHeight)
 {
-    smug_assert(_invariant(image));
-    smug_assert(newWidth >= image->width && newHeight >= image->height);
-    int newSize = newWidth * newHeight * image->bpp;
+    smug_assert(_invariant(self));
+    smug_assert(newWidth >= self->width && newHeight >= self->height);
+    int newSize = newWidth * newHeight * self->bpp;
     unsigned char* newData = allocatev(unsigned char, newSize);
     memset(newData, 0, newSize);
 
-    int oldByteWidth = image->width * image->bpp;
-    int newByteWidth = newWidth * image->bpp;
-    for (int y = 0; y < image->height; y++)
+    int oldByteWidth = self->width * self->bpp;
+    int newByteWidth = newWidth * self->bpp;
+    for (int y = 0; y < self->height; y++)
     {
-        memcpy(newData + newByteWidth * y, image->data + oldByteWidth * y, oldByteWidth);
+        memcpy(newData + newByteWidth * y, self->data + oldByteWidth * y, oldByteWidth);
     }
-    free(image->data);
-    image->data = newData;
-    image->width = newWidth;
-    image->height = newHeight;
-    image->size = newWidth * newHeight * image->bpp;
-    smug_assert(_invariant(image));
+    free(self->data);
+    self->data = newData;
+    self->width = newWidth;
+    self->height = newHeight;
+    self->size = newWidth * newHeight * self->bpp;
+    smug_assert(_invariant(self));
 }
 
 int Image_getWidth(Image* self)
