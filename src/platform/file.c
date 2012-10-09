@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <common.h>
 #include <utils/log.h>
 #include <platform/file.h>
@@ -18,7 +19,8 @@ static File* File_new(FILE* file)
 
 File* File_fopen(const char* filename, const char* mode)
 {
-    FILE* file = fopen(filename, mode);
+    FILE* file = NULL;
+    file = fopen(filename, mode);
     if (file)
     {
         return File_new(file);
@@ -89,4 +91,13 @@ long int File_getLength(File* self)
 	long int len = File_ftell(self);
 	File_fseek(self, oldPos, SMUG_SEEK_SET);
     return len;
+}
+
+int File_fscanf(File* self, const char * format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    int ret = vfscanf(self->mFile, format, args);
+    va_end(args);
+    return ret;
 }

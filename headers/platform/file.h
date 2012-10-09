@@ -32,6 +32,8 @@ unsigned char* File_getBuffer(File* self);
 void File_freeBuffer(File* self, unsigned char* buffer);
 long int File_getLength(File* self);
 
+int File_fscanf(File* self, const char * format, ...);
+
 #endif /* SMUG_PLATFORM_FILE_H */
 
 /**@}*/
