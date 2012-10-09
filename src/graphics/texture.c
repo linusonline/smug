@@ -24,7 +24,6 @@ static int _getClosestGreaterPowerOfTwo(int number)
 
 static BOOL _invariant(Texture* self)
 {
-    smug_assert(self != NULL);
     return self != NULL &&
         ((self->loaded &&
           self->width > 0 &&

@@ -19,7 +19,7 @@
 #include <graphics/texture_type.h>
 
 /**
- * Creates a new texture from a loaded image.
+ * Creates a new texture from a loaded image. Requires OpenGL to be initialized.
  * @relates _Texture
  */
 Texture* Texture_newFromImage(Image* image);
