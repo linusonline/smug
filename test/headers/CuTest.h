@@ -113,4 +113,9 @@ void CuSuiteRun(CuSuite* testSuite);
 void CuSuiteSummary(CuSuite* testSuite, CuString* summary);
 void CuSuiteDetails(CuSuite* testSuite, CuString* details);
 
+/******* LINUS STUFF *******/
+
+void initTest();
+void deinitTest();
+
 #endif /* CU_TEST_H */

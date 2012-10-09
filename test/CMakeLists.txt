@@ -6,6 +6,7 @@ project (SmugTest)
 
 # Local header files for tests.
 include_directories ("${PROJECT_SOURCE_DIR}/headers")
+include_directories ("${PROJECT_SOURCE_DIR}/../headers")
 
 # Add individual test modules
 add_subdirectory (utils)

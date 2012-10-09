@@ -7,13 +7,9 @@
 #include <utils/log.h>
 #include <utils/stdout_console.h>
 
-static Console* console;
-
 static void init()
 {
-    console = StdoutConsole_new();
-    Log_init(console);
-    Log_setLevel(LOG_NONE);
+    initTest();
     glfwInit();
     glfwOpenWindow(0, 0, 0, 0, 0, 0, 0, 0, GLFW_WINDOW);
 }
@@ -21,8 +17,7 @@ static void init()
 static void deinit()
 {
     glfwTerminate();
-    Log_terminate();
-    StdoutConsole_delete(console);
+    deinitTest();
 }
 
 void SpriteSheet_new_shouldReturnNonNull(CuTest* tc)

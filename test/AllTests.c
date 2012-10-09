@@ -2,6 +2,24 @@
 
 #include <CuTest.h>
 
+#include <utils/stdout_console.h>
+#include <utils/log.h>
+
+static Console* console;
+
+void initTest()
+{
+    console = StdoutConsole_new();
+    Log_init(console);
+    Log_setLevel(LOG_NONE);
+}
+
+void deinitTest()
+{
+    Log_terminate();
+    StdoutConsole_delete(console);
+}
+
 CuSuite* LinkedListTest_GetSuite();
 CuSuite* BinaryTreeTest_GetSuite();
 CuSuite* MapTest_GetSuite();
