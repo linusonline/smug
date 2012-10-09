@@ -10,7 +10,7 @@ typedef struct _Drawable
     float positionY;
     float width;
     float height;
-    Sprite* sprite;
+    SpriteAnimation* sprite;
 } _Drawable;
 
 #endif /* SMUG_GRAPHICS_DRAWABLE_INTERNAL_H */

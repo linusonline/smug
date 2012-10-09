@@ -6,6 +6,7 @@
 #include <graphics/renderqueue.h>
 #include <graphics/spritesheet.h>
 #include <graphics/sprite.h>
+#include <graphics/spriteanimation.h>
 #include <utils/log.h>
 #include <utils/stdout_console.h>
 #include <common.h>
@@ -18,8 +19,10 @@ static Drawable** backgroundGraphics;
 static Drawable** buildings;
 static Sprite** landscapeSprites;
 static Sprite** buildingSprites;
+static SpriteAnimation* animHouse;
 
 static const int BG_COUNT = 15*20;
+static const int BUILDINGS_COUNT = 13;
 static const int SPRITE_COUNT = 23;
 
 static Console* console = NULL;
@@ -38,7 +41,7 @@ static void drawStuff(RenderQueue* rq)
     {
         RenderQueue_addDrawable(renderQueue, backgroundGraphics[i]);
     }
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < BUILDINGS_COUNT; i++)
     {
         RenderQueue_addDrawable(renderQueue, buildings[i]);
     }
@@ -96,7 +99,7 @@ static void createBackground()
         buildingSprites[i] = SpriteSheet_getSprite(buildingsSheet, i);
     }
 
-    buildings = allocatev(Drawable*, 12);
+    buildings = allocatev(Drawable*, BUILDINGS_COUNT);
 
     buildings[0] =  Drawable_newFromSpriteAndDimensions(buildingSprites[45], 40, 64, 288, -32);
     buildings[1] = Drawable_newFromSpriteAndDimensions(buildingSprites[45], 40, 64, 320, -32);
@@ -110,6 +113,12 @@ static void createBackground()
     buildings[9] = Drawable_newFromSpriteAndDimensions(buildingSprites[0], 40, 64, 64, 192);
     buildings[10] = Drawable_newFromSpriteAndDimensions(buildingSprites[3], 40, 64, 96, 192);
     buildings[11] = Drawable_newFromSpriteAndDimensions(buildingSprites[3], 40, 64, 64, 224);
+
+    animHouse = SpriteAnimation_newEmpty();
+    SpriteAnimation_addFrame(animHouse, buildingSprites[10], 0.5);
+    SpriteAnimation_addFrame(animHouse, buildingSprites[11], 0.5);
+    buildings[12] = Drawable_newFromSpriteAnimationAndDimensions(animHouse, 40, 64, 128, 192);
+    SpriteAnimation_start(animHouse);
 
     backgroundGraphics = allocatev(Drawable*, 20 * 15);
 
@@ -474,11 +483,12 @@ static void deinit()
         Drawable_delete(backgroundGraphics[i]);
     }
 
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < BUILDINGS_COUNT; i++)
     {
         Drawable_delete(buildings[i]);
     }
 
+    SpriteAnimation_delete(animHouse);
     SpriteSheet_delete(landscapeSheet);
     SpriteSheet_delete(buildingsSheet);
 
