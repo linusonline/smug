@@ -72,14 +72,14 @@ static Texture* loadTextureFromImage(Texture* tex, Image* image)
     {
         imageForTexture = Image_copy(image);
         Image_fillOut(imageForTexture, neededWidth, neededHeight);
-        DEBUG("Had to rescale image for OpenGL texture. (%i x %i) -> (%i x %i)", imgWidth, imgHeight, Image_getWidth(imageForTexture), Image_getWidth(imageForTexture));
+        DEBUG("Had to rescale image for OpenGL texture. (%i x %i) -> (%i x %i)", imgWidth, imgHeight, Image_getWidth(imageForTexture), Image_getHeight(imageForTexture));
     }
 
     glTexImage2D(GL_TEXTURE_2D,
                  0,
                  GL_RGBA,
                  Image_getWidth(imageForTexture),
-                 Image_getWidth(imageForTexture),
+                 Image_getHeight(imageForTexture),
                  0,
                  GL_RGBA,
                  GL_UNSIGNED_BYTE,
