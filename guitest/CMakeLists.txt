@@ -30,5 +30,5 @@ target_link_libraries(DrawTexture SmugGraphics SmugPlatform SmugUtils glfw ${OPE
 target_link_libraries(SpriteSheet SmugGraphics SmugPlatform SmugUtils glfw ${OPENGL_LIBRARIES})
 target_link_libraries(Sprite SmugGraphics SmugPlatform SmugUtils glfw ${OPENGL_LIBRARIES})
 target_link_libraries(RenderQueue SmugGraphics SmugPlatform SmugUtils glfw ${OPENGL_LIBRARIES})
-target_link_libraries(Game SmugGraphics SmugPlatform SmugUtils glfw ${OPENGL_LIBRARIES})
+target_link_libraries(Game SmugGraphics SmugPlatform SmugUtils SmugInput glfw ${OPENGL_LIBRARIES})
 target_link_libraries(Input SmugGraphics SmugPlatform SmugUtils SmugInput glfw ${OPENGL_LIBRARIES})
