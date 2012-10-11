@@ -7,6 +7,14 @@
 
 #include <graphics/spriteanimation.h>
 
+typedef struct _SpriteAnimation
+{
+    LinkedList* sprites;
+    LinkedList* durations;
+    TIME starttime;
+    BOOL started;
+} _SpriteAnimation;
+
 static void _deleteInt(void* anInt)
 {
     free((int*)anInt);

@@ -1,6 +1,15 @@
 #include <common.h>
 #include <input/controller.h>
 
+typedef struct _Controller
+{
+    ButtonCallback buttonCallback;
+    PointerCallback pointerCallback;
+    int numberOfAxes;
+    int numberOfButtons;
+    int numberOfPointers;
+} _Controller;
+
 Controller* Controller_new(int numberOfAxes, int numberOfButtons, int numberOfPointers)
 {
     Controller* newController = allocate(Controller);

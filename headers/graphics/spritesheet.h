@@ -17,13 +17,8 @@
 #include <common.h>
 #include <graphics/sprite.h>
 
-typedef struct SpriteSheet
-{
-    Sprite** sprites;
-    int indexWidth;
-    int nrSprites;
-    Texture* texture;
-} SpriteSheet;
+struct _SpriteSheet;
+typedef struct _SpriteSheet SpriteSheet;
 
 SpriteSheet* SpriteSheet_new(char* imageFile, char* dataFile);
 
