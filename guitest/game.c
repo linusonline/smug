@@ -7,6 +7,7 @@
 #include <graphics/spritesheet.h>
 #include <graphics/sprite.h>
 #include <graphics/spriteanimation.h>
+#include <graphics/camera.h>
 #include <input/input.h>
 #include <utils/log.h>
 #include <utils/stdout_console.h>
@@ -34,20 +35,69 @@ static Console* console = NULL;
 
 static Controller* theController = NULL;
 
+static Camera* camera;
+
 #define BUTTON_UP 0
 #define BUTTON_DOWN 1
 #define BUTTON_LEFT 2
 #define BUTTON_RIGHT 3
 #define BUTTON_ENABLE_MOUSE 4
 #define BUTTON_DISABLE_MOUSE 5
+#define BUTTON_PAN_UP 6
+#define BUTTON_PAN_DOWN 7
+#define BUTTON_PAN_LEFT 8
+#define BUTTON_PAN_RIGHT 9
 #define MOUSE_POINTER 0
+
+static int windowWidth;
+static int windowHeight;
+
+static BOOL useWindowCoordinates = TRUE;
+static float pixelsPerUnitX = 1;
+static float pixelsPerUnitY = 1;
+static int originInWindowX = 0;
+static int originInWindowY = 0;
+
+static void adjustCoordinateSystemToWindow(int width, int height)
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    GLdouble left = -originInWindowX / pixelsPerUnitX;
+    GLdouble top = -originInWindowY / pixelsPerUnitY;
+    gluOrtho2D(left, left + width / pixelsPerUnitX, top + height / pixelsPerUnitY, top);
+    glMatrixMode(GL_MODELVIEW);
+}
 
 static void GLFWCALL windowResize(int width, int height)
 {
+    windowWidth = width;
+    windowHeight = height;
+    DEBUG("Got resize event (%i x %i)", width, height);
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    if (!useWindowCoordinates)
+    {
+        adjustCoordinateSystemToWindow(width, height);
+    }
+}
+
+// @param originInWindowX/Y Origin of the coordinate system relative to top left corner of the window. Specified in pixels.
+static void setCoordinateSystemInPixelsPerUnit(float ppux, float ppuy, int originX, int originY)
+{
+    pixelsPerUnitX = ppux;
+    pixelsPerUnitY = ppuy;
+    originInWindowX = originX;
+    originInWindowY = originY;
+    useWindowCoordinates = FALSE;
+    adjustCoordinateSystemToWindow(windowWidth, windowHeight);
+}
+
+static void setCoordinateSystemForWindow(float left, float top, float width, float height)
+{
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(0.0, (GLdouble)width, (GLdouble)height, 0.0);
+    gluOrtho2D(left, left + width, top + height, top);
+    glMatrixMode(GL_MODELVIEW);
+    useWindowCoordinates = TRUE;
 }
 
 static void drawStuff(RenderQueue* rq)
@@ -521,6 +571,14 @@ static void _buttonCallback(Controller* controller, int buttonIndex, int state)
         case BUTTON_LEFT:
         case BUTTON_RIGHT:
             moveCursor(buttonIndex); break;
+        case BUTTON_PAN_UP:
+            camera->posY -= 32; break;
+        case BUTTON_PAN_DOWN:
+            camera->posY += 32; break;
+        case BUTTON_PAN_LEFT:
+            camera->posX -= 32; break;
+        case BUTTON_PAN_RIGHT:
+            camera->posX += 32; break;
         default:
             smug_assert(FALSE);
     }
@@ -528,7 +586,6 @@ static void _buttonCallback(Controller* controller, int buttonIndex, int state)
 
 static void init()
 {
-    glInit();
     console = StdoutConsole_new();
     smug_assert(console != NULL);
     Log_init(console);
@@ -542,8 +599,12 @@ static void init()
     DEBUG("");
     DEBUG("==============================");
 
+    glInit();
+    setCoordinateSystemForWindow(-320, -240, 640, 480);
+    // setCoordinateSystemInPixelsPerUnit(1.3, 1.3, 20.0, 20.0);
+
     Input_initialize();
-    theController = Controller_new(0, 6, 1);
+    theController = Controller_new(0, 10, 1);
     Controller_setButtonCallback(theController, _buttonCallback);
     Controller_setPointerCallback(theController, _pointerCallback);
     Input_linkControllerToKeyboardKey(theController, BUTTON_UP, GLFW_KEY_UP);
@@ -552,11 +613,28 @@ static void init()
     Input_linkControllerToKeyboardKey(theController, BUTTON_RIGHT, GLFW_KEY_RIGHT);
     Input_linkControllerToKeyboardKey(theController, BUTTON_ENABLE_MOUSE, GLFW_KEY_HOME);
     Input_linkControllerToKeyboardKey(theController, BUTTON_DISABLE_MOUSE, GLFW_KEY_END);
+    Input_linkControllerToKeyboardKey(theController, BUTTON_PAN_UP, 'W');
+    Input_linkControllerToKeyboardKey(theController, BUTTON_PAN_DOWN, 'S');
+    Input_linkControllerToKeyboardKey(theController, BUTTON_PAN_LEFT, 'A');
+    Input_linkControllerToKeyboardKey(theController, BUTTON_PAN_RIGHT, 'D');
 
     renderQueue = RenderQueue_new();
+    camera = Camera_new();
+    camera->posX = 320;
+    camera->posY = 240;
 
     createBackground();
     createCursor();
+}
+
+static void actuallyDrawStuff(RenderQueue* rq)
+{
+    glPushMatrix();
+    glTranslatef(-camera->posX, -camera->posY, 0.0);
+
+    RenderQueue_render(rq);
+
+    glPopMatrix();
 }
 
 static void runMainLoop()
@@ -568,7 +646,7 @@ static void runMainLoop()
         glClear(GL_COLOR_BUFFER_BIT);
 
         drawStuff(renderQueue);
-        RenderQueue_render(renderQueue);
+        actuallyDrawStuff(renderQueue);
 
         // Swap front and back rendering buffers
         glfwSwapBuffers();
