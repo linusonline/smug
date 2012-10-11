@@ -7,5 +7,5 @@ project (SmugGraphics)
 # Directory for library header files.
 include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 
-add_library(SmugGraphics renderbatch.c renderqueue.c image.c texture.c sprite.c spritesheet.c spriteanimation.c drawable.c lodepng/lodepng.c)
+add_library(SmugGraphics renderbatch.c renderqueue.c image.c texture.c sprite.c spritesheet.c spriteanimation.c drawable.c camera.c lodepng/lodepng.c)
 target_link_libraries(SmugGraphics SmugUtils)
