@@ -18,7 +18,8 @@
 #include <graphics/texture.h>
 #include <graphics/renderbatch.h>
 
-#include <graphics/sprite_type.h>
+struct _Sprite;
+typedef struct _Sprite Sprite;
 
 /**
  * Create new sprite from pixel coordinates.

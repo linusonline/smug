@@ -2,7 +2,7 @@
 #define SMUG_GRAPHICS_SPRITE_INTERNAL_H
 
 #include <utils/rectangle.h>
-#include <graphics/texture_type.h>
+#include <graphics/texture.h>
 
 /**
  * Holds a texture and a rectangular area on it.

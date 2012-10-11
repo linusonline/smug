@@ -16,7 +16,9 @@
 
 #include <common.h>
 #include <graphics/image.h>
-#include <graphics/texture_type.h>
+
+struct _Texture;
+typedef struct _Texture Texture;
 
 /**
  * Creates a new texture from a loaded image. Requires OpenGL to be initialized.
