@@ -7,6 +7,7 @@
 #include <graphics/spritesheet.h>
 #include <graphics/sprite.h>
 #include <graphics/spriteanimation.h>
+#include <input/input.h>
 #include <utils/log.h>
 #include <utils/stdout_console.h>
 #include <common.h>
@@ -29,6 +30,16 @@ static const int BUILDINGS_COUNT = 13;
 static const int SPRITE_COUNT = 23;
 
 static Console* console = NULL;
+
+static Controller* theController = NULL;
+
+#define BUTTON_UP 0
+#define BUTTON_DOWN 1
+#define BUTTON_LEFT 2
+#define BUTTON_RIGHT 3
+#define BUTTON_ENABLE_MOUSE 4
+#define BUTTON_DISABLE_MOUSE 5
+#define MOUSE_POINTER 0
 
 static void GLFWCALL windowResize(int width, int height)
 {
@@ -450,34 +461,29 @@ static void createCursor()
     cursor = Drawable_newFromSpriteAndDimensions(cursorSprite, 32, 32, 0, 0);
 }
 
-static BOOL keyUpPressed = FALSE;
-static BOOL keyDownPressed = FALSE;
-static BOOL keyLeftPressed = FALSE;
-static BOOL keyRightPressed = FALSE;
-
 static void moveCursor(int keyid)
 {
     switch (keyid)
     {
-        case GLFW_KEY_UP:
+        case BUTTON_UP:
             if (Drawable_getY(cursor) >= 32)
             {
                 Drawable_setPos(cursor, Drawable_getX(cursor), Drawable_getY(cursor) - 32);
             }
             break;
-        case GLFW_KEY_DOWN:
+        case BUTTON_DOWN:
             if (Drawable_getY(cursor) <= (480 - 64))
             {
                 Drawable_setPos(cursor, Drawable_getX(cursor), Drawable_getY(cursor) + 32);
             }
             break;
-        case GLFW_KEY_LEFT:
+        case BUTTON_LEFT:
             if (Drawable_getX(cursor) >= 32)
             {
                 Drawable_setPos(cursor, Drawable_getX(cursor) - 32, Drawable_getY(cursor));
             }
             break;
-        case GLFW_KEY_RIGHT:
+        case BUTTON_RIGHT:
             if (Drawable_getX(cursor) <= (640 - 64))
             {
                 Drawable_setPos(cursor, Drawable_getX(cursor) + 32, Drawable_getY(cursor));
@@ -486,68 +492,43 @@ static void moveCursor(int keyid)
     }
 }
 
-static void keyboardCallback(int keyid, int state)
+static void useMouse(BOOL use)
 {
-    switch (keyid)
+    if (use)
     {
-        case GLFW_KEY_UP:
-            if (state == GLFW_PRESS)
-            {
-                if (!keyUpPressed)
-                {
-                    moveCursor(keyid);
-                }
-                keyUpPressed = TRUE;
-            }
-            else if (state == GLFW_RELEASE)
-            {
-                keyUpPressed = FALSE;
-            }
-            break;
-        case GLFW_KEY_DOWN:
-            if (state == GLFW_PRESS)
-            {
-                if (!keyDownPressed)
-                {
-                    moveCursor(keyid);
-                }
-                keyDownPressed = TRUE;
-            }
-            else if (state == GLFW_RELEASE)
-            {
-                keyDownPressed = FALSE;
-            }
-            break;
-        case GLFW_KEY_LEFT:
-            if (state == GLFW_PRESS)
-            {
-                if (!keyLeftPressed)
-                {
-                    moveCursor(keyid);
-                }
-                keyLeftPressed = TRUE;
-            }
-            else if (state == GLFW_RELEASE)
-            {
-                keyLeftPressed = FALSE;
-            }
-            break;
-        case GLFW_KEY_RIGHT:
-            if (state == GLFW_PRESS)
-            {
-                if (!keyRightPressed)
-                {
-                    moveCursor(keyid);
-                }
-                keyRightPressed = TRUE;
-            }
-            else if (state == GLFW_RELEASE)
-            {
-                keyRightPressed = FALSE;
-            }
-            break;
+        Input_linkControllerToMousePosition(theController, MOUSE_POINTER);
+    }
+    else
+    {
+        Input_unlinkControllersFromMousePosition();
+    }
+}
+
+static void _pointerCallback(Controller* controller, int pointerIndex, int xDelta, int yDelta)
+{
+    DEBUG("Pointer moved by %i, %i", xDelta, yDelta);
+}
+
+static void _buttonCallback(Controller* controller, int buttonIndex, int state)
+{
+    smug_assert(controller == theController);
+    if (state == SMUG_KEY_RELEASE)
+    {
+        return;
+    }
+    switch (buttonIndex)
+    {
+        case BUTTON_ENABLE_MOUSE:
+            useMouse(TRUE); break;
+        case BUTTON_DISABLE_MOUSE:
+            useMouse(FALSE); break;
+        case BUTTON_UP:
+        case BUTTON_DOWN:
+        case BUTTON_LEFT:
+        case BUTTON_RIGHT:
+            moveCursor(buttonIndex); break;
         default:
-            SMUG_NOOP();
+            smug_assert(FALSE);
     }
 }
 
@@ -558,14 +539,30 @@ static void init()
     smug_assert(console != NULL);
     Log_init(console);
     Log_setLevel(LOG_ALL);
-    DEBUG("Initialized logging.");
+    DEBUG("==============================");
+    DEBUG("");
+    DEBUG("Input demo");
+    DEBUG("");
+    DEBUG("Press arrow keys to move cursor.");
+    DEBUG("Press home/end to enable/disable mouse.");
+    DEBUG("");
+    DEBUG("==============================");
+
+    Input_initialize();
+    theController = Controller_new(0, 6, 1);
+    Controller_setButtonCallback(theController, _buttonCallback);
+    Controller_setPointerCallback(theController, _pointerCallback);
+    Input_linkControllerToKeyboardKey(theController, BUTTON_UP, GLFW_KEY_UP);
+    Input_linkControllerToKeyboardKey(theController, BUTTON_DOWN, GLFW_KEY_DOWN);
+    Input_linkControllerToKeyboardKey(theController, BUTTON_LEFT, GLFW_KEY_LEFT);
+    Input_linkControllerToKeyboardKey(theController, BUTTON_RIGHT, GLFW_KEY_RIGHT);
+    Input_linkControllerToKeyboardKey(theController, BUTTON_ENABLE_MOUSE, GLFW_KEY_HOME);
+    Input_linkControllerToKeyboardKey(theController, BUTTON_DISABLE_MOUSE, GLFW_KEY_END);
 
     renderQueue = RenderQueue_new();
 
     createBackground();
     createCursor();
-
-    glfwSetKeyCallback(keyboardCallback);
 }
 
 static void runMainLoop()
@@ -607,7 +604,17 @@ static void deinit()
     SpriteSheet_delete(landscapeSheet);
     SpriteSheet_delete(buildingsSheet);
 
+    Input_unlinkControllersFromKeyboardKey(GLFW_KEY_UP);
+    Input_unlinkControllersFromKeyboardKey(GLFW_KEY_DOWN);
+    Input_unlinkControllersFromKeyboardKey(GLFW_KEY_LEFT);
+    Input_unlinkControllersFromKeyboardKey(GLFW_KEY_RIGHT);
+    Input_unlinkControllersFromKeyboardKey(GLFW_KEY_HOME);
+    Input_unlinkControllersFromKeyboardKey(GLFW_KEY_END);
+    useMouse(FALSE);
+    Controller_delete(theController);
+
     glfwTerminate();
+    Input_terminate();
     Log_terminate();
     StdoutConsole_delete(console);
 }
