@@ -59,7 +59,7 @@ void Log_addEntry_shouldUseHardCodedFormatString(CuTest* tc)
     Log_terminate();
 
     char* result = StringConsole_getBuffer();
-    CuAssertTrue(tc, strcmp("[filename:6][DEBUG] message\n", result) == 0);
+    CuAssertTrue(tc, strcmp("[DEBUG] message     [filename:6]\n", result) == 0);
     StringConsole_delete(console);
 }
 
@@ -74,7 +74,7 @@ void Log_addEntry_shouldHandleEmptyMessage(CuTest* tc)
     Log_terminate();
 
     char* result = StringConsole_getBuffer();
-    CuAssertTrue(tc, strcmp("[filename:6][DEBUG] \n", result) == 0);
+    CuAssertTrue(tc, strcmp("[DEBUG]      [filename:6]\n", result) == 0);
     StringConsole_delete(console);
 }
 
@@ -105,7 +105,7 @@ void Log_indent_shouldIncreaseIndentation(CuTest* tc)
     Log_terminate();
 
     char* result = StringConsole_getBuffer();
-    CuAssertTrue(tc, strcmp("test[filename:6][DEBUG] message\n", result) == 0);
+    CuAssertTrue(tc, strcmp("test[DEBUG] message     [filename:6]\n", result) == 0);
     StringConsole_delete(console);
 }
 
@@ -122,7 +122,7 @@ void Log_indent_shouldIncreaseIndentationMoreThanOnce(CuTest* tc)
     Log_terminate();
 
     char* result = StringConsole_getBuffer();
-    CuAssertTrue(tc, strcmp("testtest[filename:6][DEBUG] message\n", result) == 0);
+    CuAssertTrue(tc, strcmp("testtest[DEBUG] message     [filename:6]\n", result) == 0);
     StringConsole_delete(console);
 }
 
@@ -142,23 +142,23 @@ void Log_dedent_shouldDecreaseIndentation(CuTest* tc)
     Log_terminate();
 
     char* result = StringConsole_getBuffer();
-    CuAssertTrue(tc, strcmp("test[filename:6][DEBUG] message\n", result) == 0);
+    CuAssertTrue(tc, strcmp("test[DEBUG] message     [filename:6]\n", result) == 0);
     StringConsole_delete(console);
 }
 
 CuSuite* LogTest_GetSuite()
 {
-	CuSuite* suite = CuSuiteNew();
+    CuSuite* suite = CuSuiteNew();
 
-	SUITE_ADD_TEST(suite, Log_init_shouldInitializeLog);
-	SUITE_ADD_TEST(suite, Log_terminate_shouldTerminateLog);
-	SUITE_ADD_TEST(suite, Log_setLevel_shouldSetSuppliedLogLevel);
-	SUITE_ADD_TEST(suite, Log_addEntry_shouldUseHardCodedFormatString);
-	SUITE_ADD_TEST(suite, Log_addEntry_shouldHandleEmptyMessage);
-	SUITE_ADD_TEST(suite, Log_addEntry_shouldNotPrintWrongScope);
-	SUITE_ADD_TEST(suite, Log_indent_shouldIncreaseIndentation);
-	SUITE_ADD_TEST(suite, Log_indent_shouldIncreaseIndentationMoreThanOnce);
-	SUITE_ADD_TEST(suite, Log_dedent_shouldDecreaseIndentation);
+    SUITE_ADD_TEST(suite, Log_init_shouldInitializeLog);
+    SUITE_ADD_TEST(suite, Log_terminate_shouldTerminateLog);
+    SUITE_ADD_TEST(suite, Log_setLevel_shouldSetSuppliedLogLevel);
+    SUITE_ADD_TEST(suite, Log_addEntry_shouldUseHardCodedFormatString);
+    SUITE_ADD_TEST(suite, Log_addEntry_shouldHandleEmptyMessage);
+    SUITE_ADD_TEST(suite, Log_addEntry_shouldNotPrintWrongScope);
+    SUITE_ADD_TEST(suite, Log_indent_shouldIncreaseIndentation);
+    SUITE_ADD_TEST(suite, Log_indent_shouldIncreaseIndentationMoreThanOnce);
+    SUITE_ADD_TEST(suite, Log_dedent_shouldDecreaseIndentation);
 
-	return suite;
+    return suite;
 }
