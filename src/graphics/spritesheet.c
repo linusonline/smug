@@ -6,6 +6,14 @@
 
 #include <graphics/spritesheet.h>
 
+typedef struct _SpriteSheet
+{
+    Sprite** sprites;
+    int indexWidth;
+    int nrSprites;
+    Texture* texture;
+} _SpriteSheet;
+
 static BOOL _parseDataFile(char* fileName, int* width, int* height)
 {
  	File* file = NULL;

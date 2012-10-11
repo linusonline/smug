@@ -16,15 +16,9 @@
 
 #include <common.h>
 #include <graphics/sprite.h>
-#include <utils/linkedlist_type.h>
 
-typedef struct SpriteAnimation
-{
-    LinkedList* sprites;
-    LinkedList* durations;
-    TIME starttime;
-    BOOL started;
-} SpriteAnimation;
+struct _SpriteAnimation;
+typedef struct _SpriteAnimation SpriteAnimation;
 
 SpriteAnimation* SpriteAnimation_newEmpty();
 

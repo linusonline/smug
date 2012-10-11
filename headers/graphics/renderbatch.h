@@ -3,14 +3,8 @@
 
 #include <common.h>
 
-typedef struct RenderBatch
-{
-    unsigned int maxElements;
-    unsigned int addedElements;
-    float* vertexArray;
-    float* colorArray;
-    float* textureArray;
-} RenderBatch;
+struct _RenderBatch;
+typedef struct _RenderBatch RenderBatch;
 
 RenderBatch* RenderBatch_new(unsigned int initialSize, BOOL useTexture);
 void RenderBatch_delete(RenderBatch* self);
