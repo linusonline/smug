@@ -13,12 +13,15 @@
 
 static SpriteSheet* landscapeSheet = NULL;
 static SpriteSheet* buildingsSheet = NULL;
+static SpriteSheet* cursorSheet = NULL;
 static RenderQueue* renderQueue = NULL;
 
 static Drawable** backgroundGraphics;
 static Drawable** buildings;
+static Drawable* cursor;
 static Sprite** landscapeSprites;
 static Sprite** buildingSprites;
+static Sprite* cursorSprite;
 static SpriteAnimation* animHouse;
 
 static const int BG_COUNT = 15*20;
@@ -45,6 +48,7 @@ static void drawStuff(RenderQueue* rq)
     {
         RenderQueue_addDrawable(renderQueue, buildings[i]);
     }
+    RenderQueue_addDrawable(renderQueue, cursor);
 }
 
 static void afterDrawing()
@@ -439,6 +443,114 @@ static void createBackground()
 
 }
 
+static void createCursor()
+{
+    cursorSheet = SpriteSheet_new("res/cursor.png", NULL);
+    cursorSprite = SpriteSheet_getSprite(cursorSheet, 0);
+    cursor = Drawable_newFromSpriteAndDimensions(cursorSprite, 32, 32, 0, 0);
+}
+
+static BOOL keyUpPressed = FALSE;
+static BOOL keyDownPressed = FALSE;
+static BOOL keyLeftPressed = FALSE;
+static BOOL keyRightPressed = FALSE;
+
+static void moveCursor(int keyid)
+{
+    switch (keyid)
+    {
+        case GLFW_KEY_UP:
+            if (Drawable_getY(cursor) >= 32)
+            {
+                Drawable_setPos(cursor, Drawable_getX(cursor), Drawable_getY(cursor) - 32);
+            }
+            break;
+        case GLFW_KEY_DOWN:
+            if (Drawable_getY(cursor) <= (480 - 64))
+            {
+                Drawable_setPos(cursor, Drawable_getX(cursor), Drawable_getY(cursor) + 32);
+            }
+            break;
+        case GLFW_KEY_LEFT:
+            if (Drawable_getX(cursor) >= 32)
+            {
+                Drawable_setPos(cursor, Drawable_getX(cursor) - 32, Drawable_getY(cursor));
+            }
+            break;
+        case GLFW_KEY_RIGHT:
+            if (Drawable_getX(cursor) <= (640 - 64))
+            {
+                Drawable_setPos(cursor, Drawable_getX(cursor) + 32, Drawable_getY(cursor));
+            }
+            break;
+    }
+}
+
+static void keyboardCallback(int keyid, int state)
+{
+    switch (keyid)
+    {
+        case GLFW_KEY_UP:
+            if (state == GLFW_PRESS)
+            {
+                if (!keyUpPressed)
+                {
+                    moveCursor(keyid);
+                }
+                keyUpPressed = TRUE;
+            }
+            else if (state == GLFW_RELEASE)
+            {
+                keyUpPressed = FALSE;
+            }
+            break;
+        case GLFW_KEY_DOWN:
+            if (state == GLFW_PRESS)
+            {
+                if (!keyDownPressed)
+                {
+                    moveCursor(keyid);
+                }
+                keyDownPressed = TRUE;
+            }
+            else if (state == GLFW_RELEASE)
+            {
+                keyDownPressed = FALSE;
+            }
+            break;
+        case GLFW_KEY_LEFT:
+            if (state == GLFW_PRESS)
+            {
+                if (!keyLeftPressed)
+                {
+                    moveCursor(keyid);
+                }
+                keyLeftPressed = TRUE;
+            }
+            else if (state == GLFW_RELEASE)
+            {
+                keyLeftPressed = FALSE;
+            }
+            break;
+        case GLFW_KEY_RIGHT:
+            if (state == GLFW_PRESS)
+            {
+                if (!keyRightPressed)
+                {
+                    moveCursor(keyid);
+                }
+                keyRightPressed = TRUE;
+            }
+            else if (state == GLFW_RELEASE)
+            {
+                keyRightPressed = FALSE;
+            }
+            break;
+        default:
+            SMUG_NOOP();
+    }
+}
+
 static void init()
 {
     glInit();
@@ -451,6 +563,9 @@ static void init()
     renderQueue = RenderQueue_new();
 
     createBackground();
+    createCursor();
+
+    glfwSetKeyCallback(keyboardCallback);
 }
 
 static void runMainLoop()

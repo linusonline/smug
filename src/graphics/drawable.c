@@ -59,6 +59,16 @@ void Drawable_setPos(Drawable* self, float x, float y)
     self->positionY = y;
 }
 
+float Drawable_getX(Drawable* self)
+{
+    return self->positionX;
+}
+
+float Drawable_getY(Drawable* self)
+{
+    return self->positionY;
+}
+
 SpriteAnimation* Drawable_getSpriteAnimation(Drawable* self)
 {
     smug_assert(_invariant(self));

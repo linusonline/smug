@@ -12,6 +12,8 @@ Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, 
 void Drawable_delete(Drawable* self);
 void Drawable_setSize(Drawable* self, float width, float height);
 void Drawable_setPos(Drawable* self, float x, float y);
+float Drawable_getX(Drawable* self);
+float Drawable_getY(Drawable* self);
 Sprite* Drawable_getSprite(Drawable* self);
 SpriteAnimation* Drawable_getSpriteAnimation(Drawable* self);
 void Drawable_addRenderData(Drawable* self, RenderBatch* renderBatch);

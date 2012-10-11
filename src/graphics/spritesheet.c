@@ -33,11 +33,14 @@ SpriteSheet* SpriteSheet_new(char* imageFile, char* dataFile)
 {
     int spriteWidth;
     int spriteHeight;
-    if (!_parseDataFile(dataFile, &spriteWidth, &spriteHeight))
+    if (dataFile != NULL)
     {
-        return NULL;
+        if (!_parseDataFile(dataFile, &spriteWidth, &spriteHeight))
+        {
+            return NULL;
+        }
+        DEBUG("Successfully parsed Spritesheet data file.");
     }
-    DEBUG("Successfully parsed Spritesheet data file.");
 
     Image* spritesImage = Image_new();
     Image_loadFromFile(spritesImage, imageFile);
@@ -46,6 +49,12 @@ SpriteSheet* SpriteSheet_new(char* imageFile, char* dataFile)
     spritesImage = NULL;
 
     DEBUG("Successfully loaded Spritesheet image file.");
+
+    if (dataFile == NULL)
+    {
+        spriteWidth = Texture_getWidth(texture);
+        spriteHeight = Texture_getHeight(texture);
+    }
 
     int indexWidth = Texture_getWidth(texture) / spriteWidth;
     int indexHeight = Texture_getHeight(texture) / spriteHeight;
