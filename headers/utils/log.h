@@ -17,7 +17,7 @@
 #include <stdarg.h>
 
 #include <common.h>
-#include <utils/console.h>
+#include <utils/console_type.h>
 
 // Predefined log levels
 #define LOG_ERROR           0x01

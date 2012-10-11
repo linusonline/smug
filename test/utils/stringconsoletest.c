@@ -2,6 +2,7 @@
 #include <CuTest.h>
 
 #include <common.h>
+#include <utils/console.h>
 #include <utils/string_console.h>
 
 static int STRING_CONSOLE_MAX_SIZE = 1024;
@@ -24,21 +25,21 @@ void StringConsole_new_shouldReturnEmptyConsole(CuTest* tc)
 void StringConsole_write_shouldBeCallable(CuTest* tc)
 {
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
-    console->write("");
+    Console_write(console, "");
     StringConsole_delete(console);
 }
 
 void StringConsole_writeLine_shouldBeCallable(CuTest* tc)
 {
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
-    console->writeLine("");
+    Console_writeLine(console, "");
     StringConsole_delete(console);
 }
 
 void StringConsole_write_shouldWriteEmptyStringToBuffer(CuTest* tc)
 {
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
-    console->write("");
+    Console_write(console, "");
     const char* string = StringConsole_getBuffer();
     CuAssertTrue(tc, strcmp("", string) == 0);
     StringConsole_delete(console);
@@ -47,7 +48,7 @@ void StringConsole_write_shouldWriteEmptyStringToBuffer(CuTest* tc)
 void StringConsole_write_shouldWriteStringToBuffer(CuTest* tc)
 {
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
-    console->write("string");
+    Console_write(console, "string");
     const char* string = StringConsole_getBuffer();
     CuAssertTrue(tc, strcmp("string", string) == 0);
     StringConsole_delete(console);
@@ -56,8 +57,8 @@ void StringConsole_write_shouldWriteStringToBuffer(CuTest* tc)
 void StringConsole_write_shouldWriteSeveralStringsToBuffer(CuTest* tc)
 {
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
-    console->write("string");
-    console->write("STRING");
+    Console_write(console, "string");
+    Console_write(console, "STRING");
     const char* string = StringConsole_getBuffer();
     CuAssertTrue(tc, strcmp("stringSTRING", string) == 0);
     StringConsole_delete(console);
@@ -66,7 +67,7 @@ void StringConsole_write_shouldWriteSeveralStringsToBuffer(CuTest* tc)
 void StringConsole_writeLine_shouldWriteEmptyStringToBuffer(CuTest* tc)
 {
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
-    console->writeLine("");
+    Console_writeLine(console, "");
     const char* string = StringConsole_getBuffer();
     CuAssertTrue(tc, strcmp("\n", string) == 0);
     StringConsole_delete(console);
@@ -75,7 +76,7 @@ void StringConsole_writeLine_shouldWriteEmptyStringToBuffer(CuTest* tc)
 void StringConsole_writeLine_shouldWriteStringToBuffer(CuTest* tc)
 {
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
-    console->writeLine("string");
+    Console_writeLine(console, "string");
     const char* string = StringConsole_getBuffer();
     CuAssertTrue(tc, strcmp("string\n", string) == 0);
     StringConsole_delete(console);
@@ -84,8 +85,8 @@ void StringConsole_writeLine_shouldWriteStringToBuffer(CuTest* tc)
 void StringConsole_writeLine_shouldWriteSeveralStringsToBuffer(CuTest* tc)
 {
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
-    console->writeLine("string");
-    console->writeLine("STRING");
+    Console_writeLine(console, "string");
+    Console_writeLine(console, "STRING");
     const char* string = StringConsole_getBuffer();
     CuAssertTrue(tc, strcmp("string\nSTRING\n", string) == 0);
     StringConsole_delete(console);
@@ -94,7 +95,7 @@ void StringConsole_writeLine_shouldWriteSeveralStringsToBuffer(CuTest* tc)
 void StringConsole_clearBuffer_shouldClearBuffer(CuTest* tc)
 {
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
-    console->write("string");
+    Console_write(console, "string");
     StringConsole_clearBuffer();
     const char* string = StringConsole_getBuffer();
     CuAssertTrue(tc, strcmp("", string) == 0);

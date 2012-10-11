@@ -85,7 +85,7 @@ static char* getScopeString(int logScope)
 
 static void Console_writeVoid(void* chars)
 {
-    gConsole->write((char*)chars);
+    Console_write(gConsole, (char*)chars);
 }
 
 static BOOL _isScopeActive(int scope)
@@ -111,8 +111,8 @@ void Log_addEntryVa(int level, char* file, int line, char* fmt, va_list args)
             message[written] = 0;
 
             // Static log version: "[%scope%]%indent%%message% [%file%:%line%]"
-            LinkedList_doList(gPrefixStack, Console_writeVoid);
-            gConsole->writeLine("[%s] %s     [%s:%i]", getScopeString(level), message, file, line);
+            // LinkedList_doList(gPrefixStack, Console_writeVoid);
+            Console_writeLine(gConsole, "[%s] %s     [%s:%i]", getScopeString(level), message, file, line);
         }
     }
 }
