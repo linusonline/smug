@@ -1,24 +1,9 @@
-/**
- * @file console.h
- * @brief Defines a debug console
- * @if doc_files
- * @ingroup smug_platform
- * @endif
- */
-
-/**
- * @addtogroup smug_platform
- * @{
- */
-
 #ifndef SMUG_UTILS_CONSOLE_H
 #define SMUG_UTILS_CONSOLE_H
 
-typedef struct Console {
-    void (*write)(char* format, ...);
-    void (*writeLine)(char* format, ...);
-} Console;
+#include <utils/console_type.h>
+
+void Console_write(Console* self, char* format, ...);
+void Console_writeLine(Console* self, char* format, ...);
 
 #endif /* SMUG_UTILS_CONSOLE_H */
-
-/**@}*/
