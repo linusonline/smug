@@ -14,7 +14,16 @@
 #ifndef UTILS_RECTANGLE_H
 #define UTILS_RECTANGLE_H
 
-#include <utils/rectangle_type.h>
+struct _Rectangle;
+typedef struct _Rectangle Rectangle;
+
+typedef struct _Rectangle
+{
+    float x;
+    float y;
+    float w;
+    float h;
+} _Rectangle;
 
 /**
  * Create a new Rectangle

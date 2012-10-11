@@ -1,7 +1,7 @@
 #ifndef SMUG_UTILS_NULL_CONSOLE_H
 #define SMUG_UTILS_NULL_CONSOLE_H
 
-#include <utils/console_type.h>
+#include <utils/console.h>
 
 /**
  *  A dummy console which doesn't do anything with the output written to it.

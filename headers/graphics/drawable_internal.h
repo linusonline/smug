@@ -1,8 +1,8 @@
 #ifndef SMUG_GRAPHICS_DRAWABLE_INTERNAL_H
 #define SMUG_GRAPHICS_DRAWABLE_INTERNAL_H
 
-#include <graphics/sprite_type.h>
-#include <graphics/drawable_type.h>
+#include <graphics/spriteanimation.h>
+#include <graphics/drawable.h>
 
 typedef struct _Drawable
 {

@@ -15,7 +15,12 @@
 #define SMUG_UTILS_LINKEDLIST_H
 
 #include <common.h>
-#include <utils/linkedlist_type.h>
+
+struct _LinkedList;
+typedef struct _LinkedList LinkedList;
+
+struct _Node;
+typedef struct _Node Node;
 
 /**
  * Creates and returns a new empty list.

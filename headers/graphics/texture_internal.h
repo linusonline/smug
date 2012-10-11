@@ -15,6 +15,8 @@
 #ifndef SMUG_GRAPHICS_TEXTURE_INTERNAL_H
 #define SMUG_GRAPHICS_TEXTURE_INTERNAL_H
 
+#include <graphics/texture.h>
+
 /**
  * A Texture is a piece of graphic used to create Sprites.
  */

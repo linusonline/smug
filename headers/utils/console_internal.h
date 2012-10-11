@@ -1,7 +1,7 @@
 #ifndef SMUG_UTILS_CONSOLE_INTERNAL_H
 #define SMUG_UTILS_CONSOLE_INTERNAL_H
 
-#include <utils/console_type.h>
+#include <utils/console.h>
 
 typedef struct _Console {
     void (*write)(char* format, ...);
