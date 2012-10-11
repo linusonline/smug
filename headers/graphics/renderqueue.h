@@ -4,12 +4,9 @@
 #include <common.h>
 #include <graphics/renderbatch.h>
 #include <graphics/drawable.h>
-#include <utils/map.h> // TODO: Separate out _internal, to avoid this dependency.
 
-typedef struct RenderQueue
-{
-    Map* renderBatches;
-} RenderQueue;
+struct _RenderQueue;
+typedef struct _RenderQueue RenderQueue;
 
 RenderQueue* RenderQueue_new(void);
 void RenderQueue_delete(RenderQueue* self);

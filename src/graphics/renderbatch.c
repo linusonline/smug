@@ -1,11 +1,19 @@
 #include <stdlib.h>
 #include <string.h>
-
-#include <common.h>
-// #include <utils/log.h>
 #include <GL/glfw.h>
 
+#include <common.h>
+
 #include <graphics/renderbatch.h>
+
+typedef struct _RenderBatch
+{
+    unsigned int maxElements;
+    unsigned int addedElements;
+    float* vertexArray;
+    float* colorArray;
+    float* textureArray;
+} _RenderBatch;
 
 static const unsigned char PRIMITIVES_PER_VERTEX = 2;
 static const unsigned char PRIMITIVES_PER_TEXTURE_COORDINATE = 2;

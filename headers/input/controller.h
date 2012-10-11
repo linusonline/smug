@@ -3,19 +3,11 @@
 
 #include <common.h>
 
-struct Controller;
+struct _Controller;
+typedef struct _Controller Controller;
 
-typedef void (*ButtonCallback)(struct Controller* controller, int buttonIndex, int state);
-typedef void (*PointerCallback)(struct Controller* controller, int pointerIndex, int xDelta, int yDelta);
-
-typedef struct Controller
-{
-    ButtonCallback buttonCallback;
-    PointerCallback pointerCallback;
-    int numberOfAxes;
-    int numberOfButtons;
-    int numberOfPointers;
-} Controller;
+typedef void (*ButtonCallback)(Controller* controller, int buttonIndex, int state);
+typedef void (*PointerCallback)(Controller* controller, int pointerIndex, int xDelta, int yDelta);
 
 Controller* Controller_new(int numberOfAxes, int numberOfButtons, int numberOfPointers);
 void Controller_delete(Controller* controller);

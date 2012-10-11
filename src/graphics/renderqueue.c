@@ -1,8 +1,14 @@
 #include <GL/glfw.h> // We can get rid of this dependency
 
 #include <utils/log.h>
-#include <graphics/renderqueue.h>
+#include <utils/map.h>
 #include <graphics/sprite.h>
+#include <graphics/renderqueue.h>
+
+typedef struct _RenderQueue
+{
+    Map* renderBatches;
+} _RenderQueue;
 
 static const int RENDERBATCH_INITIAL_SIZE = 16;
 
