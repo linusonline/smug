@@ -9,10 +9,16 @@
 #include <graphics/sprite.h>
 #include <graphics/spriteanimation.h>
 #include <graphics/camera.h>
+#include <graphics/graphics.h>
 #include <input/input.h>
 #include <utils/log.h>
 #include <utils/stdout_console.h>
 #include <common.h>
+
+static const int INITIAL_WINDOW_WIDTH = 640;
+static const int INITIAL_WINDOW_HEIGHT = 480;
+static int windowWidth = 640;
+static int windowHeight = 480;
 
 static SpriteSheet* landscapeSheet = NULL;
 static SpriteSheet* buildingsSheet = NULL;
@@ -50,62 +56,11 @@ static Camera* camera;
 #define BUTTON_PAN_RIGHT 9
 #define MOUSE_POINTER 0
 
-static int windowWidth;
-static int windowHeight;
-
-static BOOL useWindowCoordinates = TRUE;
-static float pixelsPerUnitX = 1;
-static float pixelsPerUnitY = 1;
-static int originInWindowX = 0;
-static int originInWindowY = 0;
-
 static int cursorPositionX;
 static int cursorPositionY;
 static const int U = 32; // Unit size
 static const int WORLD_WIDTH = 640;     // This world happens to be just one screen big.
 static const int WORLD_HEIGHT = 480;
-
-static void adjustCoordinateSystemToWindow(int width, int height)
-{
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    GLdouble left = -originInWindowX / pixelsPerUnitX;
-    GLdouble top = -originInWindowY / pixelsPerUnitY;
-    gluOrtho2D(left, left + width / pixelsPerUnitX, top + height / pixelsPerUnitY, top);
-    glMatrixMode(GL_MODELVIEW);
-}
-
-static void GLFWCALL windowResize(int width, int height)
-{
-    windowWidth = width;
-    windowHeight = height;
-    DEBUG("Got resize event (%i x %i)", width, height);
-    glViewport(0, 0, (GLsizei)width, (GLsizei)height);
-    if (!useWindowCoordinates)
-    {
-        adjustCoordinateSystemToWindow(width, height);
-    }
-}
-
-// @param originInWindowX/Y Origin of the coordinate system relative to top left corner of the window. Specified in pixels.
-static void setCoordinateSystemInPixelsPerUnit(float ppux, float ppuy, int originX, int originY)
-{
-    pixelsPerUnitX = ppux;
-    pixelsPerUnitY = ppuy;
-    originInWindowX = originX;
-    originInWindowY = originY;
-    useWindowCoordinates = FALSE;
-    adjustCoordinateSystemToWindow(windowWidth, windowHeight);
-}
-
-static void setCoordinateSystemForWindow(float left, float top, float width, float height)
-{
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(left, left + width, top + height, top);
-    glMatrixMode(GL_MODELVIEW);
-    useWindowCoordinates = TRUE;
-}
 
 static void drawStuff(RenderQueue* rq)
 {
@@ -118,36 +73,6 @@ static void drawStuff(RenderQueue* rq)
 static void afterDrawing()
 {
     RenderQueue_clear(renderQueue);
-}
-
-static void glInit()
-{
-    // int glfwInit( void )
-    if (glfwInit() != GL_TRUE)
-    {
-        exit(EXIT_FAILURE);
-    }
-
-    // int glfwOpenWindow( int width, int height,
-    //      int redbits, int greenbits, int bluebits,
-    //      int alphabits, int depthbits, int stencilbits,
-    //      int mode )
-    if (glfwOpenWindow(0, 0, 0, 0, 0, 0, 0, 0, GLFW_WINDOW) != GL_TRUE)
-    {
-        // void glfwTerminate( void )
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-    glfwSetWindowSizeCallback(windowResize);
-    glClearColor(0.5, 0.0, 0.5, 0.0);
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 static void createBackground()
@@ -604,6 +529,12 @@ static void _buttonCallback(Controller* controller, int buttonIndex, int state)
     }
 }
 
+static void _resizeCallback(int width, int height)
+{
+    windowWidth = width;
+    windowHeight = height;
+}
+
 static void init()
 {
     console = StdoutConsole_new();
@@ -619,8 +550,15 @@ static void init()
     DEBUG("");
     DEBUG("==============================");
 
-    glInit();
-    setCoordinateSystemForWindow(-WORLD_WIDTH/2, -WORLD_HEIGHT/2, WORLD_WIDTH, WORLD_HEIGHT);
+    camera = Camera_new();
+    camera->posX = INITIAL_WINDOW_WIDTH / 2;
+    camera->posY = INITIAL_WINDOW_HEIGHT / 2;
+
+    Graphics_initialize(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, FALSE);
+    Graphics_setCoordinateSystemForWindow(-WORLD_WIDTH/2, -WORLD_HEIGHT/2, WORLD_WIDTH, WORLD_HEIGHT);
+    Graphics_setBackgroundColor(0.5, 0.0, 0.5);
+    Graphics_useCamera(camera);
+    Graphics_setWindowResizeCallback(_resizeCallback);
     // setCoordinateSystemInPixelsPerUnit(1.3, 1.3, 20.0, 20.0);
 
     Input_initialize();
@@ -639,9 +577,6 @@ static void init()
     Input_linkControllerToKeyboardKey(theController, BUTTON_PAN_RIGHT, 'D');
 
     renderQueue = RenderQueue_new();
-    camera = Camera_new();
-    camera->posX = 320;
-    camera->posY = 240;
 
     createBackground();
     cursorPositionX = 10;
@@ -649,29 +584,16 @@ static void init()
     createCursor(cursorPositionX, cursorPositionY);
 }
 
-static void actuallyDrawStuff(RenderQueue* rq)
-{
-    glPushMatrix();
-    glTranslatef(-camera->posX, -camera->posY, 0.0);
-
-    RenderQueue_render(rq);
-
-    glPopMatrix();
-}
-
 static void runMainLoop()
 {
     BOOL running = TRUE;
     while (running)
     {
-        // OpenGL rendering goes here...
-        glClear(GL_COLOR_BUFFER_BIT);
-
         drawStuff(renderQueue);
-        actuallyDrawStuff(renderQueue);
+        Graphics_render(renderQueue);
 
         // Swap front and back rendering buffers
-        glfwSwapBuffers();
+        Graphics_refreshWindow();
 
         afterDrawing();
 
@@ -702,7 +624,7 @@ static void deinit()
     useMouse(FALSE);
     Controller_delete(theController);
 
-    glfwTerminate();
+    Graphics_terminate();
     Input_terminate();
     Log_terminate();
     StdoutConsole_delete(console);
