@@ -18,6 +18,7 @@ add_executable(SpriteSheet spritesheet.c)
 add_executable(Sprite sprite.c)
 add_executable(RenderQueue renderqueue.c)
 add_executable(Game game.c)
+add_executable(Input input.c)
 
 find_package(OpenGL)
 target_link_libraries(WindowTest glfw ${OPENGL_LIBRARIES})
@@ -30,3 +31,4 @@ target_link_libraries(SpriteSheet SmugGraphics SmugPlatform SmugUtils glfw ${OPE
 target_link_libraries(Sprite SmugGraphics SmugPlatform SmugUtils glfw ${OPENGL_LIBRARIES})
 target_link_libraries(RenderQueue SmugGraphics SmugPlatform SmugUtils glfw ${OPENGL_LIBRARIES})
 target_link_libraries(Game SmugGraphics SmugPlatform SmugUtils glfw ${OPENGL_LIBRARIES})
+target_link_libraries(Input SmugGraphics SmugPlatform SmugUtils SmugInput glfw ${OPENGL_LIBRARIES})
