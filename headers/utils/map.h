@@ -37,6 +37,9 @@ int Map_compareInts(void* intKey1, void* intKey2);
 
 int Map_comparePointers(void* ptrKey1, void* ptrKey2);
 
+int* Map_newInt(int anInteger);
+void Map_deleteInt(int* intp);
+
 void Map_delete(Map* self);
 
 BOOL Map_isEmpty(Map* self);

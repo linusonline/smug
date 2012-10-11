@@ -65,6 +65,18 @@ int Map_comparePointers(void* ptrKey1, void* ptrKey2)
     return ptrKey1 == ptrKey2 ? 0 : ptrKey1 < ptrKey2 ? -1 : 1;
 }
 
+int* Map_newInt(int anInteger)
+{
+    int* i = allocate(int);
+    *i = anInteger;
+    return i;
+}
+
+void Map_deleteInt(int* intp)
+{
+    free(intp);
+}
+
 void Map_delete(Map* self)
 {
     smug_assert(_invariant(self));
