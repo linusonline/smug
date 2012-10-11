@@ -16,19 +16,8 @@
 
 #include <common.h>
 
-/**
- * Holds image data, file name and meta data of an image.
- */
-typedef struct Image
-{
-    unsigned char* data;
-    unsigned char* file;
-    unsigned int size;
-    unsigned int width;
-    unsigned int height;
-    unsigned int bpp;
-    int channels;
-} Image;
+struct _Image;
+typedef struct _Image Image;
 
 /**
  * Create a new empty image to pass to the load function.

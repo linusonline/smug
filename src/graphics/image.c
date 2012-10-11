@@ -7,6 +7,7 @@
 #include <graphics/lodepng/lodepng.h>
 
 #include <graphics/image.h>
+#include <graphics/image_internal.h>
 
 static BOOL _invariant(Image* self)
 {

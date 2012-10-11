@@ -2,6 +2,7 @@
 #include <string.h>
 #include <CuTest.h>
 #include <graphics/image.h>
+#include <graphics/image_internal.h>
 
 static unsigned char reference[4*4*4] =
     {0, 0, 0, 255,         255, 255, 255, 0,       255, 255, 255, 0,       255, 0, 0, 255,
