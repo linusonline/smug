@@ -16,7 +16,7 @@
 
 #include <common.h>
 #include <graphics/sprite.h>
-#include <utils/linkedlist.h>
+#include <utils/linkedlist_type.h>
 
 typedef struct SpriteAnimation
 {

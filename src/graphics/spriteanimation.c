@@ -2,6 +2,7 @@
 #include <GL/glfw.h>
 #include <common.h>
 #include <utils/log.h>
+#include <utils/linkedlist.h>
 #include <graphics/sprite.h>
 
 #include <graphics/spriteanimation.h>
