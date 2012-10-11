@@ -2,9 +2,11 @@
 #define SMUG_GRAPHICS_DRAWABLE_H
 
 #include <common.h>
-#include <graphics/sprite_type.h>
-#include <graphics/drawable_type.h>
+#include <graphics/sprite.h>
 #include <graphics/spriteanimation.h>
+
+struct _Drawable;
+typedef struct _Drawable Drawable;
 
 Drawable* Drawable_newFromSprite(Sprite* sprite);
 Drawable* Drawable_newFromSpriteAndDimensions(Sprite* sprite, int width, int height, int posX, int posY);

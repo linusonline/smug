@@ -2,7 +2,6 @@
 
 #include <common.h>
 
-#include <utils/linkedlist_type.h>
 #include <utils/linkedlist.h>
 
 /**

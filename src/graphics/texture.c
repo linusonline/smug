@@ -1,13 +1,11 @@
 #include <stdlib.h>
 #include <math.h>
+#include <GL/glfw.h>
 
 #include <common.h>
 #include <utils/log.h>
-#include <GL/glfw.h>
 #include <graphics/internal.h>
 
-#include <graphics/texture.h>
-#include <graphics/texture_type.h>
 #include <graphics/texture_internal.h>
 
 static int _getClosestGreaterPowerOfTwo(int number)

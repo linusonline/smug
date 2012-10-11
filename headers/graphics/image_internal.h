@@ -1,6 +1,8 @@
 #ifndef SMUG_GRAPHICS_IMAGE_INTERNAL_H
 #define SMUG_GRAPHICS_IMAGE_INTERNAL_H
 
+#include <graphics/image.h>
+
 /**
  * Holds image data, file name and meta data of an image.
  */
