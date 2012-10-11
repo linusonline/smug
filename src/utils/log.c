@@ -37,7 +37,8 @@ BOOL Log_init(Console* console)
     Log_setFormatString("%indent%%message%");
     gIndentString = "    ";
     #else
-    Log_setFormatString("%indent%[%file%:%line%][%scope%] %message%");
+    // Log_setFormatString("%indent%[%file%:%line%][%scope%] %message%");
+    Log_setFormatString("[%scope%]%indent%%message% [%file%:%line%]");
     gIndentString = "..";
     #endif
 
@@ -109,9 +110,9 @@ void Log_addEntryVa(int level, char* file, int line, char* fmt, va_list args)
         {
             message[written] = 0;
 
-            // Static log version: "%indent%[%file%:%line%][%scope%] %message%"
+            // Static log version: "[%scope%]%indent%%message% [%file%:%line%]"
             LinkedList_doList(gPrefixStack, Console_writeVoid);
-            gConsole->writeLine("[%s:%i][%s] %s", file, line, getScopeString(level), message);
+            gConsole->writeLine("[%s] %s     [%s:%i]", getScopeString(level), message, file, line);
         }
     }
 }
