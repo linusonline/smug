@@ -15,47 +15,7 @@
 #define SMUG_UTILS_LINKEDLIST_H
 
 #include <common.h>
-
-/**
- * A struct for the node type in a linked list.
- * Create new nodes with Node_new, delete them with Node_destroy. Set the content of the node by setting Node->item directly.
- * @sa ::LinkedList
- */
-typedef struct Node {
-    void* item;         /**< Pointer to the actual data in the node. */
-    struct Node* next;     /**< Next node in list. Null if end of list. */
-    struct Node* prev;     /**< Previous node in list. Null if start of list */
-} Node;
-
-/**
- * A struct for a linked list.
- *
- * Navigate the list by getting the Node->first pointer, and then using ->next on it until you get null.
- *
- * @sa ::Node
- */
-typedef struct LinkedList {
-    Node* first;         /**< First node in list. */
-    Node* last;         /**< Last node in list */
-    int length;
-    Node* current;
-} LinkedList;
-
-/**
- * Creates and returns a new empty node.
- *
- * @relates Node
- * @return A pointer to the node just created.
- */
-Node* Node_new(void);
-
-/**
- * Destroys a node struct
- *
- * @relates Node
- * @param node A pointer to the node to be deleted.
- */
-void Node_delete(Node* node);
+#include <utils/linkedlist_type.h>
 
 /**
  * Creates and returns a new empty list.

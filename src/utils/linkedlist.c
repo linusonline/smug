@@ -2,7 +2,49 @@
 
 #include <common.h>
 
+#include <utils/linkedlist_type.h>
 #include <utils/linkedlist.h>
+
+/**
+ * A struct for the node type in a linked list.
+ * Create new nodes with Node_new, delete them with Node_destroy. Set the content of the node by setting Node->item directly.
+ * @sa ::LinkedList
+ */
+typedef struct _Node {
+    void* item;         /**< Pointer to the actual data in the node. */
+    Node* next;     /**< Next node in list. Null if end of list. */
+    Node* prev;     /**< Previous node in list. Null if start of list */
+} _Node;
+
+/**
+ * A struct for a linked list.
+ *
+ * Navigate the list by getting the Node->first pointer, and then using ->next on it until you get null.
+ *
+ * @sa ::Node
+ */
+typedef struct _LinkedList {
+    Node* first;         /**< First node in list. */
+    Node* last;         /**< Last node in list */
+    int length;
+    Node* current;
+} _LinkedList;
+
+static Node* Node_new()
+{
+    Node* node = allocate(Node);
+
+    node->item = NULL;
+    node->next = NULL;
+    node->prev = NULL;
+
+    return node;
+}
+
+static void Node_delete(Node* node)
+{
+    free(node);
+}
 
 static void _clear(LinkedList* self)
 {
@@ -51,22 +93,6 @@ static BOOL _invariant(LinkedList* self)
             )
         );
     return ret;
-}
-
-Node* Node_new()
-{
-    Node* node = allocate(Node);
-
-    node->item = NULL;
-    node->next = NULL;
-    node->prev = NULL;
-
-    return node;
-}
-
-void Node_delete(Node* node)
-{
-    free(node);
 }
 
 LinkedList* LinkedList_new()
