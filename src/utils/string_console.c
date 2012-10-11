@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include <common.h>
+#include <utils/console_internal.h>
 #include <utils/string_console.h>
 
 // TODO: Put these in a new type, inheriting from Console, to enable several

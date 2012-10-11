@@ -1,7 +1,7 @@
 #ifndef SMUG_UTILS_STRING_CONSOLE_H
 #define SMUG_UTILS_STRING_CONSOLE_H
 
-#include <utils/console.h>
+#include <utils/console_type.h>
 
 /* It is YOUR responsibility to not overflow the string buffer! Don't write more
  * than you know can fit. Only one of these allowed at a time.

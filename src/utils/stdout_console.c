@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include <common.h>
-#include <utils/console.h>
+#include <utils/console_internal.h>
 #include <utils/stdout_console.h>
 
 static void StdoutConsole_write(char* fmt, ...)

@@ -1,6 +1,7 @@
 #include <stdarg.h>
 
 #include <common.h>
+#include <utils/console_internal.h>
 #include <utils/null_console.h>
 
 static void NullConsole_write(char* fmt, ...)
