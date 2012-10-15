@@ -12,27 +12,17 @@ static char* gBuffer = NULL;
 static int gBufferMaxSize = 0;
 static int gBufferPointer = 0;
 
-static void StringConsole_write(char* fmt, ...)
+static void StringConsole_write(char* fmt, va_list args)
 {
-    va_list vl;
-    va_start(vl, fmt);
-
-    int writtenChars = vsprintf(gBuffer + gBufferPointer, fmt, vl);
+    int writtenChars = vsprintf(gBuffer + gBufferPointer, fmt, args);
     gBufferPointer += writtenChars;
-
-    va_end(vl);
 }
 
-static void StringConsole_writeLine(char* fmt, ...)
+static void StringConsole_writeLine(char* fmt, va_list args)
 {
-    va_list vl;
-    va_start(vl, fmt);
-
-    int writtenChars = vsprintf(gBuffer + gBufferPointer, fmt, vl);
+    int writtenChars = vsprintf(gBuffer + gBufferPointer, fmt, args);
     gBufferPointer += writtenChars;
     gBuffer[gBufferPointer++] = '\n';
-
-    va_end(vl);
     printf("\n");
 }
 

@@ -111,7 +111,7 @@ void Log_addEntryVa(int level, char* file, int line, char* fmt, va_list args)
             message[written] = 0;
 
             // Static log version: "[%scope%]%indent%%message% [%file%:%line%]"
-            LinkedList_doList(gPrefixStack, Console_writeVoid);
+            // LinkedList_doList(gPrefixStack, Console_writeVoid);
             Console_writeLine(gConsole, "[%s] %s     [%s:%i]", getScopeString(level), message, file, line);
         }
     }
