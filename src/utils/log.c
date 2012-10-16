@@ -164,12 +164,18 @@ char* Log_popPrefix()
 
 void Log_indent()
 {
-    Log_pushPrefix(gIndentString);
+	if (_isInitialized())
+	{
+		Log_pushPrefix(gIndentString);
+	}
 }
 
 void Log_dedent()
 {
-    Log_popPrefix();
+	if (_isInitialized())
+	{
+		Log_popPrefix();
+	}
 }
 
 void Log_setIndentationString(char* indentString)
