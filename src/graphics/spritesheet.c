@@ -14,7 +14,7 @@ typedef struct _SpriteSheet
     Texture* texture;
 } _SpriteSheet;
 
-static BOOL _parseDataFile(char* fileName, int* width, int* height)
+static BOOL _parseDataFile(const char* fileName, int* width, int* height)
 {
  	File* file = NULL;
     file = File_fopen(fileName,"rb");
@@ -37,7 +37,7 @@ static BOOL _parseDataFile(char* fileName, int* width, int* height)
     return TRUE;
 }
 
-SpriteSheet* SpriteSheet_new(char* imageFile, char* dataFile)
+SpriteSheet* SpriteSheet_new(const char* imageFile, const char* dataFile)
 {
     int spriteWidth;
     int spriteHeight;
