@@ -32,6 +32,7 @@ void SpriteAnimation_pause(SpriteAnimation* self);
 void SpriteAnimation_reset(SpriteAnimation* self);
 
 Sprite* SpriteAnimation_getCurrentSprite(SpriteAnimation* self);
+Sprite* SpriteAnimation_getSpriteAtIndex(SpriteAnimation* self, int index);
 
 void SpriteAnimation_delete(SpriteAnimation* self);
 
