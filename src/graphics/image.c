@@ -126,28 +126,28 @@ void Image_delete(Image* self)
 
 static unsigned char* _loadFile(const char* filename, unsigned int* buffersize)
 {
- 	File* file = File_fopen(filename,"rb");
-	if (!file)
-	{
-		WARNING("Couldn't locate file '%s'.", filename);
-		return 0;
-	}
+    File* file = File_fopen(filename,"rb");
+    if (!file)
+    {
+        WARNING("Couldn't locate file '%s'.", filename);
+        return 0;
+    }
     DEBUG("Successfully opened file '%s'.", filename);
 
-	File_fseek(file, 0, SMUG_SEEK_END);
-	int filelen = File_ftell(file);
-	File_fseek(file, 0, SMUG_SEEK_SET);
+    File_fseek(file, 0, SMUG_SEEK_END);
+    int filelen = File_ftell(file);
+    File_fseek(file, 0, SMUG_SEEK_SET);
 
     DEBUG("File length: '%i'.", filelen);
 
-	unsigned char* buffer = (unsigned char*)malloc(filelen);
-	if (File_fread(file, buffer, 1, filelen) != filelen)
-	{
-		ERROR("Did not read correct amount of bytes.");
-		File_fclose(file);
-		free(buffer);
+    unsigned char* buffer = (unsigned char*)malloc(filelen);
+    if (File_fread(file, buffer, 1, filelen) != filelen)
+    {
+        ERROR("Did not read correct amount of bytes.");
+        File_fclose(file);
+        free(buffer);
         return 0;
-	}
+    }
 
     File_fclose(file);
     *buffersize = filelen;
@@ -156,23 +156,23 @@ static unsigned char* _loadFile(const char* filename, unsigned int* buffersize)
 
 static BOOL _saveFile(const char* filename, unsigned char* buffer, unsigned int buffersize)
 {
- 	FILE* file = fopen(filename,"w+b");
-	if (!file)
-	{
-		WARNING("Couldn't locate or create file '%s'.", filename);
-		return FALSE;
-	}
+     FILE* file = fopen(filename,"w+b");
+    if (!file)
+    {
+        WARNING("Couldn't locate or create file '%s'.", filename);
+        return FALSE;
+    }
     DEBUG("Successfully opened file '%s'.", filename);
 
 
     DEBUG("Buffer length: '%i'.", buffersize);
 
-	if (fwrite(buffer, 1, buffersize, file) != buffersize)
-	{
-		ERROR("Did not write correct amount of bytes.");
-		fclose(file);
+    if (fwrite(buffer, 1, buffersize, file) != buffersize)
+    {
+        ERROR("Did not write correct amount of bytes.");
+        fclose(file);
         return FALSE;
-	}
+    }
 
     fclose(file);
 

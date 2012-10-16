@@ -133,9 +133,9 @@ void Texture_activate(Texture* self)
 void Texture_release(Texture* self)
 {
     smug_assert(_invariant(self));
-	glDeleteTextures(1, &self->texid);
+    glDeleteTextures(1, &self->texid);
     printGLError();
-	self->loaded = FALSE;
+    self->loaded = FALSE;
 }
 
 void Texture_delete(void* self)

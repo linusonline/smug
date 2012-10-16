@@ -67,13 +67,13 @@ unsigned char* File_getBuffer(File* self)
 {
     smug_assert(self != NULL);
     long int length = File_getLength(self);
-	unsigned char* buffer = (unsigned char*)malloc(length);
-	if (File_fread(self, buffer, 1, length) != length)
-	{
-		ERROR("Did not read correct amount of bytes.");
-		free(buffer);
+    unsigned char* buffer = (unsigned char*)malloc(length);
+    if (File_fread(self, buffer, 1, length) != length)
+    {
+        ERROR("Did not read correct amount of bytes.");
+        free(buffer);
         return NULL;
-	}
+    }
     return buffer;
 }
 
@@ -87,9 +87,9 @@ long int File_getLength(File* self)
 {
     smug_assert(self != NULL);
     long int oldPos = File_ftell(self);
-	File_fseek(self, 0, SMUG_SEEK_END);
-	long int len = File_ftell(self);
-	File_fseek(self, oldPos, SMUG_SEEK_SET);
+    File_fseek(self, 0, SMUG_SEEK_END);
+    long int len = File_ftell(self);
+    File_fseek(self, oldPos, SMUG_SEEK_SET);
     return len;
 }
 

@@ -47,7 +47,7 @@ BOOL Log_init(Console* console)
 
 BOOL Log_isInitialized()
 {
-	return _isInitialized();
+    return _isInitialized();
 }
 
 void Log_terminate()
@@ -164,18 +164,18 @@ char* Log_popPrefix()
 
 void Log_indent()
 {
-	if (_isInitialized())
-	{
-		Log_pushPrefix(gIndentString);
-	}
+    if (_isInitialized())
+    {
+        Log_pushPrefix(gIndentString);
+    }
 }
 
 void Log_dedent()
 {
-	if (_isInitialized())
-	{
-		Log_popPrefix();
-	}
+    if (_isInitialized())
+    {
+        Log_popPrefix();
+    }
 }
 
 void Log_setIndentationString(char* indentString)
