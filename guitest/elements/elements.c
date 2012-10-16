@@ -12,6 +12,7 @@
 
 #include <maps.h>
 #include <avatar.h>
+#include <monster.h>
 
 static const int INITIAL_WINDOW_WIDTH = 640;
 static const int INITIAL_WINDOW_HEIGHT = 480;
@@ -26,6 +27,8 @@ static Console* console = NULL;
 static Controller* theController = NULL;
 
 static Camera* camera;
+
+static Monster monsters[12];
 
 #define BUTTON_UP 0
 #define BUTTON_DOWN 1
@@ -58,6 +61,14 @@ static void alignAvatar()
     else
     {
         avatarWalk(FALSE);
+    }
+}
+
+static void addMonsters(Monster* m, int offset, int count)
+{
+    for (int i = offset; i < offset + count; i++)
+    {
+        Engine_addObject(m[i].monsterObject);
     }
 }
 
@@ -145,12 +156,31 @@ static void init()
     Engine_init();
     Engine_addObjects(world, 0, map1Size());
     Engine_addObject(avatar);
+
+    monsters[0] = newMonster(MONSTER_SHELLY, 32, 32);
+    monsters[1] = newMonster(MONSTER_SHROOM, 32, 128);
+    monsters[2] = newMonster(MONSTER_MINKEY, 32, 256);
+    monsters[3] = newMonster(MONSTER_GOLEM, 128, 32);
+    monsters[4] = newMonster(MONSTER_GOLEM, 128, 128);
+    monsters[5] = newMonster(MONSTER_SNELL, 128, 256);
+    monsters[6] = newMonster(MONSTER_TROLLEY, 256, 32);
+    monsters[7] = newMonster(MONSTER_SKELETON, 256, 128);
+    monsters[8] = newMonster(MONSTER_FIRESKULL, 256, 256);
+    monsters[9] = newMonster(MONSTER_FIRESKULL, 32, 384);
+    monsters[10] = newMonster(MONSTER_FIRESKULL, 128, 384);
+    monsters[11] = newMonster(MONSTER_FIRESKULL, 256, 384);
+
+    addMonsters(monsters, 0, 12);
 }
 
 static void deinit()
 {
     deleteMap1();
     deleteAvatar();
+    for (int i = 0; i < 12; i++)
+    {
+        deleteMonster(monsters[i]);
+    }
 
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_UP);
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_DOWN);
