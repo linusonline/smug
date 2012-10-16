@@ -39,6 +39,8 @@ static const int WORLD_HEIGHT = 480;
 static int moveHorizontally = 0;
 static int moveVertically = 0;
 
+static float avatarSpeed = 100; // Units per second.
+
 static void alignAvatar()
 {
     if (moveHorizontally != 0)
@@ -105,6 +107,10 @@ static void _logicCallback()
     {
         Mainloop_exit();
     }
+    float speedFraction = avatarSpeed / Mainloop_getLogicFps();
+    Drawable_setPos(avatar,
+        moveHorizontally * speedFraction + Drawable_getX(avatar),
+        moveVertically * speedFraction + Drawable_getY(avatar));
 }
 
 static void init()
