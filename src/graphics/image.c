@@ -16,8 +16,7 @@ static BOOL _invariant(Image* self)
         self->width * self->height * self->bpp == self->size &&
         self->width > 0 &&
         self->height > 0 &&
-        self->bpp == 4 &&
-        (self->channels == 4 || self->channels == 3);
+        self->bpp == 4;
 }
 
 Image* Image_new()

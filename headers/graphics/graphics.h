@@ -7,6 +7,7 @@
 
 void Graphics_initialize(int windowWidth, int windowHeight, BOOL fullscreen);
 void Graphics_terminate();
+BOOL Graphics_isInitialized();
 
 void Graphics_setBackgroundColor(float red, float green, float blue);
 void Graphics_setCoordinateSystemForWindow(float left, float top, float width, float height);

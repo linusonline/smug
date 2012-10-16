@@ -10,6 +10,7 @@ add_subdirectory (src/utils)
 add_subdirectory (src/graphics)
 add_subdirectory (src/platform)
 add_subdirectory (src/input)
+add_subdirectory (src/engine)
 add_subdirectory (test)
 add_subdirectory (guitest)
 

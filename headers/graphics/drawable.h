@@ -12,6 +12,7 @@ Drawable* Drawable_newFromSprite(Sprite* sprite);
 Drawable* Drawable_newFromSpriteAndDimensions(Sprite* sprite, int width, int height, int posX, int posY);
 Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, int width, int height, int posX, int posY);
 void Drawable_delete(Drawable* self);
+void Drawable_deleteVoid(void* self);
 void Drawable_setSize(Drawable* self, float width, float height);
 void Drawable_setPos(Drawable* self, float x, float y);
 float Drawable_getX(Drawable* self);

@@ -23,6 +23,8 @@ static BOOL userCamera = FALSE;
 
 static BOOL fullscreen = FALSE;
 
+static BOOL isInitialized = FALSE;
+
 static void _adjustCoordinateSystemToWindow(int width, int height)
 {
     glMatrixMode(GL_PROJECTION);
@@ -88,6 +90,8 @@ static void openGlfwWindow(int width, int height, BOOL fs)
 
 void Graphics_initialize(int width, int height, BOOL fs)
 {
+    smug_assert(!isInitialized);
+
     fullscreen = fs;
     if (glfwInit() != GL_TRUE)
     {
@@ -98,16 +102,27 @@ void Graphics_initialize(int width, int height, BOOL fs)
     openGlfwWindow(width, height, fullscreen);
 
     camera = Camera_new();
+
+    isInitialized = TRUE;
 }
 
 void Graphics_terminate()
 {
+    smug_assert(isInitialized);
+
     if (!userCamera)
     {
         Camera_delete(camera);
     }
     glfwCloseWindow();
     glfwTerminate();
+
+    isInitialized = FALSE;
+}
+
+BOOL Graphics_isInitialized()
+{
+    return isInitialized;
 }
 
 void Graphics_setBackgroundColor(float red, float green, float blue)
