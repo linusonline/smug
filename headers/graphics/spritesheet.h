@@ -20,7 +20,7 @@
 struct _SpriteSheet;
 typedef struct _SpriteSheet SpriteSheet;
 
-SpriteSheet* SpriteSheet_new(char* imageFile, char* dataFile);
+SpriteSheet* SpriteSheet_new(const char* imageFile, const char* dataFile);
 
 Sprite* SpriteSheet_getSprite(SpriteSheet* self, int index);
 Sprite* SpriteSheet_getSpriteXY(SpriteSheet* self, int xIndex, int yIndex);
