@@ -16,13 +16,13 @@ typedef struct _SpriteSheet
 
 static BOOL _parseDataFile(const char* fileName, int* width, int* height)
 {
- 	File* file = NULL;
+     File* file = NULL;
     file = File_fopen(fileName,"rb");
-	if (!file)
-	{
-		WARNING("Couldn't locate file '%s'.", fileName);
-		return FALSE;
-	}
+    if (!file)
+    {
+        WARNING("Couldn't locate file '%s'.", fileName);
+        return FALSE;
+    }
     int w;
     int h;
     int ret = File_fscanf(file, "GRID %i %i", &w, &h);
