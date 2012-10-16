@@ -82,7 +82,7 @@ SpriteSheet* SpriteSheet_new(const char* imageFile, const char* dataFile)
         }
     }
 
-    DEBUG("Successfully created Sprites for Spritesheet.");
+    DEBUG("Successfully created %i x %i (%i) Sprites for Spritesheet.", indexWidth, indexHeight, indexWidth * indexHeight);
 
     SpriteSheet* newSheet = allocate(SpriteSheet);
     newSheet->sprites = sprites;

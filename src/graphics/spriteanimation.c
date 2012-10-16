@@ -13,6 +13,7 @@ typedef struct _SpriteAnimation
     LinkedList* durations;
     TIME starttime;
     BOOL started;
+    TIME pausedAt;
 } _SpriteAnimation;
 
 static void _deleteInt(void* anInt)
@@ -45,6 +46,35 @@ static TIME _timeMod(TIME time1, TIME time2)
     return time1 - (floor(time1 / time2) * time2);
 }
 
+static TIME _getCurrentTimeDiff(SpriteAnimation* self)
+{
+    TIME diff = glfwGetTime() - self->starttime;
+    diff = _timeMod(diff, _sumDurations(self->durations));
+    return diff;
+}
+
+/* timeDiff must not be longer than sum of frame durations. */
+static Sprite* _getSpriteForTimeDiff(SpriteAnimation* self, TIME timeDiff)
+{
+    if (LinkedList_isEmpty(self->durations))
+    {
+        WARNING("Got Sprite from empty SpriteAnimation!");
+        return NULL;
+    }
+    Sprite* sprite = (Sprite*)LinkedList_getFirst(self->sprites);
+    smug_assert(sprite != NULL);
+    TIME* duration = (TIME*)LinkedList_getFirst(self->durations);
+    timeDiff -= *duration;
+    while (timeDiff > 0)
+    {
+        duration = (TIME*)LinkedList_getNext(self->durations);
+        sprite = (Sprite*)LinkedList_getNext(self->sprites);
+        smug_assert(sprite != NULL && duration != NULL);
+        timeDiff -= *duration;
+    }
+    return sprite;
+}
+
 SpriteAnimation* SpriteAnimation_newEmpty()
 {
     SpriteAnimation* newAnimation = allocate(SpriteAnimation);
@@ -52,6 +82,7 @@ SpriteAnimation* SpriteAnimation_newEmpty()
     newAnimation->started = FALSE;
     newAnimation->sprites = LinkedList_new();
     newAnimation->durations = LinkedList_new();
+    newAnimation->pausedAt = 0;
     return newAnimation;
 }
 
@@ -74,25 +105,31 @@ void SpriteAnimation_startAt(SpriteAnimation* self, TIME time)
     self->started = TRUE;
 }
 
+void SpriteAnimation_pause(SpriteAnimation* self)
+{
+    smug_assert(self->started);
+    self->pausedAt = _getCurrentTimeDiff(self);
+    self->started = FALSE;
+}
+
+void SpriteAnimation_reset(SpriteAnimation* self)
+{
+    self->starttime = glfwGetTime();
+    self->pausedAt = _getCurrentTimeDiff(self);
+}
+
 Sprite* SpriteAnimation_getCurrentSprite(SpriteAnimation* self)
 {
-    if (!self->started || LinkedList_isEmpty(self->durations))
+    if (self->started)
     {
-        return NULL;
+        Sprite* s = _getSpriteForTimeDiff(self, _getCurrentTimeDiff(self));
+        return s;
     }
-    TIME diff = glfwGetTime() - self->starttime;
-    diff = _timeMod(diff, _sumDurations(self->durations));
-    Sprite* sprite = (Sprite*)LinkedList_getFirst(self->sprites);
-    TIME* duration = (TIME*)LinkedList_getFirst(self->durations);
-    diff -= *duration;
-    while (diff > 0)
+    else
     {
-        duration = (TIME*)LinkedList_getNext(self->durations);
-        sprite = (Sprite*)LinkedList_getNext(self->sprites);
-        smug_assert(sprite != NULL && duration != NULL);
-        diff -= *duration;
+        Sprite* s = _getSpriteForTimeDiff(self, self->pausedAt);
+        return s;
     }
-    return sprite;
 }
 
 void SpriteAnimation_delete(SpriteAnimation* self)

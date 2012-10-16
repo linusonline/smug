@@ -1,5 +1,6 @@
 #include <graphics/sprite.h>
 
+#include <utils/log.h>
 #include <graphics/drawable.h>
 #include <graphics/drawable_internal.h>
 
@@ -8,13 +9,20 @@ static BOOL _invariant(Drawable* self)
     return self != NULL && self->sprite != NULL;
 }
 
+static SpriteAnimation* _animateSprite(Sprite* sprite)
+{
+    SpriteAnimation* sa = SpriteAnimation_newEmpty();
+    SpriteAnimation_addFrame(sa, sprite, 1.0);
+    return sa;
+}
+
 Drawable* Drawable_newFromSprite(Sprite* sprite)
 {
     // TODO: Default to sprite pixel size?
-    Drawable_newFromSpriteAndDimensions(sprite, 0, 0, 0, 0);
+    return Drawable_newFromSpriteAndDimensions(sprite, 0, 0, 0, 0);
 }
 
-Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, int width, int height, int posX, int posY)
+Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, float width, float height, float posX, float posY)
 {
     Drawable* newDrawable = allocate(Drawable);
     newDrawable->sprite = sprite;
@@ -22,21 +30,16 @@ Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, 
     newDrawable->positionY = posY;
     newDrawable->width = width;
     newDrawable->height = height;
+    newDrawable->createdLocally = FALSE;
     smug_assert(_invariant(newDrawable));
     return newDrawable;
 }
 
-Drawable* Drawable_newFromSpriteAndDimensions(Sprite* sprite, int width, int height, int posX, int posY)
+Drawable* Drawable_newFromSpriteAndDimensions(Sprite* sprite, float width, float height, float posX, float posY)
 {
-    Drawable* newDrawable = allocate(Drawable);
-    newDrawable->sprite = SpriteAnimation_newEmpty();
-    SpriteAnimation_addFrame(newDrawable->sprite, sprite, 1.0);
-    SpriteAnimation_start(newDrawable->sprite);
-    newDrawable->positionX = posX;
-    newDrawable->positionY = posY;
-    newDrawable->width = width;
-    newDrawable->height = height;
-    smug_assert(_invariant(newDrawable));
+    SpriteAnimation* sa = _animateSprite(sprite);
+    Drawable* newDrawable = Drawable_newFromSpriteAnimationAndDimensions(sa, width, height, posX, posY);
+    newDrawable->createdLocally = TRUE;
     return newDrawable;
 }
 
@@ -90,4 +93,24 @@ void Drawable_addRenderData(Drawable* self, RenderBatch* renderBatch)
 {
     smug_assert(_invariant(self));
     Sprite_addRenderData(SpriteAnimation_getCurrentSprite(self->sprite), renderBatch, self->positionX, self->positionY, self->width, self->height);
+}
+
+void Drawable_useSprite(Drawable* self, Sprite* sprite)
+{
+    if (self->createdLocally)
+    {
+        SpriteAnimation_delete(self->sprite);
+    }
+    self->sprite = _animateSprite(sprite);
+    self->createdLocally = TRUE;
+}
+
+void Drawable_useSpriteAnimation(Drawable* self, SpriteAnimation* spriteAnimation)
+{
+    if (self->createdLocally)
+    {
+        SpriteAnimation_delete(self->sprite);
+    }
+    self->sprite = spriteAnimation;
+    self->createdLocally = FALSE;
 }

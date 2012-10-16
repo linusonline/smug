@@ -17,12 +17,12 @@ void SpriteAnimation_getCurrentSprite_shouldReturnNullOnEmptyAnimation(CuTest* t
     SpriteAnimation_delete(sa);
 }
 
-void SpriteAnimation_getCurrentSprite_shouldReturnNullWhenAnimationNotStarted(CuTest* tc)
+void SpriteAnimation_getCurrentSprite_shouldReturnFirstSpriteWhenAnimationNotStarted(CuTest* tc)
 {
     Sprite* a = Sprite_newEmpty();
     SpriteAnimation* sa = SpriteAnimation_newEmpty();
     SpriteAnimation_addFrame(sa, a, 1);
-    CuAssertTrue(tc, SpriteAnimation_getCurrentSprite(sa) == NULL);
+    CuAssertTrue(tc, SpriteAnimation_getCurrentSprite(sa) == a);
     SpriteAnimation_delete(sa);
     Sprite_delete(a);
 }
@@ -117,7 +117,7 @@ CuSuite* SpriteAnimationTest_GetSuite()
 
 	SUITE_ADD_TEST(suite, SpriteAnimation_newEmpty_shouldNotReturnNull);
 	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnNullOnEmptyAnimation);
-	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnNullWhenAnimationNotStarted);
+	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnFirstSpriteWhenAnimationNotStarted);
 	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnOnlySpriteAfterStart);
 	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnNullOnEmptyStartedAnimation);
 	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnFirstSpriteAfterStart);

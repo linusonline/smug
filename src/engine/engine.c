@@ -41,6 +41,7 @@ void Engine_terminate()
 void Engine_addObject(Drawable* newObj)
 {
     smug_assert(isInitialized);
+    smug_assert(newObj != NULL);
     LinkedList_addLast(gameObjects, newObj);
 }
 
