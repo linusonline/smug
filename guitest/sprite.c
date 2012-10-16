@@ -44,7 +44,6 @@ static void init()
 {
     console = StdoutConsole_new();
     Log_init(console);
-    Log_setLevel(LOG_ALL);
 
     // int glfwInit( void )
     if (glfwInit() != GL_TRUE)
@@ -77,9 +76,7 @@ static void init()
 
     spritesImage = Image_new();
     Image_loadFromFile(spritesImage, "res/units.png");
-    DEBUG("Making texture..."); Log_indent();
     spriteSheet = Texture_newFromImage(spritesImage);
-    Log_dedent(); DEBUG("...done.");
     Image_delete(spritesImage);
     spritesImage = NULL;
 
@@ -90,7 +87,6 @@ static void init()
 
 static void runMainLoop()
 {
-    DEBUG("Running main loop.");
     BOOL running = TRUE;
     while (running)
     {

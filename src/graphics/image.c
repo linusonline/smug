@@ -47,7 +47,7 @@ Image* Image_newFromData(unsigned char* data, unsigned int size, unsigned int wi
     newImage->file = NULL;
     smug_assert(_invariant(newImage));
     // TODO: Set all alpha bytes to 255 in image data.
-    DEBUG("New image. Width: %i, height: %i, alpha: %s, size %i", newImage->width, newImage->height, alpha ? "TRUE" : "FALSE", newImage->size);
+    LOG(LOG_IMAGE, "New image. Width: %i, height: %i, alpha: %s, size %i", newImage->width, newImage->height, alpha ? "TRUE" : "FALSE", newImage->size);
     return newImage;
 }
 
@@ -131,13 +131,13 @@ static unsigned char* _loadFile(const char* filename, unsigned int* buffersize)
         WARNING("Couldn't locate file '%s'.", filename);
         return 0;
     }
-    DEBUG("Successfully opened file '%s'.", filename);
+    LOG(LOG_IMAGE, "Successfully opened file '%s'.", filename);
 
     File_fseek(file, 0, SMUG_SEEK_END);
     int filelen = File_ftell(file);
     File_fseek(file, 0, SMUG_SEEK_SET);
 
-    DEBUG("File length: '%i'.", filelen);
+    LOG(LOG_IMAGE, "File length: '%i'.", filelen);
 
     unsigned char* buffer = (unsigned char*)malloc(filelen);
     if (File_fread(file, buffer, 1, filelen) != filelen)
@@ -155,16 +155,16 @@ static unsigned char* _loadFile(const char* filename, unsigned int* buffersize)
 
 static BOOL _saveFile(const char* filename, unsigned char* buffer, unsigned int buffersize)
 {
-     FILE* file = fopen(filename,"w+b");
+    FILE* file = fopen(filename,"w+b");
     if (!file)
     {
         WARNING("Couldn't locate or create file '%s'.", filename);
         return FALSE;
     }
-    DEBUG("Successfully opened file '%s'.", filename);
+    LOG(LOG_IMAGE, "Successfully opened file '%s'.", filename);
 
 
-    DEBUG("Buffer length: '%i'.", buffersize);
+    LOG(LOG_IMAGE, "Buffer length: '%i'.", buffersize);
 
     if (fwrite(buffer, 1, buffersize, file) != buffersize)
     {
@@ -194,7 +194,7 @@ static BOOL _decodePNG(Image* image, unsigned char* buffer, unsigned int buffers
     image->height = decoder.infoPng.height;
     image->channels = LodePNG_InfoColor_getChannels(&decoder.infoPng.color);
 
-    DEBUG("Loaded PNG. Size %i x %i, %i channels. Size %i", image->width, image->height, image->channels, image->size);
+    LOG(LOG_IMAGE, "Loaded PNG. Size %i x %i, %i channels. Size %i", image->width, image->height, image->channels, image->size);
 
     LodePNG_Decoder_cleanup(&decoder);
 
@@ -222,7 +222,7 @@ BOOL Image_loadFromFile(Image* self, const char* filename)
 {
     unsigned char* buffer = NULL;
 
-    DEBUG("Loading image from file '%s'", filename);
+    LOG(LOG_IMAGE, "Loading image from file '%s'", filename);
 
     unsigned int buffersize;
     buffer = _loadFile(filename, &buffersize);
@@ -237,12 +237,12 @@ BOOL Image_loadFromFile(Image* self, const char* filename)
     BOOL retval = FALSE;
     if (0 == strncmp(&filename[len-4], ".png", 3))
     {
-        DEBUG("Decoding image as PNG");
+        LOG(LOG_IMAGE, "Decoding image as PNG");
         retval = _decodePNG(self, buffer, buffersize);
     }
     else
     {
-        DEBUG("No known file format, decoding image as PNG");
+        LOG(LOG_IMAGE, "No known file format, decoding image as PNG");
         retval = _decodePNG(self, buffer, buffersize);
     }
 
@@ -252,7 +252,7 @@ BOOL Image_loadFromFile(Image* self, const char* filename)
         return FALSE;
     }
 
-    DEBUG("Successfully loaded image");
+    LOG(LOG_IMAGE, "Successfully loaded image");
     smug_assert(_invariant(self));
     return TRUE;
 }
@@ -261,20 +261,20 @@ BOOL Image_saveToFile(Image* self, const char* filename)
 {
     unsigned char* buffer = NULL;
     unsigned int buffersize;
-    DEBUG("Saving image to file '%s'", filename);
+    LOG(LOG_IMAGE, "Saving image to file '%s'", filename);
 
     // Encode according to file ending
     int len = strlen(filename);
     BOOL retval = FALSE;
-    DEBUG("Comparing '%s' to known file endings", &filename[len-4]);
+    LOG(LOG_IMAGE, "Comparing '%s' to known file endings", &filename[len-4]);
     if (0 == strncmp(&filename[len-4], ".png", 3))
     {
-        DEBUG("Encoding image as PNG");
+        LOG(LOG_IMAGE, "Encoding image as PNG");
         retval = _encodePNG(&buffer, &buffersize, self);
     }
     else
     {
-        DEBUG("No known file format, encoding image as PNG");
+        LOG(LOG_IMAGE, "No known file format, encoding image as PNG");
         retval = _encodePNG(&buffer, &buffersize, self);
     }
 

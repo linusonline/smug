@@ -540,7 +540,6 @@ static void init()
     console = StdoutConsole_new();
     smug_assert(console != NULL);
     Log_init(console);
-    Log_setLevel(LOG_ALL);
     DEBUG("==============================");
     DEBUG("");
     DEBUG("Input demo");

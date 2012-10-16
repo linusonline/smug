@@ -118,7 +118,6 @@ static void init()
     console = StdoutConsole_new();
     smug_assert(console != NULL);
     Log_init(console);
-    Log_setLevel(LOG_ALL);
 
     camera = Camera_new();
     camera->posX = INITIAL_WINDOW_WIDTH / 2;

@@ -31,18 +31,16 @@ void Log_setLevel_shouldSetSuppliedLogLevel(CuTest* tc)
     Console* console = NullConsole_new();
     Log_init(console);
 
-    Log_setLevel(LOG_DEBUG);
-    CuAssertTrue(tc, Log_getLevel() == LOG_DEBUG);
-    Log_setLevel(LOG_NOTIFICATION);
-    CuAssertTrue(tc, Log_getLevel() == LOG_NOTIFICATION);
-    Log_setLevel(LOG_WARNING);
-    CuAssertTrue(tc, Log_getLevel() == LOG_WARNING);
-    Log_setLevel(LOG_ERROR);
-    CuAssertTrue(tc, Log_getLevel() == LOG_ERROR);
-    Log_setLevel(LOG_ALL);
-    CuAssertTrue(tc, Log_getLevel() == LOG_ALL);
-    Log_setLevel(LOG_NONE);
-    CuAssertTrue(tc, Log_getLevel() == LOG_NONE);
+    Log_setScopes(LOG_DEBUG);
+    CuAssertTrue(tc, Log_getScopes() == LOG_DEBUG);
+    Log_setScopes(LOG_WARNING);
+    CuAssertTrue(tc, Log_getScopes() == LOG_WARNING);
+    Log_setScopes(LOG_ERROR);
+    CuAssertTrue(tc, Log_getScopes() == LOG_ERROR);
+    Log_setScopes(LOG_ALL);
+    CuAssertTrue(tc, Log_getScopes() == LOG_ALL);
+    Log_setScopes(LOG_NONE);
+    CuAssertTrue(tc, Log_getScopes() == LOG_NONE);
 
     Log_terminate();
     NullConsole_delete(console);
@@ -53,8 +51,7 @@ void Log_addEntry_shouldUseHardCodedFormatString(CuTest* tc)
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
 
     Log_init(console);
-    Log_setIndentationString("test");
-    Log_setLevel(LOG_DEBUG);
+    Log_activateScopes(LOG_DEBUG);
     Log_addEntry(LOG_DEBUG, "filename", 6, "message");
     Log_terminate();
 
@@ -68,8 +65,7 @@ void Log_addEntry_shouldHandleEmptyMessage(CuTest* tc)
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
 
     Log_init(console);
-    Log_setIndentationString("test");
-    Log_setLevel(LOG_DEBUG);
+    Log_activateScopes(LOG_DEBUG);
     Log_addEntry(LOG_DEBUG, "filename", 6, "");
     Log_terminate();
 
@@ -78,13 +74,27 @@ void Log_addEntry_shouldHandleEmptyMessage(CuTest* tc)
     StringConsole_delete(console);
 }
 
-void Log_addEntry_shouldNotPrintWrongScope(CuTest* tc)
+void Log_addEntry_shouldNotPrintWhenScopeSetToNone(CuTest* tc)
 {
     Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
 
     Log_init(console);
-    Log_setIndentationString("test");
-    Log_setLevel(LOG_ERROR);
+    Log_setScopes(LOG_NONE);
+    Log_addEntry(LOG_DEBUG, "filename", 6, "message");
+    Log_terminate();
+
+    char* result = StringConsole_getBuffer();
+    CuAssertTrue(tc, strcmp("", result) == 0);
+    StringConsole_delete(console);
+}
+
+void Log_addEntry_shouldNotPrintSilencedScope(CuTest* tc)
+{
+    Console* console = StringConsole_new(STRING_CONSOLE_MAX_SIZE);
+
+    Log_init(console);
+    Log_setScopes(LOG_DEBUG);
+    Log_silenceScopes(LOG_DEBUG);
     Log_addEntry(LOG_DEBUG, "filename", 6, "message");
     Log_terminate();
 
@@ -99,7 +109,7 @@ void Log_indent_shouldIncreaseIndentation(CuTest* tc)
 
     Log_init(console);
     Log_setIndentationString("test");
-    Log_setLevel(LOG_DEBUG);
+    Log_activateScopes(LOG_DEBUG);
     Log_indent();
     Log_addEntry(LOG_DEBUG, "filename", 6, "message");
     Log_terminate();
@@ -115,7 +125,7 @@ void Log_indent_shouldIncreaseIndentationMoreThanOnce(CuTest* tc)
 
     Log_init(console);
     Log_setIndentationString("test");
-    Log_setLevel(LOG_DEBUG);
+    Log_activateScopes(LOG_DEBUG);
     Log_indent();
     Log_indent();
     Log_addEntry(LOG_DEBUG, "filename", 6, "message");
@@ -132,7 +142,7 @@ void Log_dedent_shouldDecreaseIndentation(CuTest* tc)
 
     Log_init(console);
     Log_setIndentationString("test");
-    Log_setLevel(LOG_DEBUG);
+    Log_activateScopes(LOG_DEBUG);
     Log_indent();
     Log_indent();
     Log_indent();
@@ -155,7 +165,8 @@ CuSuite* LogTest_GetSuite()
     SUITE_ADD_TEST(suite, Log_setLevel_shouldSetSuppliedLogLevel);
     SUITE_ADD_TEST(suite, Log_addEntry_shouldUseHardCodedFormatString);
     SUITE_ADD_TEST(suite, Log_addEntry_shouldHandleEmptyMessage);
-    SUITE_ADD_TEST(suite, Log_addEntry_shouldNotPrintWrongScope);
+    SUITE_ADD_TEST(suite, Log_addEntry_shouldNotPrintWhenScopeSetToNone);
+    SUITE_ADD_TEST(suite, Log_addEntry_shouldNotPrintSilencedScope);
     SUITE_ADD_TEST(suite, Log_indent_shouldIncreaseIndentation);
     SUITE_ADD_TEST(suite, Log_indent_shouldIncreaseIndentationMoreThanOnce);
     SUITE_ADD_TEST(suite, Log_dedent_shouldDecreaseIndentation);

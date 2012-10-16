@@ -59,7 +59,7 @@ static void _keyboardCallback(int keyid, int state)
     }
     else
     {
-        DEBUG("%s on unmapped key %i", (userState == SMUG_KEY_PRESS ? "Press" : "Release"), keyid);
+        LOG(LOG_INPUT, "%s on unmapped key %i", (userState == SMUG_KEY_PRESS ? "Press" : "Release"), keyid);
     }
 }
 
@@ -130,7 +130,7 @@ void Input_linkControllerToKeyboardKey(Controller* controller, int buttonIndex, 
         ControllerIndex_delete(ci);
         // TODO: Small memory leak here, of the old integer key in the map.
     }
-    DEBUG("Adding mapping for key ID %i to button %i on controller %x", keyid, buttonIndex, controller);
+    LOG(LOG_INPUT, "Adding mapping for key ID %i to button %i on controller %x", keyid, buttonIndex, controller);
     Map_set(keyboardBindings, Map_newInt(keyid), ControllerIndex_new(controller, buttonIndex));
     glfwSetKeyCallback(_keyboardCallback);
 }

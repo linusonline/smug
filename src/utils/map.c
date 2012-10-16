@@ -99,13 +99,13 @@ void Map_set(Map* self, void* key, void* value)
     MapPair* pair = BinaryTree_find(self->data, &dummyPair);
     if (pair == NULL)
     {
-        DEBUG("Inserting key-value pair: %x -> %x", key, value);
+        LOG(LOG_MAP, "Inserting key-value pair: %x -> %x", key, value);
         pair = MapPair_new(key, value);
         BinaryTree_insert(self->data, pair);
     }
     else
     {
-        DEBUG("Setting key-value pair: %x -> %x", key, value);
+        LOG(LOG_MAP, "Setting key-value pair: %x -> %x", key, value);
         pair->value = value;
     }
 }

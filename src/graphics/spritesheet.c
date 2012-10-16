@@ -47,7 +47,7 @@ SpriteSheet* SpriteSheet_new(const char* imageFile, const char* dataFile)
         {
             return NULL;
         }
-        DEBUG("Successfully parsed Spritesheet data file.");
+        LOG(LOG_SPRITESHEET, "Successfully parsed Spritesheet data file.");
     }
 
     Image* spritesImage = Image_new();
@@ -56,7 +56,7 @@ SpriteSheet* SpriteSheet_new(const char* imageFile, const char* dataFile)
     Image_delete(spritesImage);
     spritesImage = NULL;
 
-    DEBUG("Successfully loaded Spritesheet image file.");
+    LOG(LOG_SPRITESHEET, "Successfully loaded Spritesheet image file.");
 
     if (dataFile == NULL)
     {
@@ -82,14 +82,14 @@ SpriteSheet* SpriteSheet_new(const char* imageFile, const char* dataFile)
         }
     }
 
-    DEBUG("Successfully created %i x %i (%i) Sprites for Spritesheet.", indexWidth, indexHeight, indexWidth * indexHeight);
+    LOG(LOG_SPRITESHEET, "Successfully created %i x %i (%i) Sprites for Spritesheet.", indexWidth, indexHeight, indexWidth * indexHeight);
 
     SpriteSheet* newSheet = allocate(SpriteSheet);
     newSheet->sprites = sprites;
     newSheet->nrSprites = indexWidth * indexHeight;
     newSheet->indexWidth = indexWidth;
     newSheet->texture = texture;
-    DEBUG("Successfully created Spritesheet.");
+    LOG(LOG_SPRITESHEET, "Successfully created Spritesheet.");
     return newSheet;
 }
 

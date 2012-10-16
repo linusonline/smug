@@ -56,7 +56,6 @@ void init()
 
     console = StdoutConsole_new();
     Log_init(console);
-    Log_setLevel(LOG_ALL);
 
     renderBatch = RenderBatch_new(4, TRUE);
 
