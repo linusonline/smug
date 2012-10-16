@@ -7,6 +7,8 @@ project (SmugGuiTest)
 # Local header files for tests.
 include_directories ("${PROJECT_SOURCE_DIR}/../headers")
 
+add_subdirectory (elements)
+
 # Add a target to build the executable "SmugGuiTest" from the specified sources.
 add_executable(WindowTest window.c)
 add_executable(FullscreenTest fullscreen.c)
