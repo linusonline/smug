@@ -111,6 +111,67 @@ void SpriteAnimation_getCurrentSprite_shouldReturnRightSpriteAfterLooping(CuTest
     deinitTest();
 }
 
+void SpriteAnimation_getCurrentSprite_shouldReturnRightSpriteAfterPausing(CuTest* tc)
+{
+    initTest();
+
+    Sprite* a = Sprite_newEmpty();
+    Sprite* b = Sprite_newEmpty();
+    Sprite* c = Sprite_newEmpty();
+    SpriteAnimation* sa = SpriteAnimation_newEmpty();
+    SpriteAnimation_addFrame(sa, a, 1);
+    SpriteAnimation_addFrame(sa, b, 1);
+    SpriteAnimation_addFrame(sa, c, 1);
+    SpriteAnimation_startAt(sa, 1.5);
+    SpriteAnimation_pause(sa);
+    CuAssertTrue(tc, SpriteAnimation_getCurrentSprite(sa) == b);
+    SpriteAnimation_delete(sa);
+    Sprite_delete(a);
+
+    deinitTest();
+}
+
+void SpriteAnimation_getCurrentSprite_shouldReturnFirstSpriteAfterResetting(CuTest* tc)
+{
+    initTest();
+
+    Sprite* a = Sprite_newEmpty();
+    Sprite* b = Sprite_newEmpty();
+    Sprite* c = Sprite_newEmpty();
+    SpriteAnimation* sa = SpriteAnimation_newEmpty();
+    SpriteAnimation_addFrame(sa, a, 1);
+    SpriteAnimation_addFrame(sa, b, 1);
+    SpriteAnimation_addFrame(sa, c, 1);
+    SpriteAnimation_startAt(sa, 1.5);
+    SpriteAnimation_reset(sa);
+    CuAssertTrue(tc, SpriteAnimation_getCurrentSprite(sa) == a);
+    SpriteAnimation_delete(sa);
+    Sprite_delete(a);
+
+    deinitTest();
+}
+
+void SpriteAnimation_getCurrentSprite_shouldReturnFirstSpriteAfterPausingAndResetting(CuTest* tc)
+{
+    initTest();
+
+    Sprite* a = Sprite_newEmpty();
+    Sprite* b = Sprite_newEmpty();
+    Sprite* c = Sprite_newEmpty();
+    SpriteAnimation* sa = SpriteAnimation_newEmpty();
+    SpriteAnimation_addFrame(sa, a, 1);
+    SpriteAnimation_addFrame(sa, b, 1);
+    SpriteAnimation_addFrame(sa, c, 1);
+    SpriteAnimation_startAt(sa, 1.5);
+    SpriteAnimation_pause(sa);
+    SpriteAnimation_reset(sa);
+    CuAssertTrue(tc, SpriteAnimation_getCurrentSprite(sa) == a);
+    SpriteAnimation_delete(sa);
+    Sprite_delete(a);
+
+    deinitTest();
+}
+
 CuSuite* SpriteAnimationTest_GetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -123,6 +184,9 @@ CuSuite* SpriteAnimationTest_GetSuite()
 	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnFirstSpriteAfterStart);
 	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnRightSprite);
 	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnRightSpriteAfterLooping);
+	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnRightSpriteAfterPausing);
+	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnFirstSpriteAfterResetting);
+	SUITE_ADD_TEST(suite, SpriteAnimation_getCurrentSprite_shouldReturnFirstSpriteAfterPausingAndResetting);
 
 	return suite;
 }
