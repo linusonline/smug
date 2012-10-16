@@ -8,7 +8,7 @@ project (Elements)
 include_directories ("${PROJECT_SOURCE_DIR}")
 include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 
-add_executable(Elements elements.c map1.c)
+add_executable(Elements elements.c map1.c avatar.c)
 
 find_package(OpenGL)
 target_link_libraries(Elements SmugGraphics SmugPlatform SmugUtils SmugInput SmugEngine glfw ${OPENGL_LIBRARIES})

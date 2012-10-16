@@ -11,18 +11,15 @@
 #include <engine/mainloop.h>
 
 #include <maps.h>
+#include <avatar.h>
 
 static const int INITIAL_WINDOW_WIDTH = 640;
 static const int INITIAL_WINDOW_HEIGHT = 480;
 static int windowWidth = 640;
 static int windowHeight = 480;
 
-static RenderQueue* renderQueue = NULL;
-
 static Drawable** world = NULL;
-static Drawable* character;
-
-static SpriteAnimation* avatarAnim;
+static Drawable* avatar;
 
 static Console* console = NULL;
 
@@ -42,6 +39,26 @@ static const int WORLD_HEIGHT = 480;
 static int moveHorizontally = 0;
 static int moveVertically = 0;
 
+static void alignAvatar()
+{
+    if (moveHorizontally != 0)
+    {
+        moveHorizontally < 0 ? setAvatarLeft() : setAvatarRight();
+    }
+    else if (moveVertically != 0)
+    {
+        moveVertically < 0 ? setAvatarUp() : setAvatarDown();
+    }
+    if (moveHorizontally != 0 || moveVertically != 0)
+    {
+        avatarWalk(TRUE);
+    }
+    else
+    {
+        avatarWalk(FALSE);
+    }
+}
+
 static void _buttonCallback(Controller* controller, int buttonIndex, int state)
 {
     smug_assert(controller == theController);
@@ -54,15 +71,19 @@ static void _buttonCallback(Controller* controller, int buttonIndex, int state)
     {
         case BUTTON_UP:
             moveVertically += -1 * reverse;
+            alignAvatar();
             break;
         case BUTTON_DOWN:
             moveVertically += 1 * reverse;
+            alignAvatar();
             break;
         case BUTTON_LEFT:
             moveHorizontally += -1 * reverse;
+            alignAvatar();
             break;
         case BUTTON_RIGHT:
             moveHorizontally += 1 * reverse;
+            alignAvatar();
             break;
         case BUTTON_EXIT:
             Mainloop_exit();
@@ -115,15 +136,16 @@ static void init()
     Mainloop_setLogicCallback(_logicCallback);
 
     world = createMap1();
+    avatar = getAvatar(24, 32, 320, 240);
     Engine_init();
     Engine_addObjects(world, 0, map1Size());
+    Engine_addObject(avatar);
 }
 
 static void deinit()
 {
-    RenderQueue_delete(renderQueue);
-
     deleteMap1();
+    deleteAvatar();
 
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_UP);
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_DOWN);

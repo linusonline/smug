@@ -28,6 +28,9 @@ void SpriteAnimation_start(SpriteAnimation* self);
 
 void SpriteAnimation_startAt(SpriteAnimation* self, TIME time);
 
+void SpriteAnimation_pause(SpriteAnimation* self);
+void SpriteAnimation_reset(SpriteAnimation* self);
+
 Sprite* SpriteAnimation_getCurrentSprite(SpriteAnimation* self);
 
 void SpriteAnimation_delete(SpriteAnimation* self);

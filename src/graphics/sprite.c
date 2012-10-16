@@ -1,4 +1,5 @@
 #include <common.h>
+#include <utils/log.h>
 #include <utils/rectangle.h>
 #include <graphics/texture.h>
 #include <graphics/renderbatch.h>
@@ -32,6 +33,7 @@ void Sprite_addRenderData(Sprite* self, RenderBatch* renderBatch, float posX, fl
 {
     if (self->texture == NULL)
     {
+        WARNING("Sprite texture was null.");
         return;
     }
     RenderBatch_addTexturedRect(renderBatch,

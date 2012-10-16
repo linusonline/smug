@@ -11,6 +11,7 @@ typedef struct _Drawable
     float width;
     float height;
     SpriteAnimation* sprite;
+    BOOL createdLocally;
 } _Drawable;
 
 #endif /* SMUG_GRAPHICS_DRAWABLE_INTERNAL_H */
