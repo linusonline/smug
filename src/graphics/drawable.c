@@ -45,6 +45,11 @@ void Drawable_delete(Drawable* self)
     free(self);
 }
 
+void Drawable_deleteVoid(void* self)
+{
+    Drawable_delete((Drawable*)self);
+}
+
 void Drawable_setSize(Drawable* self, float width, float height)
 {
     smug_assert(_invariant(self));

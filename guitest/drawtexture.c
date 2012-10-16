@@ -54,6 +54,10 @@ void init()
     glfwSetWindowSizeCallback(windowResize);
     glClearColor(0.5, 0.0, 0.5, 0.0);
 
+    console = StdoutConsole_new();
+    Log_init(console);
+    Log_setLevel(LOG_ALL);
+
     renderBatch = RenderBatch_new(4, TRUE);
 
     image = Image_new();
@@ -65,10 +69,6 @@ void init()
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    console = StdoutConsole_new();
-    Log_init(console);
-    Log_setLevel(LOG_ALL);
 }
 
 void runMainLoop()

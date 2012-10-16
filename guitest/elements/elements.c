@@ -1,18 +1,14 @@
 #include <GL/glfw.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
-#include <math.h>
 
-#include <graphics/renderqueue.h>
-#include <graphics/spriteanimation.h>
+#include <common.h>
 #include <graphics/camera.h>
 #include <graphics/graphics.h>
+#include <graphics/drawable.h>
 #include <input/input.h>
 #include <utils/log.h>
 #include <utils/stdout_console.h>
-#include <common.h>
-#include <graphics/drawable.h>
+#include <engine/engine.h>
+#include <engine/mainloop.h>
 
 #include <maps.h>
 
@@ -38,31 +34,10 @@ static Camera* camera;
 #define BUTTON_DOWN 1
 #define BUTTON_LEFT 2
 #define BUTTON_RIGHT 3
+#define BUTTON_EXIT 4
 
 static const int WORLD_WIDTH = 640;     // This world happens to be just one screen big.
 static const int WORLD_HEIGHT = 480;
-
-static void drawStuff(RenderQueue* rq)
-{
-    for (int i = 0; i < map1Size(); i++)
-    {
-        RenderQueue_addDrawable(rq, world[i]);
-    }
-}
-
-static void afterDrawing()
-{
-    RenderQueue_clear(renderQueue);
-}
-
-static void createBackground()
-{
-    world = createMap1();
-}
-
-static void createAvatar(int posX, int posY)
-{
-}
 
 static int moveHorizontally = 0;
 static int moveVertically = 0;
@@ -89,6 +64,9 @@ static void _buttonCallback(Controller* controller, int buttonIndex, int state)
         case BUTTON_RIGHT:
             moveHorizontally += 1 * reverse;
             break;
+        case BUTTON_EXIT:
+            Mainloop_exit();
+            break;
         default:
             smug_assert(FALSE);
     }
@@ -100,8 +78,12 @@ static void _resizeCallback(int width, int height)
     windowHeight = height;
 }
 
-static void doStuff()
+static void _logicCallback()
 {
+    if (!glfwGetWindowParam(GLFW_OPENED))
+    {
+        Mainloop_exit();
+    }
 }
 
 static void init()
@@ -128,30 +110,13 @@ static void init()
     Input_linkControllerToKeyboardKey(theController, BUTTON_DOWN, GLFW_KEY_DOWN);
     Input_linkControllerToKeyboardKey(theController, BUTTON_LEFT, GLFW_KEY_LEFT);
     Input_linkControllerToKeyboardKey(theController, BUTTON_RIGHT, GLFW_KEY_RIGHT);
+    Input_linkControllerToKeyboardKey(theController, BUTTON_EXIT, GLFW_KEY_ESC);
 
-    renderQueue = RenderQueue_new();
+    Mainloop_setLogicCallback(_logicCallback);
 
-    createBackground();
-    createAvatar(320, 240);
-}
-
-static void runMainLoop()
-{
-    BOOL running = TRUE;
-    while (running)
-    {
-        doStuff();
-        drawStuff(renderQueue);
-        Graphics_render(renderQueue);
-
-        // Swap front and back rendering buffers
-        Graphics_refreshWindow();
-
-        afterDrawing();
-
-        // Check if ESC key was pressed or window was closed
-        running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
-    }
+    world = createMap1();
+    Engine_init();
+    Engine_addObjects(world, 0, map1Size());
 }
 
 static void deinit()
@@ -164,8 +129,11 @@ static void deinit()
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_DOWN);
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_LEFT);
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_RIGHT);
+    Input_unlinkControllersFromKeyboardKey(GLFW_KEY_ESC);
     Controller_delete(theController);
 
+    Engine_removeAllObjects();
+    Engine_terminate();
     Graphics_terminate();
     Input_terminate();
     Log_terminate();
@@ -175,7 +143,7 @@ static void deinit()
 int main()
 {
     init();
-    runMainLoop();
+    Mainloop_run();
     deinit();
     return 0;
 }
