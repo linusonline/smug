@@ -45,6 +45,10 @@ Drawable* Drawable_newFromSpriteAndDimensions(Sprite* sprite, float width, float
 
 void Drawable_delete(Drawable* self)
 {
+    if (self->createdLocally)
+    {
+        SpriteAnimation_delete(self->sprite);
+    }
     free(self);
 }
 
