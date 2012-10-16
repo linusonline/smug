@@ -109,3 +109,8 @@ void Mainloop_setLogicFps(float fps)
     logicDelay = 1.0 / fps;
     fpsSet = TRUE;
 }
+
+float Mainloop_getLogicFps()
+{
+    return 1.0 / logicDelay;
+}
