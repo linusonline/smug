@@ -5,6 +5,8 @@
 #include <graphics/renderqueue.h>
 #include <graphics/camera.h>
 
+#include <graphics/graphics.h>
+
 static int windowWidth;
 static int windowHeight;
 
@@ -18,6 +20,8 @@ static int originInWindowY = 0;
 
 static Camera* camera = NULL;
 static BOOL userCamera = FALSE;
+
+static BOOL fullscreen = FALSE;
 
 static void _adjustCoordinateSystemToWindow(int width, int height)
 {
@@ -56,26 +60,20 @@ static void setCoordinateSystemInPixelsPerUnit(float ppux, float ppuy, int origi
     _adjustCoordinateSystemToWindow(windowWidth, windowHeight);
 }
 
-void Graphics_initialize(int width, int height, BOOL fullscreen)
+static void openGlfwWindow(int width, int height, BOOL fs)
 {
-    // int glfwInit( void )
-    if (glfwInit() != GL_TRUE)
-    {
-        ERROR("Could not initialize GLFW! Terminating!");
-        exit(EXIT_FAILURE);
-    }
-
     // int glfwOpenWindow( int width, int height,
     //      int redbits, int greenbits, int bluebits,
     //      int alphabits, int depthbits, int stencilbits,
     //      int mode )
-    if (glfwOpenWindow(width, height, 0, 0, 0, 0, 0, 0, (fullscreen ? GLFW_FULLSCREEN : GLFW_WINDOW)) != GL_TRUE)
+    glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
+    if (glfwOpenWindow(width, height, 0, 0, 0, 0, 0, 0, (fs ? GLFW_FULLSCREEN : GLFW_WINDOW)) != GL_TRUE)
     {
-        // void glfwTerminate( void )
         ERROR("Could not open GLFW window! Terminating!");
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
+
     glfwSetWindowSizeCallback(_windowResize);
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
@@ -86,6 +84,18 @@ void Graphics_initialize(int width, int height, BOOL fullscreen)
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+}
+
+void Graphics_initialize(int width, int height, BOOL fs)
+{
+    fullscreen = fs;
+    if (glfwInit() != GL_TRUE)
+    {
+        ERROR("Could not initialize GLFW! Terminating!");
+        exit(EXIT_FAILURE);
+    }
+
+    openGlfwWindow(width, height, fullscreen);
 
     camera = Camera_new();
 }
@@ -96,6 +106,7 @@ void Graphics_terminate()
     {
         Camera_delete(camera);
     }
+    glfwCloseWindow();
     glfwTerminate();
 }
 
