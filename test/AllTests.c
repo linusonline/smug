@@ -11,7 +11,7 @@ void initTest()
 {
     console = StdoutConsole_new();
     Log_init(console);
-    Log_setLevel(LOG_NONE);
+    Log_setScopes(LOG_NONE);
 }
 
 void deinitTest()

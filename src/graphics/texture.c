@@ -41,7 +41,8 @@ static BOOL _invariant(Texture* self)
 static Texture* loadTextureFromImage(Texture* tex, Image* image)
 {
     smug_assert(image != NULL);
-    DEBUG("Loading texture from image..."); Log_indent();
+    Log_indent();
+    LOG(LOG_TEXTURE, "Loading texture from image...");
 
     unsigned int texid;
 
@@ -70,7 +71,7 @@ static Texture* loadTextureFromImage(Texture* tex, Image* image)
     {
         imageForTexture = Image_copy(image);
         Image_fillOut(imageForTexture, neededWidth, neededHeight);
-        DEBUG("Had to rescale image for OpenGL texture. (%i x %i) -> (%i x %i)", imgWidth, imgHeight, Image_getWidth(imageForTexture), Image_getHeight(imageForTexture));
+        LOG(LOG_TEXTURE, "Had to rescale image for OpenGL texture. (%i x %i) -> (%i x %i)", imgWidth, imgHeight, Image_getWidth(imageForTexture), Image_getHeight(imageForTexture));
     }
 
     glTexImage2D(GL_TEXTURE_2D,
@@ -107,7 +108,8 @@ static Texture* loadTextureFromImage(Texture* tex, Image* image)
     tex->height = imgHeight;
     tex->loaded = TRUE;
 
-    Log_dedent(); DEBUG("...done.");
+    LOG(LOG_TEXTURE, "...done.");
+    Log_dedent();
     return tex;
 }
 

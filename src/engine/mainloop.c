@@ -48,7 +48,7 @@ void Mainloop_run()
     smug_assert(Engine_isInitialized());
     smug_assert(Graphics_isInitialized());
 
-    NOTIFY("Running engine...");
+    LOG(LOG_ENGINE, "Running engine...");
     Log_indent();
 
     // Setup timing variables
@@ -87,7 +87,7 @@ void Mainloop_run()
 
         if (_getTime() - lastFpsCheck >= 1.0)
         {
-            NOTIFY("Fps: %i", fps);
+            LOG(LOG_FPS, "Fps: %i", fps);
             fps = 0;
             lastFpsCheck = _getTime();
         }
@@ -101,7 +101,7 @@ void Mainloop_run()
 
     RenderQueue_delete(renderQueue);
     Log_dedent();
-    NOTIFY("Engine stopped.");
+    LOG(LOG_ENGINE, "Engine stopped.");
 }
 
 void Mainloop_setLogicFps(float fps)

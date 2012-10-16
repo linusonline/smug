@@ -120,14 +120,14 @@ void SpriteAnimation_pause(SpriteAnimation* self)
     smug_assert(self->started);
     self->pausedAt = _getCurrentTimeDiff(self);
     self->started = FALSE;
-    DEBUG("Paused at time diff: %f", self->pausedAt);
+    LOG(LOG_ANIMATION, "Paused at time diff: %f", self->pausedAt);
 }
 
 void SpriteAnimation_reset(SpriteAnimation* self)
 {
     self->starttime = glfwGetTime();
     self->pausedAt = 0.0;
-    DEBUG("Reset animation.");
+    LOG(LOG_ANIMATION, "Reset animation.");
 }
 
 Sprite* SpriteAnimation_getCurrentSprite(SpriteAnimation* self)

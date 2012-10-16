@@ -20,18 +20,27 @@
 #include <utils/console.h>
 
 // Predefined log levels
+#define LOG_ALL             0xFFFFFFFF
+#define LOG_NONE            0x00
 #define LOG_ERROR           0x01
 #define LOG_WARNING         0x02
-#define LOG_NOTIFICATION    0x04
-#define LOG_DEBUG           0x08
-#define LOG_ALL             0xFF
-#define LOG_NONE            0x00
+#define LOG_FPS             0x04
+#define LOG_WINDOW          0x08
+#define LOG_IMAGE           0x10
+#define LOG_ANIMATION       0x20
+#define LOG_SPRITESHEET     0x40
+#define LOG_TEXTURE         0x80
+#define LOG_INPUT           0x0100
+#define LOG_MAP             0x0200
+#define LOG_ENGINE          0x0400
+#define LOG_DEFAULT         0x0800
+#define LOG_DEBUG           0x1000
 
 // Define macros for the Log_Write function
 #define DEBUG(...) Log_addEntry(LOG_DEBUG, __FILE__, __LINE__, ##__VA_ARGS__)
-#define NOTIFY(...) Log_addEntry(LOG_NOTIFICATION, __FILE__, __LINE__, ##__VA_ARGS__)
 #define WARNING(...) Log_addEntry(LOG_WARNING, __FILE__, __LINE__, ##__VA_ARGS__)
 #define ERROR(...) Log_addEntry(LOG_ERROR, __FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG(scope, ...) Log_addEntry(scope, __FILE__, __LINE__, ##__VA_ARGS__)
 
 /** Initialize the log system (allocate memory, etc)
  */
@@ -52,23 +61,25 @@ void Log_terminate(void);
   *
   * Use the macros DEBUG(char*, ...), WARNING(char*, ...), ERROR(char*, ...), etc instead.
   */
-void Log_addEntry(int level, char* file, int line, char* fmt, ...);
+void Log_addEntry(int scope, char* file, int line, char* fmt, ...);
 
-void Log_addEntryVa(int level, char* file, int line, char* fmt, va_list args);
+void Log_addEntryVa(int scope, char* file, int line, char* fmt, va_list args);
 
 
-/** Set the log level to be written by Log_Write.
+/** Set the log scope to be written by Log_Write.
   *
-  * @param level A flagset consisting of LOG_DEBUG, LOG_WARNING and/or LOG_ERROR
+  * @param scopes A flagset consisting of one or more log scopes.
   */
-void Log_setLevel(int level);
+void Log_setScopes(unsigned int scopes);
+void Log_activateScopes(unsigned int scopes);
+void Log_silenceScopes(unsigned int scopes);
 
 
-/** Get the curent log level.
+/** Get the current log scopes.
   *
-  * @return A flagset consisting of the log level constants.
+  * @return A flagset consisting of all current log scopes.
   */
-int Log_getLevel(void);
+unsigned int Log_getScopes(void);
 
 
 /** Set the format string to use for log output
@@ -105,6 +116,6 @@ void Log_dedent(void);
 void Log_setIndentationString(char* indentString);
 
 
-#endif // SMUG_COMMON_LOG_H
+#endif /* SMUG_COMMON_LOG_H */
 
 /**@}*/

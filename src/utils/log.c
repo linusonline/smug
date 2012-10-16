@@ -9,8 +9,7 @@
 #include <utils/linkedlist.h>
 #include <utils/log.h>
 
-// As default, include all log output
-static int   gCurrentLogLevel = LOG_ALL;
+static unsigned int gCurrentLogLevel = LOG_NONE;
 static char* gFormatString = NULL;
 static char* gIndentString;
 static LinkedList* gPrefixStack = NULL;
@@ -42,6 +41,8 @@ BOOL Log_init(Console* console)
     gIndentString = "..";
     #endif
 
+    Log_setScopes(LOG_ERROR | LOG_WARNING | LOG_DEFAULT);
+
     return NULL != gPrefixStack;
 }
 
@@ -58,11 +59,11 @@ void Log_terminate()
     gConsole = NULL;
 }
 
-void Log_addEntry(int level, char* file, int line, char* fmt, ...)
+void Log_addEntry(int scope, char* file, int line, char* fmt, ...)
 {
     va_list vl;
     va_start(vl, fmt);
-    Log_addEntryVa(level, file, line, fmt, vl);
+    Log_addEntryVa(scope, file, line, fmt, vl);
     va_end(vl);
 }
 
@@ -71,13 +72,31 @@ static char* getScopeString(int logScope)
     switch (logScope)
     {
         case LOG_DEBUG:
-            return "DEBUG";
-        case LOG_NOTIFICATION:
-            return "NOTIFICATION";
+            return "DEBUG"; break;
         case LOG_WARNING:
-            return "WARNING";
+            return "WARNING"; break;
         case LOG_ERROR:
-            return "ERROR";
+            return "ERROR"; break;
+        case LOG_FPS:
+            return "FPS"; break;
+        case LOG_WINDOW:
+            return "WINDOW"; break;
+        case LOG_IMAGE:
+            return "IMAGE"; break;
+        case LOG_ANIMATION:
+            return "ANIMATION"; break;
+        case LOG_SPRITESHEET:
+            return "SPRITESHEET"; break;
+        case LOG_TEXTURE:
+            return "TEXTURE"; break;
+        case LOG_INPUT:
+            return "INPUT"; break;
+        case LOG_MAP:
+            return "MAP"; break;
+        case LOG_ENGINE:
+            return "ENGINE"; break;
+        case LOG_DEFAULT:
+            return "DEFAULT"; break;
         default:
             return "BAD_SCOPE";
     }
@@ -90,18 +109,18 @@ static void Console_writeVoid(void* chars)
 
 static BOOL _isScopeActive(int scope)
 {
-    return gCurrentLogLevel & scope;
+    return (gCurrentLogLevel & scope) != 0;
 }
 
-void Log_addEntryVa(int level, char* file, int line, char* fmt, va_list args)
+void Log_addEntryVa(int scope, char* file, int line, char* fmt, va_list args)
 {
     if (!_isInitialized())
     {
         return;
     }
 
-    // Only print log if correct log level is set
-    if (_isScopeActive(level))
+    // Only print log if correct log scope is set
+    if (_isScopeActive(scope))
     {
         char message[MAX_MESSAGE_SIZE];
         // Print formatted string to the message buffer
@@ -112,34 +131,28 @@ void Log_addEntryVa(int level, char* file, int line, char* fmt, va_list args)
 
             // Static log version: "[%scope%]%indent%%message% [%file%:%line%]"
             LinkedList_doList(gPrefixStack, Console_writeVoid);
-            Console_writeLine(gConsole, "[%s] %s     [%s:%i]", getScopeString(level), message, file, line);
+            Console_writeLine(gConsole, "[%s] %s     [%s:%i]", getScopeString(scope), message, file, line);
         }
     }
 }
 
-void Log_setLevel(int level)
+void Log_silenceScopes(unsigned int scopes)
 {
-    smug_assert(_isInitialized());
-    gCurrentLogLevel = 0;
-    switch (level)
-    {
-        case LOG_ALL:
-        case LOG_DEBUG:
-            gCurrentLogLevel |= LOG_DEBUG;
-        case LOG_NOTIFICATION:
-            gCurrentLogLevel |= LOG_NOTIFICATION;
-        case LOG_WARNING:
-            gCurrentLogLevel |= LOG_WARNING;
-        case LOG_ERROR:
-            gCurrentLogLevel |= LOG_ERROR;
-        case LOG_NONE:
-        default:
-            SMUG_NOOP();
-    }
-    gCurrentLogLevel = level;
+    gCurrentLogLevel &= (~scopes);
 }
 
-int Log_getLevel()
+void Log_activateScopes(unsigned int scopes)
+{
+    gCurrentLogLevel |= scopes;
+}
+
+void Log_setScopes(unsigned int scopes)
+{
+    smug_assert(_isInitialized());
+    gCurrentLogLevel = scopes;
+}
+
+unsigned int Log_getScopes()
 {
     return gCurrentLogLevel;
 }

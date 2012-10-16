@@ -39,7 +39,7 @@ static void GLFWCALL _windowResize(int width, int height)
 {
     windowWidth = width;
     windowHeight = height;
-    DEBUG("Got resize event (%i x %i)", width, height);
+    LOG(LOG_WINDOW, "Got resize event (%i x %i)", width, height);
     glViewport(0, 0, (GLsizei)width, (GLsizei)height);
     if (!useWindowCoordinates)
     {
