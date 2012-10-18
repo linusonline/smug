@@ -52,6 +52,7 @@ Monster newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float
     SpriteAnimation_start(monster.walkDown);
 
     monster.monsterObject = Drawable_newFromSpriteAnimationAndDimensions(monster.walkDown, width, height, posX, posY);
+    Drawable_setZ(monster.monsterObject, posY);
     return monster;
 }
 

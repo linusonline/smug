@@ -30,6 +30,7 @@ Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, 
     newDrawable->positionY = posY;
     newDrawable->width = width;
     newDrawable->height = height;
+    newDrawable->z = 0.0f;
     newDrawable->createdLocally = FALSE;
     smug_assert(_invariant(newDrawable));
     return newDrawable;
@@ -71,14 +72,28 @@ void Drawable_setPos(Drawable* self, float x, float y)
     self->positionY = y;
 }
 
+void Drawable_setZ(Drawable* self, float z)
+{
+    smug_assert(_invariant(self));
+    self->z = z;
+}
+
 float Drawable_getX(Drawable* self)
 {
+    smug_assert(_invariant(self));
     return self->positionX;
 }
 
 float Drawable_getY(Drawable* self)
 {
+    smug_assert(_invariant(self));
     return self->positionY;
+}
+
+float Drawable_getZ(Drawable* self)
+{
+    smug_assert(_invariant(self));
+    return self->z;
 }
 
 SpriteAnimation* Drawable_getSpriteAnimation(Drawable* self)
@@ -96,7 +111,7 @@ Sprite* Drawable_getSprite(Drawable* self)
 void Drawable_addRenderData(Drawable* self, RenderBatch* renderBatch)
 {
     smug_assert(_invariant(self));
-    Sprite_addRenderData(SpriteAnimation_getCurrentSprite(self->sprite), renderBatch, self->positionX, self->positionY, self->width, self->height);
+    Sprite_addRenderData(SpriteAnimation_getCurrentSprite(self->sprite), renderBatch, self->positionX, self->positionY, self->width, self->height, self->z);
 }
 
 void Drawable_useSprite(Drawable* self, Sprite* sprite)

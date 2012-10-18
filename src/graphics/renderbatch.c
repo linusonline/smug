@@ -15,7 +15,7 @@ typedef struct _RenderBatch
     float* textureArray;
 } _RenderBatch;
 
-static const unsigned char PRIMITIVES_PER_VERTEX = 2;
+static const unsigned char PRIMITIVES_PER_VERTEX = 3;
 static const unsigned char PRIMITIVES_PER_TEXTURE_COORDINATE = 2;
 static const unsigned char PRIMITIVES_PER_COLOR = 4;
 
@@ -115,54 +115,71 @@ int RenderBatch_getNumberOfAddedElements(RenderBatch* self)
 
 void RenderBatch_addTexturedRect(RenderBatch* self,
                                  float x1, float y1, float x2, float y2,
+                                 float z,
                                  float s1, float t1, float s2, float t2)
 {
     smug_assert(_usesTexture(self));
     _expandArraysIfNeeded(self, 4);
     int start = self->addedElements * PRIMITIVES_PER_VERTEX;
-    self->vertexArray[start + 0] = x1;
-    self->vertexArray[start + 1] = y1;
-    self->vertexArray[start + 2] = x1;
-    self->vertexArray[start + 3] = y2;
-    self->vertexArray[start + 4] = x2;
-    self->vertexArray[start + 5] = y2;
-    self->vertexArray[start + 6] = x2;
-    self->vertexArray[start + 7] = y1;
+    self->vertexArray[start++] = x1;
+    self->vertexArray[start++] = y1;
+    self->vertexArray[start++] = z;
+    self->vertexArray[start++] = x1;
+    self->vertexArray[start++] = y2;
+    self->vertexArray[start++] = z;
+    self->vertexArray[start++] = x2;
+    self->vertexArray[start++] = y2;
+    self->vertexArray[start++] = z;
+    self->vertexArray[start++] = x2;
+    self->vertexArray[start++] = y1;
+    self->vertexArray[start++] = z;
+    smug_assert(start == (self->addedElements + 4) * PRIMITIVES_PER_VERTEX);
+
     start = self->addedElements * PRIMITIVES_PER_TEXTURE_COORDINATE;
-    self->textureArray[start + 0] = s1;
-    self->textureArray[start + 1] = t1;
-    self->textureArray[start + 2] = s1;
-    self->textureArray[start + 3] = t2;
-    self->textureArray[start + 4] = s2;
-    self->textureArray[start + 5] = t2;
-    self->textureArray[start + 6] = s2;
-    self->textureArray[start + 7] = t1;
+    self->textureArray[start++] = s1;
+    self->textureArray[start++] = t1;
+    self->textureArray[start++] = s1;
+    self->textureArray[start++] = t2;
+    self->textureArray[start++] = s2;
+    self->textureArray[start++] = t2;
+    self->textureArray[start++] = s2;
+    self->textureArray[start++] = t1;
+    smug_assert(start == (self->addedElements + 4) * PRIMITIVES_PER_TEXTURE_COORDINATE);
     self->addedElements += 4;
 }
 
 void RenderBatch_addColoredRect(RenderBatch* self,
                                 float x1, float y1, float x2, float y2,
+                                float z,
                                 float r, float g, float b, float a)
 {
     smug_assert(!_usesTexture(self));
     _expandArraysIfNeeded(self, 4);
     int start = self->addedElements * PRIMITIVES_PER_VERTEX;
-    self->vertexArray[start + 0] = x1;
-    self->vertexArray[start + 1] = y1;
-    self->vertexArray[start + 2] = x1;
-    self->vertexArray[start + 3] = y2;
-    self->vertexArray[start + 4] = x2;
-    self->vertexArray[start + 5] = y2;
-    self->vertexArray[start + 6] = x2;
-    self->vertexArray[start + 7] = y1;
+    self->vertexArray[start++] = x1;
+    self->vertexArray[start++] = y1;
+    self->vertexArray[start++] = z;
+    self->vertexArray[start++] = x1;
+    self->vertexArray[start++] = y2;
+    self->vertexArray[start++] = z;
+    self->vertexArray[start++] = x2;
+    self->vertexArray[start++] = y2;
+    self->vertexArray[start++] = z;
+    self->vertexArray[start++] = x2;
+    self->vertexArray[start++] = y1;
+    self->vertexArray[start++] = z;
+    smug_assert(start == (self->addedElements + 4) * PRIMITIVES_PER_VERTEX);
+
     start = self->addedElements * PRIMITIVES_PER_COLOR;
-    for (int offset = start; offset < start + 16;)
+    int offset;
+    for (offset = start; offset < start + 4 * PRIMITIVES_PER_COLOR;)
     {
         self->colorArray[offset++] = r;
         self->colorArray[offset++] = g;
         self->colorArray[offset++] = b;
         self->colorArray[offset++] = a;
     }
+    smug_assert(offset == (self->addedElements + 4) * PRIMITIVES_PER_COLOR);
     self->addedElements += 4;
 }
 

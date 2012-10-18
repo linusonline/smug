@@ -158,6 +158,7 @@ static void _logicCallback()
     Drawable_setPos(avatar,
         moveHorizontally * speedFraction + Drawable_getX(avatar),
         moveVertically * speedFraction + Drawable_getY(avatar));
+    Drawable_setZ(avatar, Drawable_getY(avatar));
 }
 
 static void init()

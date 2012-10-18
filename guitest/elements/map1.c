@@ -373,5 +373,10 @@ Drawable** createMap1()
     world[298] = landtile(sprite(dirtSheet, 1, 2), 18, 14);
     world[299] = landtile(sprite(dirtSheet, 1, 2), 19, 14);
 
+    for (int i = 0; i < 300; i++)
+    {
+        Drawable_setZ(world[i], -1.0);
+    }
+
     return world;
 }
