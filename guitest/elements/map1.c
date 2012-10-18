@@ -38,8 +38,8 @@ void deleteMap1()
     for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
     {
         Drawable_delete(world[i]);
-        free(world);
     }
+    free(world);
 
     SpriteSheet_delete(dirtSheet);
     SpriteSheet_delete(grassSheet);
