@@ -44,15 +44,51 @@ static int moveVertically = 0;
 
 static float avatarSpeed = 100; // Units per second.
 
+static void setAllLeft()
+{
+    setAvatarLeft();
+    for (int i = 0; i < 13; i++)
+    {
+        setMonsterLeft(monsters[i]);
+    }
+}
+
+static void setAllRight()
+{
+    setAvatarRight();
+    for (int i = 0; i < 13; i++)
+    {
+        setMonsterRight(monsters[i]);
+    }
+}
+
+static void setAllUp()
+{
+    setAvatarUp();
+    for (int i = 0; i < 13; i++)
+    {
+        setMonsterUp(monsters[i]);
+    }
+}
+
+static void setAllDown()
+{
+    setAvatarDown();
+    for (int i = 0; i < 13; i++)
+    {
+        setMonsterDown(monsters[i]);
+    }
+}
+
 static void alignAvatar()
 {
     if (moveHorizontally != 0)
     {
-        moveHorizontally < 0 ? setAvatarLeft() : setAvatarRight();
+        moveHorizontally < 0 ? setAllLeft() : setAllRight();
     }
     else if (moveVertically != 0)
     {
-        moveVertically < 0 ? setAvatarUp() : setAvatarDown();
+        moveVertically < 0 ? setAllUp() : setAllDown();
     }
     if (moveHorizontally != 0 || moveVertically != 0)
     {
