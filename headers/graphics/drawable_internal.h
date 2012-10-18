@@ -10,6 +10,7 @@ typedef struct _Drawable
     float positionY;
     float width;
     float height;
+    float z;
     SpriteAnimation* sprite;
     BOOL createdLocally;
 } _Drawable;

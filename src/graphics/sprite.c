@@ -29,7 +29,7 @@ Sprite* Sprite_newFromPixelCoords(Texture* texture, int x, int y, int w, int h)
     return Sprite_newFromPixelCoordsRect(texture, Rectangle_create(x, y, w, h));
 }
 
-void Sprite_addRenderData(Sprite* self, RenderBatch* renderBatch, float posX, float posY, float width, float height)
+void Sprite_addRenderData(Sprite* self, RenderBatch* renderBatch, float posX, float posY, float width, float height, float z)
 {
     if (self->texture == NULL)
     {
@@ -38,6 +38,7 @@ void Sprite_addRenderData(Sprite* self, RenderBatch* renderBatch, float posX, fl
     }
     RenderBatch_addTexturedRect(renderBatch,
                                 posX, posY, posX + width, posY + height,
+                                z,
                                 Texture_pixelToTextureCoordX(self->texture, self->rect.x),
                                 Texture_pixelToTextureCoordY(self->texture, self->rect.y),
                                 Texture_pixelToTextureCoordX(self->texture, self->rect.x + self->rect.w),

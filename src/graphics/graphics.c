@@ -18,6 +18,10 @@ static float pixelsPerUnitY = 1;
 static int originInWindowX = 0;
 static int originInWindowY = 0;
 
+// Drawables with higher Z values are drawn on top of ones with lower Z values.
+static const float MIN_Z = -10000.0f;
+static const float MAX_Z = 10000.0f;
+
 static Camera* camera = NULL;
 static BOOL userCamera = FALSE;
 
@@ -31,7 +35,7 @@ static void _adjustCoordinateSystemToWindow(int width, int height)
     glLoadIdentity();
     GLdouble left = -originInWindowX / pixelsPerUnitX;
     GLdouble top = -originInWindowY / pixelsPerUnitY;
-    gluOrtho2D(left, left + width / pixelsPerUnitX, top + height / pixelsPerUnitY, top);
+    glOrtho(left, left + width / pixelsPerUnitX, top + height / pixelsPerUnitY, top, MAX_Z, MIN_Z);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -82,6 +86,7 @@ static void openGlfwWindow(int width, int height, BOOL fs)
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -134,7 +139,7 @@ void Graphics_setCoordinateSystemForWindow(float left, float top, float width, f
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(left, left + width, top + height, top);
+    glOrtho(left, left + width, top + height, top, 0, MAX_Z - MIN_Z);
     glMatrixMode(GL_MODELVIEW);
     useWindowCoordinates = TRUE;
 }
@@ -157,6 +162,10 @@ void Graphics_setWindowResizeCallback(void (*callback)(int w, int h))
 void Graphics_render(RenderQueue* renderQueue)
 {
     glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0.0f, 0.0f, MAX_Z, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
     glPushMatrix();
     glTranslatef(-camera->posX, -camera->posY, 0.0);
 

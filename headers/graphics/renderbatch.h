@@ -13,9 +13,11 @@ void RenderBatch_clear(RenderBatch* self);
 int RenderBatch_getNumberOfAddedElements(RenderBatch* self);
 void RenderBatch_addTexturedRect(RenderBatch* self,
                                  float x1, float y1, float x2, float y2,
+                                 float z,
                                  float s1, float t1, float s2, float t2);
 void RenderBatch_addColoredRect(RenderBatch* self,
                                 float x1, float y1, float x2, float y2,
+                                float z,
                                 float r, float g, float b, float a);
 
 /** Requires OpenGL to be initialized, and GL_VERTEX_ARRAY and
