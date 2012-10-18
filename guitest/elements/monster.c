@@ -14,6 +14,7 @@ static SpriteSheet* snellSheet = NULL;
 static SpriteSheet* trolleySheet = NULL;
 static SpriteSheet* skeletonSheet = NULL;
 static SpriteSheet* fireskullSheet = NULL;
+static SpriteSheet* beeSheet = NULL;
 
 static const float WALK_FRAME_DURATION = 0.2;
 
@@ -118,6 +119,13 @@ Monster newMonster(int type, float posX, float posY)
             width = 16;
             height = 32;
             break;
+        case MONSTER_BEE:
+            monsterSheet = &beeSheet;
+            imageFile = "res/characters/monsters/bee32x32.png";
+            dataFile = "res/characters/monsters/32x32.txt";
+            width = 32;
+            height = 32;
+            break;
         default:
             smug_assert(FALSE);
     }
@@ -190,5 +198,9 @@ void deinitMonsters()
     if (fireskullSheet != NULL)
     {
         SpriteSheet_delete(fireskullSheet);
+    }
+    if (beeSheet != NULL)
+    {
+        SpriteSheet_delete(beeSheet);
     }
 }

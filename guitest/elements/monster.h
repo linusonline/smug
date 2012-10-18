@@ -13,6 +13,7 @@
 #define MONSTER_TROLLEY     6
 #define MONSTER_SKELETON    7
 #define MONSTER_FIRESKULL   8
+#define MONSTER_BEE         9
 
 typedef struct Monster
 {

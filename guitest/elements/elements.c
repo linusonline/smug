@@ -28,7 +28,7 @@ static Controller* theController = NULL;
 
 static Camera* camera;
 
-static Monster monsters[12];
+static Monster monsters[13];
 
 #define BUTTON_UP 0
 #define BUTTON_DOWN 1
@@ -169,8 +169,9 @@ static void init()
     monsters[9] = newMonster(MONSTER_FIRESKULL, 32, 384);
     monsters[10] = newMonster(MONSTER_FIRESKULL, 128, 384);
     monsters[11] = newMonster(MONSTER_FIRESKULL, 256, 384);
+    monsters[12] = newMonster(MONSTER_BEE, 384, 32);
 
-    addMonsters(monsters, 0, 12);
+    addMonsters(monsters, 0, 13);
 }
 
 static void deinit()
