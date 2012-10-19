@@ -30,9 +30,9 @@ static void GLFWCALL windowResize(int width, int height)
 
 static void drawSprites(RenderBatch* rb)
 {
-    Sprite_addRenderData(rightSprite, spritesRenderBatch, 40, 150, 160, 180);
-    Sprite_addRenderData(downSprite, spritesRenderBatch, 240, 150, 160, 180);
-    Sprite_addRenderData(upSprite, spritesRenderBatch, 440, 150, 160, 180);
+    Sprite_addRenderData(rightSprite, spritesRenderBatch, 40, 150, 160, 180, 0);
+    Sprite_addRenderData(downSprite, spritesRenderBatch, 240, 150, 160, 180, 0);
+    Sprite_addRenderData(upSprite, spritesRenderBatch, 440, 150, 160, 180, 0);
 }
 
 static void afterDrawing()

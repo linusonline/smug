@@ -17,7 +17,7 @@
 
 typedef struct Monster
 {
-    Drawable* monsterObject;
+    GameObject* monsterObject;
     SpriteAnimation* walkLeft;
     SpriteAnimation* walkRight;
     SpriteAnimation* walkUp;

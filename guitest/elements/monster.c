@@ -1,6 +1,7 @@
 #include <common.h>
 #include <utils/log.h>
 #include <graphics/drawable.h>
+#include <engine/gameobject.h>
 #include <graphics/spritesheet.h>
 #include <graphics/spriteanimation.h>
 
@@ -51,8 +52,10 @@ Monster newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float
     SpriteAnimation_start(monster.walkUp);
     SpriteAnimation_start(monster.walkDown);
 
-    monster.monsterObject = Drawable_newFromSpriteAnimationAndDimensions(monster.walkDown, width, height, posX, posY);
-    Drawable_setZ(monster.monsterObject, posY);
+    Drawable* d = Drawable_newFromSpriteAnimationAndDimensions(monster.walkDown, width, height);
+    Drawable_setZ(d, posY);
+    monster.monsterObject = GameObject_new(posX, posY);
+    GameObject_addDrawableAt(monster.monsterObject, d, 0.0f, 0.0f);
     return monster;
 }
 
@@ -139,7 +142,7 @@ Monster newMonster(int type, float posX, float posY)
 
 void deleteMonster(Monster monster)
 {
-    Drawable_delete(monster.monsterObject);
+    GameObject_delete(monster.monsterObject);
     SpriteAnimation_delete(monster.walkLeft);
     SpriteAnimation_delete(monster.walkRight);
     SpriteAnimation_delete(monster.walkUp);
@@ -148,22 +151,22 @@ void deleteMonster(Monster monster)
 
 void setMonsterLeft(Monster monster)
 {
-    Drawable_useSpriteAnimation(monster.monsterObject, monster.walkLeft);
+    Drawable_useSpriteAnimation(GameObject_getDrawable(monster.monsterObject), monster.walkLeft);
 }
 
 void setMonsterRight(Monster monster)
 {
-    Drawable_useSpriteAnimation(monster.monsterObject, monster.walkRight);
+    Drawable_useSpriteAnimation(GameObject_getDrawable(monster.monsterObject), monster.walkRight);
 }
 
 void setMonsterUp(Monster monster)
 {
-    Drawable_useSpriteAnimation(monster.monsterObject, monster.walkUp);
+    Drawable_useSpriteAnimation(GameObject_getDrawable(monster.monsterObject), monster.walkUp);
 }
 
 void setMonsterDown(Monster monster)
 {
-    Drawable_useSpriteAnimation(monster.monsterObject, monster.walkDown);
+    Drawable_useSpriteAnimation(GameObject_getDrawable(monster.monsterObject), monster.walkDown);
 }
 
 void deinitMonsters()

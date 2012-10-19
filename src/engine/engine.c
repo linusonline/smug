@@ -11,9 +11,9 @@ static LinkedList* gameObjects = NULL;
 
 static RenderQueue* currentRenderQueue = NULL;
 
-static void _addDrawableVoid(void* drawable)
+static void _addDrawableVoid(void* gameobject)
 {
-    RenderQueue_addDrawable(currentRenderQueue, (Drawable*)drawable);
+    GameObject_draw((GameObject*)gameobject, currentRenderQueue);
 }
 
 int Engine_init()
@@ -32,20 +32,20 @@ BOOL Engine_isInitialized()
 void Engine_terminate()
 {
     smug_assert(isInitialized);
-    LinkedList_deleteContents(gameObjects, Drawable_deleteVoid);
+    LinkedList_deleteContents(gameObjects, GameObject_deleteVoid);
     LinkedList_delete(gameObjects);
 
     isInitialized = FALSE;
 }
 
-void Engine_addObject(Drawable* newObj)
+void Engine_addObject(GameObject* newObj)
 {
     smug_assert(isInitialized);
     smug_assert(newObj != NULL);
     LinkedList_addLast(gameObjects, newObj);
 }
 
-void Engine_addObjects(Drawable** objects, int offset, int numObjects)
+void Engine_addObjects(GameObject** objects, int offset, int numObjects)
 {
     for (int i = offset; i < offset + numObjects; i++)
     {
@@ -53,7 +53,7 @@ void Engine_addObjects(Drawable** objects, int offset, int numObjects)
     }
 }
 
-void Engine_removeObject(Drawable* obj)
+void Engine_removeObject(GameObject* obj)
 {
     smug_assert(isInitialized);
     LinkedList_removeItem(gameObjects, obj);

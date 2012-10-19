@@ -33,15 +33,23 @@ static void drawSprites(RenderBatch* rb)
     int spriteWidth = 16;
     int spriteHeight = 18;
     int scale = 7;
-    RenderBatch_addTexturedRect(rb, 0,   100,       spriteWidth * scale, 100 + spriteHeight * scale, p2tx(16), p2ty(0.0), p2tx(32), p2ty(18));
-    RenderBatch_addTexturedRect(rb, 120, 100, 120 + spriteWidth * scale, 100 + spriteHeight * scale, p2tx(64), p2ty(0.0), p2tx(80), p2ty(18));
-    RenderBatch_addTexturedRect(rb, 240, 100, 240 + spriteWidth * scale, 100 + spriteHeight * scale, p2tx(0), p2ty(0.0), p2tx(16), p2ty(18));
-    RenderBatch_addTexturedRect(rb, 360, 100, 360 + spriteWidth * scale, 100 + spriteHeight * scale, p2tx(32), p2ty(0.0), p2tx(48), p2ty(18));
+    RenderBatch_addTexturedRect(rb,
+        0,   100,       spriteWidth * scale, 100 + spriteHeight * scale, 0.0,
+        p2tx(16), p2ty(0.0), p2tx(32), p2ty(18));
+    RenderBatch_addTexturedRect(rb,
+        120, 100, 120 + spriteWidth * scale, 100 + spriteHeight * scale, 0.0,
+        p2tx(64), p2ty(0.0), p2tx(80), p2ty(18));
+    RenderBatch_addTexturedRect(rb,
+        240, 100, 240 + spriteWidth * scale, 100 + spriteHeight * scale, 0.0,
+        p2tx(0), p2ty(0.0), p2tx(16), p2ty(18));
+    RenderBatch_addTexturedRect(rb,
+        360, 100, 360 + spriteWidth * scale, 100 + spriteHeight * scale, 0.0,
+        p2tx(32), p2ty(0.0), p2tx(48), p2ty(18));
 }
 
 static void drawTest(RenderBatch* rb)
 {
-    RenderBatch_addTexturedRect(rb, 0, 0, 100, 100, 0.0, 0.0, 1.0, 1.0);
+    RenderBatch_addTexturedRect(rb, 0, 0, 100, 100, 0.0, 0.0, 0.0, 1.0, 1.0);
 }
 
 static void afterDrawing()

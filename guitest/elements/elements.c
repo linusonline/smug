@@ -19,8 +19,8 @@ static const int INITIAL_WINDOW_HEIGHT = 480;
 static int windowWidth = 640;
 static int windowHeight = 480;
 
-static Drawable** world = NULL;
-static Drawable* avatar;
+static GameObject** world = NULL;
+static GameObject* avatar;
 
 static Console* console = NULL;
 
@@ -155,10 +155,10 @@ static void _logicCallback()
         Mainloop_exit();
     }
     float speedFraction = avatarSpeed / Mainloop_getLogicFps();
-    Drawable_setPos(avatar,
-        moveHorizontally * speedFraction + Drawable_getX(avatar),
-        moveVertically * speedFraction + Drawable_getY(avatar));
-    Drawable_setZ(avatar, Drawable_getY(avatar));
+    GameObject_setPos(avatar,
+        moveHorizontally * speedFraction + GameObject_getX(avatar),
+        moveVertically * speedFraction + GameObject_getY(avatar));
+    Drawable_setZ(GameObject_getDrawable(avatar), GameObject_getY(avatar));
 }
 
 static void init()

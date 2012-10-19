@@ -16,15 +16,15 @@
 #define SMUG_ENGINE_ENGINE_H
 
 #include <common.h>
-#include <graphics/drawable.h>
+#include <engine/gameobject.h>
 
 int Engine_init(void);
 BOOL Engine_isInitialized(void);
 void Engine_terminate(void);
 
-void Engine_addObject(Drawable* newObj);
-void Engine_addObjects(Drawable** objects, int offset, int numObjects);
-void Engine_removeObject(Drawable* obj);
+void Engine_addObject(GameObject* newObj);
+void Engine_addObjects(GameObject** objects, int offset, int numObjects);
+void Engine_removeObject(GameObject* obj);
 void Engine_removeAllObjects();
 
 void Engine_drawObjects(RenderQueue* renderQueue);

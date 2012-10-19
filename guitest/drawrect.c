@@ -15,7 +15,7 @@ void GLFWCALL windowResize(int width, int height)
 
 void drawStuff(RenderBatch* renderBatch)
 {
-    RenderBatch_addColoredRect(renderBatch, 0, 0, 100, 100, 0, 0.5, 0, 1.0);
+    RenderBatch_addColoredRect(renderBatch, 0, 0, 100, 100, 0, 0, 0.5, 0, 1.0);
 }
 
 void initGlWindow()

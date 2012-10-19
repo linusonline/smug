@@ -6,8 +6,6 @@
 
 typedef struct _Drawable
 {
-    float positionX;
-    float positionY;
     float width;
     float height;
     float z;

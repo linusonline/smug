@@ -10,6 +10,7 @@
 #include <graphics/spriteanimation.h>
 #include <graphics/camera.h>
 #include <graphics/graphics.h>
+#include <engine/gameobject.h>
 #include <input/input.h>
 #include <utils/log.h>
 #include <utils/stdout_console.h>
@@ -25,8 +26,8 @@ static SpriteSheet* buildingsSheet = NULL;
 static SpriteSheet* cursorSheet = NULL;
 static RenderQueue* renderQueue = NULL;
 
-static Drawable** world;
-static Drawable* cursor;
+static GameObject** world;
+static GameObject* cursor;
 
 static Sprite** landscapeSprites;
 static Sprite** buildingSprites;
@@ -66,7 +67,7 @@ static void drawStuff(RenderQueue* rq)
 {
     for (int i = 0; i < TOTAL_OBJECT_COUNT; i++)
     {
-        RenderQueue_addDrawable(rq, world[i]);
+        RenderQueue_addDrawable(rq, GameObject_getDrawable(world[i]), GameObject_getX(world[i]), GameObject_getY(world[i]));
     }
 }
 
@@ -74,6 +75,8 @@ static void afterDrawing()
 {
     RenderQueue_clear(renderQueue);
 }
+
+#define _newObjectFromSpriteAndDimensions(sprite, w, h, x, y) GameObject_newWithDrawable(x, y, Drawable_newFromSpriteAndDimensions(sprite, w, h), 0, 0)
 
 static void createBackground()
 {
@@ -92,340 +95,341 @@ static void createBackground()
         buildingSprites[i] = SpriteSheet_getSprite(buildingsSheet, i);
     }
 
-    world = allocatev(Drawable*, TOTAL_OBJECT_COUNT);
+    world = allocatev(GameObject*, TOTAL_OBJECT_COUNT);
 
-    world[0] =  Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, 0);
-    world[1] =  Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, 0);
-    world[2] =  Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, 0);
-    world[3] =  Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, 0);
-    world[4] =  Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, 0);
-    world[5] =  Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, 0);
-    world[6] =  Drawable_newFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, 0);
-    world[7] =  Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, 0);
-    world[8] =  Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, 0);
-    world[9] =  Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*9, 0);
-    world[10] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, 0);
-    world[11] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, 0);
-    world[12] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, 0);
-    world[13] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, 0);
-    world[14] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, 0);
-    world[15] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, 0);
-    world[16] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, 0);
-    world[17] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, 0);
-    world[18] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, 0);
-    world[19] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, 0);
+    world[0] =  _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, 0);
+    world[1] =  _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, 0);
+    world[2] =  _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, 0);
+    world[3] =  _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, 0);
+    world[4] =  _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, 0);
+    world[5] =  _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, 0);
+    world[6] =  _newObjectFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, 0);
+    world[7] =  _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, 0);
+    world[8] =  _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, 0);
+    world[9] =  _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*9, 0);
+    world[10] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, 0);
+    world[11] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, 0);
+    world[12] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, 0);
+    world[13] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, 0);
+    world[14] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, 0);
+    world[15] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, 0);
+    world[16] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, 0);
+    world[17] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, 0);
+    world[18] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, 0);
+    world[19] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, 0);
 
-    world[20] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U);
-    world[21] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U);
-    world[22] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U);
-    world[23] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U);
-    world[24] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U);
-    world[25] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U);
-    world[26] = Drawable_newFromSpriteAndDimensions(landscapeSprites[7], U, U, U*6, U);
-    world[27] = Drawable_newFromSpriteAndDimensions(landscapeSprites[6], U, U, U*7, U);
-    world[28] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U);
-    world[29] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*9, U);
-    world[30] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, U);
-    world[31] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U);
-    world[32] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U);
-    world[33] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U);
-    world[34] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U);
-    world[35] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U);
-    world[36] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*16, U);
-    world[37] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*17, U);
-    world[38] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*18, U);
-    world[39] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*19, U);
+    world[20] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U);
+    world[21] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U);
+    world[22] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U);
+    world[23] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U);
+    world[24] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U);
+    world[25] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U);
+    world[26] = _newObjectFromSpriteAndDimensions(landscapeSprites[7], U, U, U*6, U);
+    world[27] = _newObjectFromSpriteAndDimensions(landscapeSprites[6], U, U, U*7, U);
+    world[28] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U);
+    world[29] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*9, U);
+    world[30] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, U);
+    world[31] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U);
+    world[32] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U);
+    world[33] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U);
+    world[34] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U);
+    world[35] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U);
+    world[36] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*16, U);
+    world[37] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*17, U);
+    world[38] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*18, U);
+    world[39] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*19, U);
 
-    world[40] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*2);
-    world[41] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*2);
-    world[42] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*2);
-    world[43] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*2);
-    world[44] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*2);
-    world[45] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*2);
-    world[46] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*2);
-    world[47] = Drawable_newFromSpriteAndDimensions(landscapeSprites[7], U, U, U*7, U*2);
-    world[48] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*8, U*2);
-    world[49] = Drawable_newFromSpriteAndDimensions(landscapeSprites[9], U, U, U*9, U*2);
-    world[50] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*10, U*2);
-    world[51] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*11, U*2);
-    world[52] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*12, U*2);
-    world[53] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*13, U*2);
-    world[54] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*14, U*2);
-    world[55] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*15, U*2);
-    world[56] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*16, U*2);
-    world[57] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*17, U*2);
-    world[58] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*18, U*2);
-    world[59] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*19, U*2);
+    world[40] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*2);
+    world[41] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*2);
+    world[42] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*2);
+    world[43] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*2);
+    world[44] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*2);
+    world[45] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*2);
+    world[46] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*2);
+    world[47] = _newObjectFromSpriteAndDimensions(landscapeSprites[7], U, U, U*7, U*2);
+    world[48] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*8, U*2);
+    world[49] = _newObjectFromSpriteAndDimensions(landscapeSprites[9], U, U, U*9, U*2);
+    world[50] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*10, U*2);
+    world[51] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*11, U*2);
+    world[52] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*12, U*2);
+    world[53] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*13, U*2);
+    world[54] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*14, U*2);
+    world[55] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*15, U*2);
+    world[56] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*16, U*2);
+    world[57] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*17, U*2);
+    world[58] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*18, U*2);
+    world[59] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*19, U*2);
 
-    world[60] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*3);
-    world[61] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*3);
-    world[62] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*2, U*3);
-    world[63] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*3);
-    world[64] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*3);
-    world[65] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*3);
-    world[66] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*3);
-    world[67] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*3);
-    world[68] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*3);
-    world[69] = Drawable_newFromSpriteAndDimensions(landscapeSprites[21], U, U, U*9, U*3);
-    world[70] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, U*3);
-    world[71] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*3);
-    world[72] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U*3);
-    world[73] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*3);
-    world[74] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*3);
-    world[75] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*15, U*3);
-    world[76] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*3);
-    world[77] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*17, U*3);
-    world[78] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*18, U*3);
-    world[79] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*3);
+    world[60] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*3);
+    world[61] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*3);
+    world[62] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*2, U*3);
+    world[63] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*3);
+    world[64] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*3);
+    world[65] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*3);
+    world[66] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*3);
+    world[67] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*3);
+    world[68] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*3);
+    world[69] = _newObjectFromSpriteAndDimensions(landscapeSprites[21], U, U, U*9, U*3);
+    world[70] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, U*3);
+    world[71] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*3);
+    world[72] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U*3);
+    world[73] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*3);
+    world[74] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*3);
+    world[75] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*15, U*3);
+    world[76] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*3);
+    world[77] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*17, U*3);
+    world[78] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*18, U*3);
+    world[79] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*3);
 
-    world[80] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*4);
-    world[81] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*4);
-    world[82] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*2, U*4);
-    world[83] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*4);
-    world[84] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*4);
-    world[85] = Drawable_newFromSpriteAndDimensions(landscapeSprites[2], U, U, U*5, U*4);
-    world[86] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*4);
-    world[87] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*4);
-    world[88] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*4);
-    world[89] = Drawable_newFromSpriteAndDimensions(landscapeSprites[4], U, U, U*9, U*4);
-    world[90] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, U*4);
-    world[91] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*4);
-    world[92] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U*4);
-    world[93] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*4);
-    world[94] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*4);
-    world[95] = Drawable_newFromSpriteAndDimensions(landscapeSprites[2], U, U, U*15, U*4);
-    world[96] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*16, U*4);
-    world[97] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*17, U*4);
-    world[98] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*18, U*4);
-    world[99] = Drawable_newFromSpriteAndDimensions(landscapeSprites[2], U, U, U*19, U*4);
+    world[80] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*4);
+    world[81] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*4);
+    world[82] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*2, U*4);
+    world[83] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*4);
+    world[84] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*4);
+    world[85] = _newObjectFromSpriteAndDimensions(landscapeSprites[2], U, U, U*5, U*4);
+    world[86] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*4);
+    world[87] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*4);
+    world[88] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*4);
+    world[89] = _newObjectFromSpriteAndDimensions(landscapeSprites[4], U, U, U*9, U*4);
+    world[90] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, U*4);
+    world[91] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*4);
+    world[92] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U*4);
+    world[93] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*4);
+    world[94] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*4);
+    world[95] = _newObjectFromSpriteAndDimensions(landscapeSprites[2], U, U, U*15, U*4);
+    world[96] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*16, U*4);
+    world[97] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*17, U*4);
+    world[98] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*18, U*4);
+    world[99] = _newObjectFromSpriteAndDimensions(landscapeSprites[2], U, U, U*19, U*4);
 
-    world[100] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*5);
-    world[101] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*5);
-    world[102] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*5);
-    world[103] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*5);
-    world[104] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*5);
-    world[105] = Drawable_newFromSpriteAndDimensions(landscapeSprites[2], U, U, U*5, U*5);
-    world[106] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*5);
-    world[107] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*5);
-    world[108] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*5);
-    world[109] = Drawable_newFromSpriteAndDimensions(landscapeSprites[7], U, U, U*9, U*5);
-    world[110] = Drawable_newFromSpriteAndDimensions(landscapeSprites[9], U, U, U*10, U*5);
-    world[111] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*11, U*5);
-    world[112] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*12, U*5);
-    world[113] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*13, U*5);
-    world[114] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*14, U*5);
-    world[115] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*15, U*5);
-    world[116] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*16, U*5);
-    world[117] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*17, U*5);
-    world[118] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*18, U*5);
-    world[119] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*19, U*5);
+    world[100] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*5);
+    world[101] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*5);
+    world[102] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*5);
+    world[103] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*5);
+    world[104] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*5);
+    world[105] = _newObjectFromSpriteAndDimensions(landscapeSprites[2], U, U, U*5, U*5);
+    world[106] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*5);
+    world[107] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*5);
+    world[108] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*5);
+    world[109] = _newObjectFromSpriteAndDimensions(landscapeSprites[7], U, U, U*9, U*5);
+    world[110] = _newObjectFromSpriteAndDimensions(landscapeSprites[9], U, U, U*10, U*5);
+    world[111] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*11, U*5);
+    world[112] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*12, U*5);
+    world[113] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*13, U*5);
+    world[114] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*14, U*5);
+    world[115] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*15, U*5);
+    world[116] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*16, U*5);
+    world[117] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*17, U*5);
+    world[118] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*18, U*5);
+    world[119] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*19, U*5);
 
-    world[120] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*6);
-    world[121] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*6);
-    world[122] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*6);
-    world[123] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*6);
-    world[124] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*6);
-    world[125] = Drawable_newFromSpriteAndDimensions(landscapeSprites[2], U, U, U*5, U*6);
-    world[126] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*6);
-    world[127] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*6);
-    world[128] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*6);
-    world[129] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*9, U*6);
-    world[130] = Drawable_newFromSpriteAndDimensions(landscapeSprites[4], U, U, U*10, U*6);
-    world[131] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*6);
-    world[132] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U*6);
-    world[133] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*6);
-    world[134] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*6);
-    world[135] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*15, U*6);
-    world[136] = Drawable_newFromSpriteAndDimensions(landscapeSprites[2], U, U, U*16, U*6);
-    world[137] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*17, U*6);
-    world[138] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*18, U*6);
-    world[139] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*19, U*6);
+    world[120] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*6);
+    world[121] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*6);
+    world[122] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*6);
+    world[123] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*6);
+    world[124] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*6);
+    world[125] = _newObjectFromSpriteAndDimensions(landscapeSprites[2], U, U, U*5, U*6);
+    world[126] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*6);
+    world[127] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*6);
+    world[128] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*6);
+    world[129] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*9, U*6);
+    world[130] = _newObjectFromSpriteAndDimensions(landscapeSprites[4], U, U, U*10, U*6);
+    world[131] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*6);
+    world[132] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U*6);
+    world[133] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*6);
+    world[134] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*6);
+    world[135] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*15, U*6);
+    world[136] = _newObjectFromSpriteAndDimensions(landscapeSprites[2], U, U, U*16, U*6);
+    world[137] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*17, U*6);
+    world[138] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*18, U*6);
+    world[139] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*19, U*6);
 
-    world[140] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*7);
-    world[141] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U, U*7);
-    world[142] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*7);
-    world[143] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*7);
-    world[144] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*7);
-    world[145] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*7);
-    world[146] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*7);
-    world[147] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*7);
-    world[148] = Drawable_newFromSpriteAndDimensions(landscapeSprites[5], U, U, U*8, U*7);
-    world[149] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*9, U*7);
-    world[150] = Drawable_newFromSpriteAndDimensions(landscapeSprites[8], U, U, U*10, U*7);
-    world[151] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*7);
-    world[152] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U*7);
-    world[153] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*7);
-    world[154] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*7);
-    world[155] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*15, U*7);
-    world[156] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*7);
-    world[157] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*7);
-    world[158] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*7);
-    world[159] = Drawable_newFromSpriteAndDimensions(landscapeSprites[2], U, U, U*19, U*7);
+    world[140] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*7);
+    world[141] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U, U*7);
+    world[142] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*7);
+    world[143] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*7);
+    world[144] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*7);
+    world[145] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*7);
+    world[146] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*7);
+    world[147] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*7);
+    world[148] = _newObjectFromSpriteAndDimensions(landscapeSprites[5], U, U, U*8, U*7);
+    world[149] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*9, U*7);
+    world[150] = _newObjectFromSpriteAndDimensions(landscapeSprites[8], U, U, U*10, U*7);
+    world[151] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*7);
+    world[152] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U*7);
+    world[153] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*7);
+    world[154] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*7);
+    world[155] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*15, U*7);
+    world[156] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*7);
+    world[157] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*7);
+    world[158] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*7);
+    world[159] = _newObjectFromSpriteAndDimensions(landscapeSprites[2], U, U, U*19, U*7);
 
-    world[160] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*8);
-    world[161] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*8);
-    world[162] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*8);
-    world[163] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*8);
-    world[164] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*8);
-    world[165] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*8);
-    world[166] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*8);
-    world[167] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*8);
-    world[168] = Drawable_newFromSpriteAndDimensions(landscapeSprites[4], U, U, U*8, U*8);
-    world[169] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*9, U*8);
-    world[170] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, U*8);
-    world[171] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*8);
-    world[172] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U*8);
-    world[173] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*8);
-    world[174] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*8);
-    world[175] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*15, U*8);
-    world[176] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*16, U*8);
-    world[177] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*17, U*8);
-    world[178] = Drawable_newFromSpriteAndDimensions(landscapeSprites[2], U, U, U*18, U*8);
-    world[179] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*8);
+    world[160] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*8);
+    world[161] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*8);
+    world[162] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*8);
+    world[163] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*8);
+    world[164] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*8);
+    world[165] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*8);
+    world[166] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*6, U*8);
+    world[167] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*8);
+    world[168] = _newObjectFromSpriteAndDimensions(landscapeSprites[4], U, U, U*8, U*8);
+    world[169] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*9, U*8);
+    world[170] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, U*8);
+    world[171] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*8);
+    world[172] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*12, U*8);
+    world[173] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*8);
+    world[174] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*8);
+    world[175] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*15, U*8);
+    world[176] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*16, U*8);
+    world[177] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*17, U*8);
+    world[178] = _newObjectFromSpriteAndDimensions(landscapeSprites[2], U, U, U*18, U*8);
+    world[179] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*8);
 
-    world[180] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*9);
-    world[181] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U, U*9);
-    world[182] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*9);
-    world[183] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*9);
-    world[184] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*9);
-    world[185] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*9);
-    world[186] = Drawable_newFromSpriteAndDimensions(landscapeSprites[5], U, U, U*6, U*9);
-    world[187] = Drawable_newFromSpriteAndDimensions(landscapeSprites[3], U, U, U*7, U*9);
-    world[188] = Drawable_newFromSpriteAndDimensions(landscapeSprites[8], U, U, U*8, U*9);
-    world[189] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*9, U*9);
-    world[190] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, U*9);
-    world[191] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*9);
-    world[192] = Drawable_newFromSpriteAndDimensions(landscapeSprites[2], U, U, U*12, U*9);
-    world[193] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*9);
-    world[194] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*9);
-    world[195] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*15, U*9);
-    world[196] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*16, U*9);
-    world[197] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*9);
-    world[198] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*18, U*9);
-    world[199] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*9);
+    world[180] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*9);
+    world[181] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U, U*9);
+    world[182] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*9);
+    world[183] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*9);
+    world[184] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*9);
+    world[185] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*9);
+    world[186] = _newObjectFromSpriteAndDimensions(landscapeSprites[5], U, U, U*6, U*9);
+    world[187] = _newObjectFromSpriteAndDimensions(landscapeSprites[3], U, U, U*7, U*9);
+    world[188] = _newObjectFromSpriteAndDimensions(landscapeSprites[8], U, U, U*8, U*9);
+    world[189] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*9, U*9);
+    world[190] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*10, U*9);
+    world[191] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*11, U*9);
+    world[192] = _newObjectFromSpriteAndDimensions(landscapeSprites[2], U, U, U*12, U*9);
+    world[193] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*13, U*9);
+    world[194] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*9);
+    world[195] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*15, U*9);
+    world[196] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*16, U*9);
+    world[197] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*9);
+    world[198] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*18, U*9);
+    world[199] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*9);
 
-    world[200] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*10);
-    world[201] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*10);
-    world[202] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*10);
-    world[203] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*10);
-    world[204] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*10);
-    world[205] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*10);
-    world[206] = Drawable_newFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, U*10);
-    world[207] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*10);
-    world[208] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*10);
-    world[209] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*9, U*10);
-    world[210] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*10, U*10);
-    world[211] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*11, U*10);
-    world[212] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*12, U*10);
-    world[213] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*13, U*10);
-    world[214] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*10);
-    world[215] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U*10);
-    world[216] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*10);
-    world[217] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*10);
-    world[218] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*10);
-    world[219] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*10);
+    world[200] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*10);
+    world[201] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*10);
+    world[202] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*10);
+    world[203] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*10);
+    world[204] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*10);
+    world[205] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*10);
+    world[206] = _newObjectFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, U*10);
+    world[207] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*10);
+    world[208] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*10);
+    world[209] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*9, U*10);
+    world[210] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*10, U*10);
+    world[211] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*11, U*10);
+    world[212] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*12, U*10);
+    world[213] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*13, U*10);
+    world[214] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*10);
+    world[215] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U*10);
+    world[216] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*10);
+    world[217] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*10);
+    world[218] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*10);
+    world[219] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*10);
 
-    world[220] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*11);
-    world[221] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*11);
-    world[222] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*11);
-    world[223] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*11);
-    world[224] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*11);
-    world[225] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*11);
-    world[226] = Drawable_newFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, U*11);
-    world[227] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*11);
-    world[228] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*11);
-    world[229] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*9, U*11);
-    world[230] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*10, U*11);
-    world[231] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*11, U*11);
-    world[232] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*12, U*11);
-    world[233] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*13, U*11);
-    world[234] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*11);
-    world[235] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U*11);
-    world[236] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*11);
-    world[237] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*11);
-    world[238] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*11);
-    world[239] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*11);
+    world[220] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*11);
+    world[221] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*11);
+    world[222] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*11);
+    world[223] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*11);
+    world[224] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*11);
+    world[225] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*11);
+    world[226] = _newObjectFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, U*11);
+    world[227] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*11);
+    world[228] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*11);
+    world[229] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*9, U*11);
+    world[230] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*10, U*11);
+    world[231] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*11, U*11);
+    world[232] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*12, U*11);
+    world[233] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*13, U*11);
+    world[234] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*11);
+    world[235] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U*11);
+    world[236] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*11);
+    world[237] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*11);
+    world[238] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*11);
+    world[239] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*11);
 
-    world[240] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*12);
-    world[241] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*12);
-    world[242] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*12);
-    world[243] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*12);
-    world[244] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*12);
-    world[245] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*12);
-    world[246] = Drawable_newFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, U*12);
-    world[247] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*12);
-    world[248] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*12);
-    world[249] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*9, U*12);
-    world[250] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*10, U*12);
-    world[251] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*11, U*12);
-    world[252] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*12, U*12);
-    world[253] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*13, U*12);
-    world[254] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*12);
-    world[255] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U*12);
-    world[256] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*12);
-    world[257] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*12);
-    world[258] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*12);
-    world[259] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*12);
+    world[240] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*12);
+    world[241] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*12);
+    world[242] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*12);
+    world[243] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*12);
+    world[244] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*12);
+    world[245] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*12);
+    world[246] = _newObjectFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, U*12);
+    world[247] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*12);
+    world[248] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*12);
+    world[249] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*9, U*12);
+    world[250] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*10, U*12);
+    world[251] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*11, U*12);
+    world[252] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*12, U*12);
+    world[253] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*13, U*12);
+    world[254] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*12);
+    world[255] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U*12);
+    world[256] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*12);
+    world[257] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*12);
+    world[258] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*12);
+    world[259] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*12);
 
-    world[260] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*13);
-    world[261] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*13);
-    world[262] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*13);
-    world[263] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*13);
-    world[264] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*13);
-    world[265] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*13);
-    world[266] = Drawable_newFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, U*13);
-    world[267] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*13);
-    world[268] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*13);
-    world[269] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*9, U*13);
-    world[270] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*10, U*13);
-    world[271] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*11, U*13);
-    world[272] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*12, U*13);
-    world[273] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*13, U*13);
-    world[274] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*13);
-    world[275] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U*13);
-    world[276] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*13);
-    world[277] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*13);
-    world[278] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*13);
-    world[279] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*13);
+    world[260] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*13);
+    world[261] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*13);
+    world[262] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*13);
+    world[263] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*13);
+    world[264] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*13);
+    world[265] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*13);
+    world[266] = _newObjectFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, U*13);
+    world[267] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*13);
+    world[268] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*13);
+    world[269] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*9, U*13);
+    world[270] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*10, U*13);
+    world[271] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*11, U*13);
+    world[272] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*12, U*13);
+    world[273] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*13, U*13);
+    world[274] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*13);
+    world[275] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U*13);
+    world[276] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*13);
+    world[277] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*13);
+    world[278] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*13);
+    world[279] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*13);
 
-    world[280] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*14);
-    world[281] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*14);
-    world[282] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*14);
-    world[283] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*14);
-    world[284] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*14);
-    world[285] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*14);
-    world[286] = Drawable_newFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, U*14);
-    world[287] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*14);
-    world[288] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*14);
-    world[289] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*9, U*14);
-    world[290] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*10, U*14);
-    world[291] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*11, U*14);
-    world[292] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*12, U*14);
-    world[293] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*13, U*14);
-    world[294] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*14);
-    world[295] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U*14);
-    world[296] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*14);
-    world[297] = Drawable_newFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*14);
-    world[298] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*14);
-    world[299] = Drawable_newFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*14);
+    world[280] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, 0, U*14);
+    world[281] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U, U*14);
+    world[282] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*2, U*14);
+    world[283] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*3, U*14);
+    world[284] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*4, U*14);
+    world[285] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*5, U*14);
+    world[286] = _newObjectFromSpriteAndDimensions(landscapeSprites[4], U, U, U*6, U*14);
+    world[287] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*7, U*14);
+    world[288] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*8, U*14);
+    world[289] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*9, U*14);
+    world[290] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*10, U*14);
+    world[291] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*11, U*14);
+    world[292] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*12, U*14);
+    world[293] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*13, U*14);
+    world[294] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*14, U*14);
+    world[295] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*15, U*14);
+    world[296] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*16, U*14);
+    world[297] = _newObjectFromSpriteAndDimensions(landscapeSprites[0], U, U, U*17, U*14);
+    world[298] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*18, U*14);
+    world[299] = _newObjectFromSpriteAndDimensions(landscapeSprites[1], U, U, U*19, U*14);
 
-    world[300] =  Drawable_newFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*9, -U);
-    world[301] = Drawable_newFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*10, -U);
-    world[302] = Drawable_newFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*11, -U);
-    world[303] = Drawable_newFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*12, -U);
-    world[304] = Drawable_newFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*13, -U);
-    world[305] = Drawable_newFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*2, U);
-    world[306] = Drawable_newFromSpriteAndDimensions(buildingSprites[3], 40, 64, U*2, U*5);
-    world[307] = Drawable_newFromSpriteAndDimensions(buildingSprites[5], 40, 64, U*4, U*5);
-    world[308] = Drawable_newFromSpriteAndDimensions(buildingSprites[3], 40, 64, U, U*6);
-    world[309] = Drawable_newFromSpriteAndDimensions(buildingSprites[0], 40, 64, U*2, U*6);
-    world[310] = Drawable_newFromSpriteAndDimensions(buildingSprites[3], 40, 64, U*3, U*6);
-    world[311] = Drawable_newFromSpriteAndDimensions(buildingSprites[3], 40, 64, U*2, U*7);
+    world[300] =  _newObjectFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*9, -U);
+    world[301] = _newObjectFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*10, -U);
+    world[302] = _newObjectFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*11, -U);
+    world[303] = _newObjectFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*12, -U);
+    world[304] = _newObjectFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*13, -U);
+    world[305] = _newObjectFromSpriteAndDimensions(buildingSprites[45], 40, 64, U*2, U);
+    world[306] = _newObjectFromSpriteAndDimensions(buildingSprites[3], 40, 64, U*2, U*5);
+    world[307] = _newObjectFromSpriteAndDimensions(buildingSprites[5], 40, 64, U*4, U*5);
+    world[308] = _newObjectFromSpriteAndDimensions(buildingSprites[3], 40, 64, U, U*6);
+    world[309] = _newObjectFromSpriteAndDimensions(buildingSprites[0], 40, 64, U*2, U*6);
+    world[310] = _newObjectFromSpriteAndDimensions(buildingSprites[3], 40, 64, U*3, U*6);
+    world[311] = _newObjectFromSpriteAndDimensions(buildingSprites[3], 40, 64, U*2, U*7);
 
     animHouse = SpriteAnimation_newEmpty();
     SpriteAnimation_addFrame(animHouse, buildingSprites[10], 0.5);
     SpriteAnimation_addFrame(animHouse, buildingSprites[11], 0.5);
-    world[312] = Drawable_newFromSpriteAnimationAndDimensions(animHouse, 40, 64, U*4, U*6);
+    world[312] = GameObject_new(U*4, U*6);
+    GameObject_addDrawableAt(world[312], Drawable_newFromSpriteAnimationAndDimensions(animHouse, 40, 64), 0.0, 0.0);
     SpriteAnimation_start(animHouse);
 }
 
@@ -433,7 +437,8 @@ static void createCursor(int posX, int posY)
 {
     cursorSheet = SpriteSheet_new("res/cursor.png", NULL);
     cursorSprite = SpriteSheet_getSprite(cursorSheet, 0);
-    cursor = Drawable_newFromSpriteAndDimensions(cursorSprite, U, U, posX*U, posY*U);
+    cursor = GameObject_new(posX*U, posY*U);
+    GameObject_addDrawableAt(cursor, Drawable_newFromSpriteAndDimensions(cursorSprite, U, U), 0.0, 0.0);
     world[313] = cursor;
 }
 
@@ -442,40 +447,40 @@ static void moveCursor(int keyid)
     switch (keyid)
     {
         case BUTTON_UP:
-            if (Drawable_getY(cursor) >= U)
+            if (GameObject_getY(cursor) >= U)
             {
-                Drawable_setPos(cursor, Drawable_getX(cursor), Drawable_getY(cursor) - U);
-                if (abs(Drawable_getY(cursor) - camera->posY) > windowHeight/4)
+                GameObject_setPos(cursor, GameObject_getX(cursor), GameObject_getY(cursor) - U);
+                if (abs(GameObject_getY(cursor) - camera->posY) > windowHeight/4)
                 {
                     camera->posY -= U;
                 }
             }
             break;
         case BUTTON_DOWN:
-            if (Drawable_getY(cursor) <= (WORLD_HEIGHT - U*2))
+            if (GameObject_getY(cursor) <= (WORLD_HEIGHT - U*2))
             {
-                Drawable_setPos(cursor, Drawable_getX(cursor), Drawable_getY(cursor) + U);
-                if (abs(Drawable_getY(cursor) - camera->posY) > windowHeight/4)
+                GameObject_setPos(cursor, GameObject_getX(cursor), GameObject_getY(cursor) + U);
+                if (abs(GameObject_getY(cursor) - camera->posY) > windowHeight/4)
                 {
                     camera->posY += U;
                 }
             }
             break;
         case BUTTON_LEFT:
-            if (Drawable_getX(cursor) >= U)
+            if (GameObject_getX(cursor) >= U)
             {
-                Drawable_setPos(cursor, Drawable_getX(cursor) - U, Drawable_getY(cursor));
-                if (abs(Drawable_getX(cursor) - camera->posX) > windowWidth/4)
+                GameObject_setPos(cursor, GameObject_getX(cursor) - U, GameObject_getY(cursor));
+                if (abs(GameObject_getX(cursor) - camera->posX) > windowWidth/4)
                 {
                     camera->posX -= U;
                 }
             }
             break;
         case BUTTON_RIGHT:
-            if (Drawable_getX(cursor) <= (WORLD_WIDTH - U*2))
+            if (GameObject_getX(cursor) <= (WORLD_WIDTH - U*2))
             {
-                Drawable_setPos(cursor, Drawable_getX(cursor) + U, Drawable_getY(cursor));
-                if (abs(Drawable_getX(cursor) - camera->posX) > windowWidth/4)
+                GameObject_setPos(cursor, GameObject_getX(cursor) + U, GameObject_getY(cursor));
+                if (abs(GameObject_getX(cursor) - camera->posX) > windowWidth/4)
                 {
                     camera->posX += U;
                 }
@@ -607,7 +612,7 @@ static void deinit()
 
     for (int i = 0; i < TOTAL_OBJECT_COUNT; i++)
     {
-        Drawable_delete(world[i]);
+        GameObject_delete(world[i]);
     }
 
     SpriteAnimation_delete(animHouse);

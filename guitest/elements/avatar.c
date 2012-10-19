@@ -1,12 +1,14 @@
 #include <common.h>
+#include <common.h>
 #include <utils/log.h>
 #include <graphics/drawable.h>
+#include <engine/gameobject.h>
 #include <graphics/spritesheet.h>
 #include <graphics/spriteanimation.h>
 
 #include <avatar.h>
 
-static Drawable* avatar = NULL;
+static GameObject* avatar = NULL;
 static SpriteAnimation* walkLeft = NULL;
 static SpriteAnimation* walkRight = NULL;
 static SpriteAnimation* walkUp = NULL;
@@ -16,7 +18,7 @@ static SpriteSheet* avatarSheet = NULL;
 static const float WALK_FRAME_DURATION = 0.1;
 static BOOL walking = FALSE;
 
-Drawable* getAvatar(float width, float height, float posX, float posY)
+GameObject* getAvatar(float width, float height, float posX, float posY)
 {
     avatarSheet = SpriteSheet_new("res/characters/rpg_sprite_walk.png", "res/characters/rpg_sprite_walk.txt");
 
@@ -42,7 +44,8 @@ Drawable* getAvatar(float width, float height, float posX, float posY)
         SpriteAnimation_addFrame(walkDown, SpriteSheet_getSpriteXY(avatarSheet, i, 0), WALK_FRAME_DURATION);
     }
 
-    avatar = Drawable_newFromSpriteAnimationAndDimensions(walkDown, width, height, posX, posY);
+    avatar = GameObject_new(posX, posY);
+    GameObject_addDrawableAt(avatar, Drawable_newFromSpriteAnimationAndDimensions(walkDown, width, height), 0.0f, 0.0f);
     return avatar;
 }
 
@@ -75,7 +78,7 @@ void avatarWalk(BOOL walk)
 
 void deleteAvatar()
 {
-    Drawable_delete(avatar);
+    GameObject_delete(avatar);
     SpriteAnimation_delete(walkLeft);
     SpriteAnimation_delete(walkRight);
     SpriteAnimation_delete(walkUp);
@@ -85,20 +88,20 @@ void deleteAvatar()
 
 void setAvatarLeft()
 {
-    Drawable_useSpriteAnimation(avatar, walkLeft);
+    Drawable_useSpriteAnimation(GameObject_getDrawable(avatar), walkLeft);
 }
 
 void setAvatarRight()
 {
-    Drawable_useSpriteAnimation(avatar, walkRight);
+    Drawable_useSpriteAnimation(GameObject_getDrawable(avatar), walkRight);
 }
 
 void setAvatarUp()
 {
-    Drawable_useSpriteAnimation(avatar, walkUp);
+    Drawable_useSpriteAnimation(GameObject_getDrawable(avatar), walkUp);
 }
 
 void setAvatarDown()
 {
-    Drawable_useSpriteAnimation(avatar, walkDown);
+    Drawable_useSpriteAnimation(GameObject_getDrawable(avatar), walkDown);
 }

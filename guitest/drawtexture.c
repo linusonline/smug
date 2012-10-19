@@ -24,8 +24,8 @@ void GLFWCALL windowResize(int width, int height)
 
 void drawStuff()
 {
-    RenderBatch_addTexturedRect(renderBatch, 0, 0, 200, 200, 0.0, 0.0, 1.0, 1.0);
-    RenderBatch_addTexturedRect(renderBatch, 200, 100, 300, 200, 1.0, 0.0, 0.0, 1.0);
+    RenderBatch_addTexturedRect(renderBatch, 0, 0, 200, 200, 0.0, 0.0, 0.0, 1.0, 1.0);
+    RenderBatch_addTexturedRect(renderBatch, 200, 100, 300, 200, 0.0, 1.0, 0.0, 0.0, 1.0);
 }
 
 void afterDrawing()
