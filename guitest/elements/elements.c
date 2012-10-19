@@ -13,6 +13,7 @@
 #include <maps.h>
 #include <avatar.h>
 #include <monster.h>
+#include <attack.h>
 
 static const int INITIAL_WINDOW_WIDTH = 640;
 static const int INITIAL_WINDOW_HEIGHT = 480;
@@ -35,6 +36,7 @@ static Monster monsters[13];
 #define BUTTON_LEFT 2
 #define BUTTON_RIGHT 3
 #define BUTTON_EXIT 4
+#define BUTTON_ATTACK 5
 
 static const int WORLD_WIDTH = 640;     // This world happens to be just one screen big.
 static const int WORLD_HEIGHT = 480;
@@ -44,9 +46,12 @@ static int moveVertically = 0;
 
 static float avatarSpeed = 100; // Units per second.
 
+static int avatarFacing = BUTTON_DOWN;
+
 static void setAllLeft()
 {
     setAvatarLeft();
+    avatarFacing = BUTTON_LEFT;
     for (int i = 0; i < 13; i++)
     {
         setMonsterLeft(monsters[i]);
@@ -55,6 +60,7 @@ static void setAllLeft()
 
 static void setAllRight()
 {
+    avatarFacing = BUTTON_RIGHT;
     setAvatarRight();
     for (int i = 0; i < 13; i++)
     {
@@ -64,6 +70,7 @@ static void setAllRight()
 
 static void setAllUp()
 {
+    avatarFacing = BUTTON_UP;
     setAvatarUp();
     for (int i = 0; i < 13; i++)
     {
@@ -73,6 +80,7 @@ static void setAllUp()
 
 static void setAllDown()
 {
+    avatarFacing = BUTTON_DOWN;
     setAvatarDown();
     for (int i = 0; i < 13; i++)
     {
@@ -100,12 +108,31 @@ static void alignAvatar()
     }
 }
 
-static void addMonsters(Monster* m, int offset, int count)
+void attack()
 {
-    for (int i = offset; i < offset + count; i++)
+    float offsetX;
+    float offsetY;
+    switch (avatarFacing)
     {
-        Engine_addObject(m[i].monsterObject);
+        case BUTTON_LEFT:
+            offsetX = -28;
+            offsetY = -16;
+            break;
+        case BUTTON_RIGHT:
+            offsetX = 28;
+            offsetY = -16;
+            break;
+        case BUTTON_UP:
+            offsetX = 0;
+            offsetY = -48;
+            break;
+        case BUTTON_DOWN:
+            offsetX = 0;
+            offsetY = 16;
+            break;
     }
+    GameObject* attack = createAttack(GameObject_getX(avatar) + offsetX, GameObject_getY(avatar) + offsetY);
+    Engine_addObject(attack);
 }
 
 static void _buttonCallback(Controller* controller, int buttonIndex, int state)
@@ -136,6 +163,12 @@ static void _buttonCallback(Controller* controller, int buttonIndex, int state)
             break;
         case BUTTON_EXIT:
             Mainloop_exit();
+            break;
+        case BUTTON_ATTACK:
+            if (state == SMUG_KEY_PRESS)
+            {
+                attack();
+            }
             break;
         default:
             smug_assert(FALSE);
@@ -185,6 +218,7 @@ static void init()
     Input_linkControllerToKeyboardKey(theController, BUTTON_LEFT, GLFW_KEY_LEFT);
     Input_linkControllerToKeyboardKey(theController, BUTTON_RIGHT, GLFW_KEY_RIGHT);
     Input_linkControllerToKeyboardKey(theController, BUTTON_EXIT, GLFW_KEY_ESC);
+    Input_linkControllerToKeyboardKey(theController, BUTTON_ATTACK, GLFW_KEY_SPACE);
 
     Mainloop_setLogicCallback(_logicCallback);
 
@@ -208,7 +242,10 @@ static void init()
     monsters[11] = newMonster(MONSTER_FIRESKULL, 256, 384);
     monsters[12] = newMonster(MONSTER_BEE, 384, 32);
 
-    addMonsters(monsters, 0, 13);
+    for (int i = 0; i < 13; i++)
+    {
+        Engine_addObject(monsters[i].monsterObject);
+    }
 }
 
 static void deinit()
