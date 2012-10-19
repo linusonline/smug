@@ -16,6 +16,7 @@ typedef struct _SpriteAnimation
     TIME pausedAt;
     TIME cachedDuration;
     BOOL cachedDurationCurrent;
+    BOOL loop;
 } _SpriteAnimation;
 
 static void _deleteInt(void* anInt)
@@ -57,6 +58,12 @@ static TIME _timeMod(TIME time1, TIME time2)
 static TIME _getCurrentTimeDiff(SpriteAnimation* self)
 {
     TIME diff = glfwGetTime() - self->starttime;
+    if (!self->loop && diff > _sumDurations(self))
+    {
+        self->pausedAt = _sumDurations(self);
+        self->started = FALSE;
+        return self->pausedAt;
+    }
     return _timeMod(diff, _sumDurations(self));
 }
 
@@ -92,6 +99,7 @@ SpriteAnimation* SpriteAnimation_newEmpty()
     newAnimation->pausedAt = 0;
     newAnimation->cachedDuration = 0;
     newAnimation->cachedDurationCurrent = FALSE;
+    newAnimation->loop = TRUE;
     return newAnimation;
 }
 
@@ -113,6 +121,11 @@ void SpriteAnimation_startAt(SpriteAnimation* self, TIME time)
 {
     self->starttime = glfwGetTime() - time;
     self->started = TRUE;
+}
+
+void SpriteAnimation_doLoop(SpriteAnimation* self, BOOL loop)
+{
+    self->loop = loop;
 }
 
 void SpriteAnimation_pause(SpriteAnimation* self)

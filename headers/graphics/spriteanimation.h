@@ -25,8 +25,8 @@ SpriteAnimation* SpriteAnimation_newEmpty();
 void SpriteAnimation_addFrame(SpriteAnimation* self, Sprite* sprite, TIME duration);
 
 void SpriteAnimation_start(SpriteAnimation* self);
-
 void SpriteAnimation_startAt(SpriteAnimation* self, TIME time);
+void SpriteAnimation_doLoop(SpriteAnimation* self, BOOL loop);
 
 void SpriteAnimation_pause(SpriteAnimation* self);
 void SpriteAnimation_reset(SpriteAnimation* self);
