@@ -17,6 +17,8 @@ typedef struct _SpriteAnimation
     TIME cachedDuration;
     BOOL cachedDurationCurrent;
     BOOL loop;
+    SpriteAnimationStopCallback stopCallback;
+    void* callbackData;
 } _SpriteAnimation;
 
 static void _deleteInt(void* anInt)
@@ -62,6 +64,7 @@ static TIME _getCurrentTimeDiff(SpriteAnimation* self)
     {
         self->pausedAt = _sumDurations(self);
         self->started = FALSE;
+        self->stopCallback(self, self->callbackData);
         return self->pausedAt;
     }
     return _timeMod(diff, _sumDurations(self));
@@ -100,6 +103,8 @@ SpriteAnimation* SpriteAnimation_newEmpty()
     newAnimation->cachedDuration = 0;
     newAnimation->cachedDurationCurrent = FALSE;
     newAnimation->loop = TRUE;
+    newAnimation->stopCallback = NULL;
+    newAnimation->callbackData = NULL;
     return newAnimation;
 }
 
@@ -175,4 +180,10 @@ void SpriteAnimation_delete(SpriteAnimation* self)
     LinkedList_deleteContents(self->durations, _deleteInt);
     LinkedList_delete(self->durations);
     free(self);
+}
+
+void SpriteAnimation_setStopCallback(SpriteAnimation* self, SpriteAnimationStopCallback callback, void* anything)
+{
+    self->stopCallback = callback;
+    self->callbackData = anything;
 }
