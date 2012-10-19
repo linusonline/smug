@@ -45,7 +45,7 @@ GameObject* getAvatar(float width, float height, float posX, float posY)
     }
 
     avatar = GameObject_new(posX, posY);
-    GameObject_addDrawableAt(avatar, Drawable_newFromSpriteAnimationAndDimensions(walkDown, width, height), 0.0f, 0.0f);
+    GameObject_addDrawableAt(avatar, Drawable_newFromSpriteAnimationAndDimensions(walkDown, width, height), -12, -32);
     return avatar;
 }
 
