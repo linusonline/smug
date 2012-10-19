@@ -19,7 +19,7 @@ static SpriteSheet* beeSheet = NULL;
 
 static const float WALK_FRAME_DURATION = 0.2;
 
-Monster newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float posX, float posY)
+Monster newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float posX, float posY, float offsetX, float offsetY)
 {
     Monster monster;
     monster.walkDown = SpriteAnimation_newEmpty();
@@ -55,7 +55,7 @@ Monster newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float
     Drawable* d = Drawable_newFromSpriteAnimationAndDimensions(monster.walkDown, width, height);
     Drawable_setZ(d, posY);
     monster.monsterObject = GameObject_new(posX, posY);
-    GameObject_addDrawableAt(monster.monsterObject, d, 0.0f, 0.0f);
+    GameObject_addDrawableAt(monster.monsterObject, d, offsetX, offsetY);
     return monster;
 }
 
@@ -65,6 +65,7 @@ Monster newMonster(int type, float posX, float posY)
     static char* imageFile = NULL;
     static char* dataFile = NULL;
     float width, height;
+    float offsetX, offsetY;
     switch (type)
     {
         case MONSTER_SHELLY:
@@ -73,6 +74,8 @@ Monster newMonster(int type, float posX, float posY)
             dataFile = "res/characters/monsters/32x32.txt";
             width = 32;
             height = 32;
+            offsetX = -16;
+            offsetY = -32;
             break;
         case MONSTER_SHROOM:
             monsterSheet = &shroomSheet;
@@ -80,6 +83,8 @@ Monster newMonster(int type, float posX, float posY)
             dataFile = "res/characters/monsters/32x32.txt";
             width = 32;
             height = 32;
+            offsetX = -16;
+            offsetY = -32;
             break;
         case MONSTER_MINKEY:
             monsterSheet = &minkeySheet;
@@ -87,6 +92,8 @@ Monster newMonster(int type, float posX, float posY)
             dataFile = "res/characters/monsters/32x32.txt";
             width = 32;
             height = 32;
+            offsetX = -16;
+            offsetY = -32;
             break;
         case MONSTER_GOLEM:
             monsterSheet = &golemSheet;
@@ -94,6 +101,8 @@ Monster newMonster(int type, float posX, float posY)
             dataFile = "res/characters/monsters/32x32.txt";
             width = 32;
             height = 32;
+            offsetX = -16;
+            offsetY = -32;
             break;
         case MONSTER_SNELL:
             monsterSheet = &snellSheet;
@@ -101,6 +110,8 @@ Monster newMonster(int type, float posX, float posY)
             dataFile = "res/characters/monsters/16x16.txt";
             width = 16;
             height = 16;
+            offsetX = -8;
+            offsetY = -16;
             break;
         case MONSTER_TROLLEY:
             monsterSheet = &trolleySheet;
@@ -108,6 +119,8 @@ Monster newMonster(int type, float posX, float posY)
             dataFile = "res/characters/monsters/16x32.txt";
             width = 16;
             height = 32;
+            offsetX = -8;
+            offsetY = -32;
             break;
         case MONSTER_SKELETON:
             monsterSheet = &skeletonSheet;
@@ -115,6 +128,8 @@ Monster newMonster(int type, float posX, float posY)
             dataFile = "res/characters/monsters/16x32.txt";
             width = 16;
             height = 32;
+            offsetX = -8;
+            offsetY = -32;
             break;
         case MONSTER_FIRESKULL:
             monsterSheet = &fireskullSheet;
@@ -122,6 +137,8 @@ Monster newMonster(int type, float posX, float posY)
             dataFile = "res/characters/monsters/16x32.txt";
             width = 16;
             height = 32;
+            offsetX = -8;
+            offsetY = -32;
             break;
         case MONSTER_BEE:
             monsterSheet = &beeSheet;
@@ -129,6 +146,8 @@ Monster newMonster(int type, float posX, float posY)
             dataFile = "res/characters/monsters/32x32.txt";
             width = 32;
             height = 32;
+            offsetX = -16;
+            offsetY = -32;
             break;
         default:
             smug_assert(FALSE);
@@ -137,7 +156,7 @@ Monster newMonster(int type, float posX, float posY)
     {
         *monsterSheet = SpriteSheet_new(imageFile, dataFile);
     }
-    return newMonsterFromSheet(*monsterSheet, width, height, posX, posY);
+    return newMonsterFromSheet(*monsterSheet, width, height, posX, posY, offsetX, offsetY);
 }
 
 void deleteMonster(Monster monster)
