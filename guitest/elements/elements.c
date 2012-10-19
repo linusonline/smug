@@ -7,6 +7,7 @@
 #include <input/input.h>
 #include <utils/log.h>
 #include <utils/stdout_console.h>
+#include <utils/linkedlist.h>
 #include <engine/engine.h>
 #include <engine/mainloop.h>
 
@@ -47,6 +48,8 @@ static int moveVertically = 0;
 static float avatarSpeed = 100; // Units per second.
 
 static int avatarFacing = BUTTON_DOWN;
+
+static LinkedList* objectsToDelete;
 
 static void setAllLeft()
 {
@@ -108,7 +111,12 @@ static void alignAvatar()
     }
 }
 
-void attack()
+static void _attackEndCallback(SpriteAnimation* attack, void* callbackData)
+{
+    LinkedList_addLast(objectsToDelete, callbackData);
+}
+
+static void attack()
 {
     float offsetX;
     float offsetY;
@@ -132,7 +140,20 @@ void attack()
             break;
     }
     GameObject* attack = createAttack(GameObject_getX(avatar) + offsetX, GameObject_getY(avatar) + offsetY);
+    SpriteAnimation_setStopCallback(Drawable_getSpriteAnimation(GameObject_getDrawable(attack)), _attackEndCallback, attack);
     Engine_addObject(attack);
+}
+
+static void deleteOldObjects()
+{
+    GameObject* go = (GameObject*)LinkedList_getFirst(objectsToDelete);
+    while (go != NULL)
+    {
+        Engine_removeObject(go);
+        deleteAttack(go);
+        go = (GameObject*)LinkedList_getNext(objectsToDelete);
+    }
+    LinkedList_removeAll(objectsToDelete);
 }
 
 static void _buttonCallback(Controller* controller, int buttonIndex, int state)
@@ -192,6 +213,8 @@ static void _logicCallback()
         moveHorizontally * speedFraction + GameObject_getX(avatar),
         moveVertically * speedFraction + GameObject_getY(avatar));
     Drawable_setZ(GameObject_getDrawable(avatar), GameObject_getY(avatar));
+
+    deleteOldObjects();
 }
 
 static void init()
@@ -246,6 +269,8 @@ static void init()
     {
         Engine_addObject(monsters[i].monsterObject);
     }
+
+    objectsToDelete = LinkedList_new();
 }
 
 static void deinit()
@@ -264,6 +289,7 @@ static void deinit()
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_ESC);
     Controller_delete(theController);
 
+    deleteOldObjects();
     Engine_removeAllObjects();
     Engine_terminate();
     Graphics_terminate();

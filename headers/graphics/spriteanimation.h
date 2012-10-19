@@ -20,6 +20,8 @@
 struct _SpriteAnimation;
 typedef struct _SpriteAnimation SpriteAnimation;
 
+typedef void (*SpriteAnimationStopCallback)(SpriteAnimation* animation, void* anything);
+
 SpriteAnimation* SpriteAnimation_newEmpty();
 
 void SpriteAnimation_addFrame(SpriteAnimation* self, Sprite* sprite, TIME duration);
@@ -30,6 +32,8 @@ void SpriteAnimation_doLoop(SpriteAnimation* self, BOOL loop);
 
 void SpriteAnimation_pause(SpriteAnimation* self);
 void SpriteAnimation_reset(SpriteAnimation* self);
+
+void SpriteAnimation_setStopCallback(SpriteAnimation* self, SpriteAnimationStopCallback callback, void* anything);
 
 Sprite* SpriteAnimation_getCurrentSprite(SpriteAnimation* self);
 Sprite* SpriteAnimation_getSpriteAtIndex(SpriteAnimation* self, int index);
