@@ -40,13 +40,13 @@ static void GLFWCALL windowResize(int width, int height)
 
 static void drawStuff(RenderQueue* rq)
 {
-    RenderQueue_addDrawable(renderQueue, test1);
-    RenderQueue_addDrawable(renderQueue, test2);
-    RenderQueue_addDrawable(renderQueue, rightCannon1);
-    RenderQueue_addDrawable(renderQueue, rightCannon2);
-    RenderQueue_addDrawable(renderQueue, rightCannon3);
-    RenderQueue_addDrawable(renderQueue, downCannon);
-    RenderQueue_addDrawable(renderQueue, upCannon);
+    RenderQueue_addDrawable(renderQueue, test1, 16, 16);
+    RenderQueue_addDrawable(renderQueue, test2, 32, 32);
+    RenderQueue_addDrawable(renderQueue, rightCannon1, 64, 64);
+    RenderQueue_addDrawable(renderQueue, rightCannon2, 96, 64);
+    RenderQueue_addDrawable(renderQueue, rightCannon3, 128, 64);
+    RenderQueue_addDrawable(renderQueue, downCannon, 160, 64);
+    RenderQueue_addDrawable(renderQueue, upCannon, 192, 64);
 }
 
 static void afterDrawing()
@@ -109,31 +109,24 @@ static void init()
 
     test1 = Drawable_newFromSprite(testSprite);
     Drawable_setSize(test1, 16, 16);
-    Drawable_setPos(test1, 16, 16);
 
     test2 = Drawable_newFromSprite(testSprite);
     Drawable_setSize(test2, 32, 32);
-    Drawable_setPos(test2, 32, 32);
 
     rightCannon1 = Drawable_newFromSprite(rightSprite);
     Drawable_setSize(rightCannon1, 16, 16);
-    Drawable_setPos(rightCannon1, 64, 64);
 
     rightCannon2 = Drawable_newFromSprite(rightSprite);
     Drawable_setSize(rightCannon2, 16, 16);
-    Drawable_setPos(rightCannon2, 96, 64);
 
     rightCannon3 = Drawable_newFromSprite(rightSprite);
     Drawable_setSize(rightCannon3, 16, 16);
-    Drawable_setPos(rightCannon3, 128, 64);
 
     downCannon = Drawable_newFromSprite(downSprite);
     Drawable_setSize(downCannon, 16, 16);
-    Drawable_setPos(downCannon, 160, 64);
 
     upCannon = Drawable_newFromSprite(upSprite);
     Drawable_setSize(upCannon, 16, 16);
-    Drawable_setPos(upCannon, 192, 64);
 }
 
 static void runMainLoop()

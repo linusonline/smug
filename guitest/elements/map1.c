@@ -1,7 +1,7 @@
 #include <common.h>
 #include <graphics/sprite.h>
 #include <graphics/spritesheet.h>
-#include <graphics/drawable.h>
+#include <engine/gameobject.h>
 
 static const char* dirtFile = "res/inquisitor/Inq XP MT - Dirt.png";
 static const char* grassFile = "res/inquisitor/Inq XP MT - Long Grass2.png";
@@ -16,7 +16,7 @@ static SpriteSheet* mudSheet = NULL;
 static SpriteSheet* roadSheet1 = NULL;
 static SpriteSheet* roadSheet2 = NULL;
 
-static Drawable** world = NULL;
+static GameObject** world = NULL;
 
 static const int TILE_WIDTH = 32;
 static const int TILE_HEIGHT = 32;
@@ -25,7 +25,7 @@ static const int MAP_WIDTH = 20;
 static const int MAP_HEIGHT = 15;
 
 #define sprite(type, xi, yi) SpriteSheet_getSpriteXY(type, xi, yi)
-#define landtile(s, x, y) Drawable_newFromSpriteAndDimensions(s, TILE_WIDTH, TILE_HEIGHT, x * TILE_WIDTH, y * TILE_HEIGHT)
+#define landtile(s, x, y) GameObject_newWithDrawable(x * TILE_WIDTH, y * TILE_HEIGHT, Drawable_newFromSpriteAndDimensions(s, TILE_WIDTH, TILE_HEIGHT), 0.0f, 0.0f)
 #define GRASS_SPRITE sprite(dirtSprites, 0, 0)
 
 int map1Size()
@@ -37,7 +37,7 @@ void deleteMap1()
 {
     for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
     {
-        Drawable_delete(world[i]);
+        GameObject_delete(world[i]);
     }
     free(world);
 
@@ -48,7 +48,7 @@ void deleteMap1()
     SpriteSheet_delete(roadSheet2);
 }
 
-Drawable** createMap1()
+GameObject** createMap1()
 {
     dirtSheet = SpriteSheet_new(dirtFile, dataFile);
     grassSheet = SpriteSheet_new(grassFile, dataFile);
@@ -56,7 +56,7 @@ Drawable** createMap1()
     roadSheet1 = SpriteSheet_new(roadFile1, dataFile);
     roadSheet2 = SpriteSheet_new(roadFile2, dataFile);
 
-    world = allocatev(Drawable*, MAP_WIDTH * MAP_HEIGHT);
+    world = allocatev(GameObject*, MAP_WIDTH * MAP_HEIGHT);
 
     world[0] =  landtile(sprite(dirtSheet, 0, 0), 0, 0);
     world[1] =  landtile(sprite(dirtSheet, 0, 0), 1, 0);
@@ -375,7 +375,7 @@ Drawable** createMap1()
 
     for (int i = 0; i < 300; i++)
     {
-        Drawable_setZ(world[i], -1.0);
+        Drawable_setZ(GameObject_getDrawable(world[i]), -1.0);
     }
 
     return world;

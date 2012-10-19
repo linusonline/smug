@@ -2,8 +2,9 @@
 #define ELEMENTS_AVATAR_H
 
 #include <common.h>
+#include <engine/gameobject.h>
 
-Drawable* getAvatar(float width, float height, float posX, float posY);
+GameObject* getAvatar(float width, float height, float posX, float posY);
 void deleteAvatar();
 
 void avatarWalk(BOOL walk);

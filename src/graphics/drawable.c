@@ -19,15 +19,13 @@ static SpriteAnimation* _animateSprite(Sprite* sprite)
 Drawable* Drawable_newFromSprite(Sprite* sprite)
 {
     // TODO: Default to sprite pixel size?
-    return Drawable_newFromSpriteAndDimensions(sprite, 0, 0, 0, 0);
+    return Drawable_newFromSpriteAndDimensions(sprite, 0, 0);
 }
 
-Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, float width, float height, float posX, float posY)
+Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, float width, float height)
 {
     Drawable* newDrawable = allocate(Drawable);
     newDrawable->sprite = sprite;
-    newDrawable->positionX = posX;
-    newDrawable->positionY = posY;
     newDrawable->width = width;
     newDrawable->height = height;
     newDrawable->z = 0.0f;
@@ -36,10 +34,10 @@ Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, 
     return newDrawable;
 }
 
-Drawable* Drawable_newFromSpriteAndDimensions(Sprite* sprite, float width, float height, float posX, float posY)
+Drawable* Drawable_newFromSpriteAndDimensions(Sprite* sprite, float width, float height)
 {
     SpriteAnimation* sa = _animateSprite(sprite);
-    Drawable* newDrawable = Drawable_newFromSpriteAnimationAndDimensions(sa, width, height, posX, posY);
+    Drawable* newDrawable = Drawable_newFromSpriteAnimationAndDimensions(sa, width, height);
     newDrawable->createdLocally = TRUE;
     return newDrawable;
 }
@@ -65,29 +63,10 @@ void Drawable_setSize(Drawable* self, float width, float height)
     self->height = height;
 }
 
-void Drawable_setPos(Drawable* self, float x, float y)
-{
-    smug_assert(_invariant(self));
-    self->positionX = x;
-    self->positionY = y;
-}
-
 void Drawable_setZ(Drawable* self, float z)
 {
     smug_assert(_invariant(self));
     self->z = z;
-}
-
-float Drawable_getX(Drawable* self)
-{
-    smug_assert(_invariant(self));
-    return self->positionX;
-}
-
-float Drawable_getY(Drawable* self)
-{
-    smug_assert(_invariant(self));
-    return self->positionY;
 }
 
 float Drawable_getZ(Drawable* self)
@@ -108,10 +87,10 @@ Sprite* Drawable_getSprite(Drawable* self)
     return SpriteAnimation_getCurrentSprite(self->sprite);
 }
 
-void Drawable_addRenderData(Drawable* self, RenderBatch* renderBatch)
+void Drawable_addRenderData(Drawable* self, RenderBatch* renderBatch, float positionX, float positionY)
 {
     smug_assert(_invariant(self));
-    Sprite_addRenderData(SpriteAnimation_getCurrentSprite(self->sprite), renderBatch, self->positionX, self->positionY, self->width, self->height, self->z);
+    Sprite_addRenderData(SpriteAnimation_getCurrentSprite(self->sprite), renderBatch, positionX, positionY, self->width, self->height, self->z);
 }
 
 void Drawable_useSprite(Drawable* self, Sprite* sprite)

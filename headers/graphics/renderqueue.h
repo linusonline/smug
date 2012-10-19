@@ -11,7 +11,7 @@ typedef struct _RenderQueue RenderQueue;
 RenderQueue* RenderQueue_new(void);
 void RenderQueue_delete(RenderQueue* self);
 void RenderQueue_clear(RenderQueue* self);
-void RenderQueue_addDrawable(RenderQueue* self, Drawable* drawable);
+void RenderQueue_addDrawable(RenderQueue* self, Drawable* drawable, float positionX, float positionY);
 
 /** Requires OpenGL to be initialized, and GL_VERTEX_ARRAY and
  *  GL_TEXTURE_COORD_ARRAY to be enabled.

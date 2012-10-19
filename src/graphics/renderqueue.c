@@ -59,7 +59,7 @@ int* _allocInt(int value)
     return i;
 }
 
-void RenderQueue_addDrawable(RenderQueue* self, Drawable* drawable)
+void RenderQueue_addDrawable(RenderQueue* self, Drawable* drawable, float positionX, float positionY)
 {
     smug_assert(_invariant(self));
     Sprite* sprite = Drawable_getSprite(drawable);
@@ -71,7 +71,7 @@ void RenderQueue_addDrawable(RenderQueue* self, Drawable* drawable)
         renderBatch = RenderBatch_new(RENDERBATCH_INITIAL_SIZE, TRUE);
         Map_set(self->renderBatches, _allocInt(id), renderBatch);
     }
-    Drawable_addRenderData(drawable, renderBatch);
+    Drawable_addRenderData(drawable, renderBatch, positionX, positionY);
 }
 
 /** Requires OpenGL to be initialized, and GL_VERTEX_ARRAY and
