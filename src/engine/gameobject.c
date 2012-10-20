@@ -2,9 +2,17 @@
 #include <graphics/drawable.h>
 #include <engine/gameobject.h>
 
-BOOL _invariant(GameObject* self)
+static BOOL _invariant(GameObject* self)
 {
     return self != NULL;
+}
+
+static void _updateBodyPosition(GameObject* self)
+{
+    if (self->body != NULL)
+    {
+        Body_setPosition(self->body, self->positionX + self->bodyOffsetX, self->positionY + self->bodyOffsetY);
+    }
 }
 
 GameObject* GameObject_new(float posX, float posY)
@@ -15,6 +23,9 @@ GameObject* GameObject_new(float posX, float posY)
     newObject->drawable = NULL;
     newObject->drawableOffsetX = 0.0f;
     newObject->drawableOffsetY = 0.0f;
+    newObject->body = NULL;
+    newObject->bodyOffsetX = 0.0f;
+    newObject->bodyOffsetY = 0.0f;
     return newObject;
 }
 
@@ -73,11 +84,37 @@ void GameObject_draw(GameObject* self, RenderQueue* renderQueue)
     }
 }
 
+GameObject* GameObject_addBodyAt(GameObject* self, Body* body, float offsetX, float offsetY)
+{
+    if (self->body != NULL)
+    {
+        Body_delete(self->body);
+    }
+    self->body = body;
+    self->bodyOffsetX = offsetX;
+    self->bodyOffsetY = offsetY;
+    _updateBodyPosition(self);
+}
+
+Body* GameObject_getBody(GameObject* self)
+{
+    return self->body;
+}
+
+void GameObject_setBodyOffset(GameObject* self, float offsetX, float offsetY)
+{
+    smug_assert(self->body != NULL);
+    self->bodyOffsetX = offsetX;
+    self->bodyOffsetY = offsetY;
+    _updateBodyPosition(self);
+}
+
 void GameObject_setPos(GameObject* self, float x, float y)
 {
     smug_assert(_invariant(self));
     self->positionX = x;
     self->positionY = y;
+    _updateBodyPosition(self);
 }
 
 float GameObject_getX(GameObject* self)

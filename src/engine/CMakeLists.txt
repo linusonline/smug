@@ -7,4 +7,4 @@ project (SmugEngine)
 # Directory for library header files.
 include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 
-add_library(SmugEngine engine.c mainloop.c gameobject.c)
+add_library(SmugEngine engine.c mainloop.c gameobject.c collisiondetector.c body.c)

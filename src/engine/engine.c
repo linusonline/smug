@@ -3,6 +3,7 @@
 #include <graphics/graphics.h>
 #include <graphics/drawable.h>
 #include <utils/linkedlist.h>
+#include <engine/collisiondetector.h>
 
 #include <engine/engine.h>
 
@@ -69,4 +70,9 @@ void Engine_drawObjects(RenderQueue* renderQueue)
     currentRenderQueue = renderQueue;
     LinkedList_doList(gameObjects, _addDrawableVoid);
     currentRenderQueue = NULL;
+}
+
+void Engine_collideObjects()
+{
+    CollisionDetector_detect(gameObjects);
 }

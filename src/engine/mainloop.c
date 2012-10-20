@@ -78,6 +78,7 @@ void Mainloop_run()
                 logicCallback();
             }
         }
+        Engine_collideObjects();
         Engine_drawObjects(renderQueue);
         Graphics_render(renderQueue);
         Graphics_refreshWindow();
