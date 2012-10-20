@@ -97,6 +97,8 @@ static char* getScopeString(int logScope)
             return "ENGINE"; break;
         case LOG_DEFAULT:
             return "DEFAULT"; break;
+        case LOG_USER1:
+            return "LOG_USER1"; break;
         default:
             return "BAD_SCOPE";
     }
