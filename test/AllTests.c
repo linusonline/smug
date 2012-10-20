@@ -31,6 +31,7 @@ CuSuite* RenderBatchTest_GetSuite();
 CuSuite* TextureTest_GetSuite();
 CuSuite* SpriteSheetTest_GetSuite();
 CuSuite* SpriteAnimationTest_GetSuite();
+CuSuite* BodyTest_GetSuite();
 
 void RunAllTests(void)
 {
@@ -48,6 +49,8 @@ void RunAllTests(void)
 	CuSuiteAddSuite(suite, TextureTest_GetSuite());
 	CuSuiteAddSuite(suite, SpriteSheetTest_GetSuite());
 	CuSuiteAddSuite(suite, SpriteAnimationTest_GetSuite());
+
+	CuSuiteAddSuite(suite, BodyTest_GetSuite());
 
 	CuSuiteRun(suite);
 	CuSuiteSummary(suite, output);
