@@ -10,11 +10,13 @@
 #include <utils/linkedlist.h>
 #include <engine/engine.h>
 #include <engine/mainloop.h>
+#include <engine/collisiondetector.h>
 
 #include <maps.h>
 #include <avatar.h>
 #include <monster.h>
 #include <attack.h>
+#include <objects.h>
 
 static const int INITIAL_WINDOW_WIDTH = 640;
 static const int INITIAL_WINDOW_HEIGHT = 480;
@@ -217,11 +219,33 @@ static void _logicCallback()
     deleteOldObjects();
 }
 
+static void _collisionCallback(GameObject* obj1, GameObject* obj2)
+{
+    if (obj1 == avatar || obj2 == avatar)
+    {
+        GameObject* other = obj1 == avatar ? obj2 : obj1;
+        if (Body_hasTag(GameObject_getBody(other), OBJECT_MONSTER))
+        {
+            LOG(LOG_USER1, "Hit by monster!");
+        }
+    }
+    if (Body_hasTag(GameObject_getBody(obj1), OBJECT_ATTACK) ||
+        Body_hasTag(GameObject_getBody(obj2), OBJECT_ATTACK))
+    {
+        GameObject* other = Body_hasTag(GameObject_getBody(obj1), OBJECT_ATTACK) ? obj2 : obj1;
+        if (Body_hasTag(GameObject_getBody(other), OBJECT_MONSTER))
+        {
+            LOG(LOG_USER1, "Hit monster with attack!");
+        }
+    }
+}
+
 static void init()
 {
     console = StdoutConsole_new();
     smug_assert(console != NULL);
     Log_init(console);
+    Log_activateScopes(LOG_USER1);
 
     camera = Camera_new();
     camera->posX = INITIAL_WINDOW_WIDTH / 2;
@@ -271,6 +295,7 @@ static void init()
     }
 
     objectsToDelete = LinkedList_new();
+    CollisionDetector_collideTags(0, 0, _collisionCallback);
 }
 
 static void deinit()

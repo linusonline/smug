@@ -5,6 +5,7 @@
 #include <graphics/spritesheet.h>
 #include <graphics/spriteanimation.h>
 
+#include <objects.h>
 #include <monster.h>
 
 static SpriteSheet* shellySheet = NULL;
@@ -56,6 +57,9 @@ Monster newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float
     Drawable_setZ(d, posY);
     monster.monsterObject = GameObject_new(posX, posY);
     GameObject_addDrawableAt(monster.monsterObject, d, offsetX, offsetY);
+    Body* b = Body_newRectangle(width, height);
+    Body_addTag(b, OBJECT_MONSTER);
+    GameObject_addBodyAt(monster.monsterObject, b, offsetX, offsetY);
     return monster;
 }
 

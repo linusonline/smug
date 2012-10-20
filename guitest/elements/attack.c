@@ -3,13 +3,14 @@
 #include <graphics/drawable.h>
 #include <graphics/spriteanimation.h>
 
+#include <objects.h>
 #include <attack.h>
 
 static SpriteSheet* attackSheet = NULL;
 static const char* imageFile = "res/effects/cold.png";
 static const char* dataFile = "res/effects/32x32.txt";
 
-static const float ATTACK_FRAME_DURATION = 0.2;
+static const float ATTACK_FRAME_DURATION = 0.1;
 
 GameObject* createAttack(float posX, float posY)
 {
@@ -30,6 +31,9 @@ GameObject* createAttack(float posX, float posY)
     Drawable_setZ(d, 1000);
     GameObject* attack = GameObject_new(posX, posY);
     GameObject_addDrawableAt(attack, d, -16, -16);
+    Body* b = Body_newRectangle(32, 32);
+    Body_addTag(b, OBJECT_ATTACK);
+    GameObject_addBodyAt(attack, b, -16, -16);
     return attack;
 }
 

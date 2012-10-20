@@ -1,0 +1,9 @@
+#ifndef ELEMENTS_OBJECTS_H
+#define ELEMENTS_OBJECTS_H
+
+#define OBJECT_AVATAR       1
+#define OBJECT_MONSTER      2
+#define OBJECT_ATTACK       3
+#define OBJECT_BACKGROUND   4
+
+#endif /* ELEMENTS_OBJECTS_H */
