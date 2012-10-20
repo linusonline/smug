@@ -457,3 +457,31 @@ void LinkedList_deleteContents(LinkedList* self, void (*deleter)(void*))
     LinkedList_doList(self, deleter);
     _clear(self);
 }
+
+LinkedListIterator LinkedList_getIterator(LinkedList* self)
+{
+    LinkedListIterator iter;
+    iter.current = self->first;
+    return iter;
+}
+
+void* LinkedListIterator_getCurrent(LinkedListIterator* iter)
+{
+    return iter->current != NULL ? iter->current->item : NULL;
+}
+
+void* LinkedListIterator_getNext(LinkedListIterator* iter)
+{
+    iter->current = iter->current->next;
+    return LinkedListIterator_getCurrent(iter);
+}
+
+BOOL LinkedListIterator_hasMore(LinkedListIterator iter)
+{
+    return iter.current != NULL && iter.current->next != NULL;
+}
+
+void LinkedListIterator_setTo(LinkedListIterator* iter, LinkedListIterator* other)
+{
+    iter->current = other->current;
+}

@@ -22,6 +22,12 @@ typedef struct _LinkedList LinkedList;
 struct _Node;
 typedef struct _Node Node;
 
+typedef struct LinkedListIterator
+{
+    Node* current;
+} LinkedListIterator;
+
+
 /**
  * Creates and returns a new empty list.
  *
@@ -266,6 +272,12 @@ void LinkedList_concat(LinkedList* self, LinkedList* other);
  */
 void LinkedList_interleave(LinkedList* self, void* item, void* (*itemCopier)(void*));
 
-#endif // SMUG_UTILS_LINKEDLIST_H
+LinkedListIterator LinkedList_getIterator(LinkedList* self);
+void* LinkedListIterator_getCurrent(LinkedListIterator* iter);
+void* LinkedListIterator_getNext(LinkedListIterator* iter);
+BOOL LinkedListIterator_hasMore(LinkedListIterator iter);
+void LinkedListIterator_setTo(LinkedListIterator* iter, LinkedListIterator* other);
+
+#endif /* SMUG_UTILS_LINKEDLIST_H */
 
 /**@}*/
