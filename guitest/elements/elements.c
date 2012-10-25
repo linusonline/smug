@@ -4,6 +4,7 @@
 #include <graphics/camera.h>
 #include <graphics/graphics.h>
 #include <graphics/drawable.h>
+#include <graphics/spritesheet.h>
 #include <input/input.h>
 #include <utils/log.h>
 #include <utils/stdout_console.h>
@@ -52,6 +53,28 @@ static float avatarSpeed = 100; // Units per second.
 static int avatarFacing = BUTTON_DOWN;
 
 static LinkedList* objectsToDelete;
+
+static SpriteSheet* guiSheet = NULL;
+static GameObject* actionGauge = NULL;
+static GameObject* actionGaugeFrame = NULL;
+
+static void createActionGauge(float posX, float posY)
+{
+    float spaceUnderAvatar = 8;
+    guiSheet = SpriteSheet_new("res/gui/gauge.png", "res/gui/gauge.txt");
+    Drawable* d = Drawable_newFromSpriteAndSize(SpriteSheet_getSprite(guiSheet, 0), 32, spaceUnderAvatar);
+    actionGaugeFrame = GameObject_new(posX, posY);
+    Drawable_setZ(d, 2000);
+    GameObject_addDrawableAt(actionGaugeFrame, d, -16, 8);
+
+    actionGauge = GameObject_new(posX, posY);
+    Drawable* d2 = Drawable_newFromColorAndSize(1.0, 0.85, 0.0, 1.0, 24, 4);
+    Drawable_setZ(d2, 2000);
+    GameObject_addDrawableAt(actionGauge, d2, -12, spaceUnderAvatar + 2);
+
+    Engine_addObject(actionGauge);
+    Engine_addObject(actionGaugeFrame);
+}
 
 static void setAllLeft()
 {
@@ -214,6 +237,8 @@ static void _logicCallback()
     GameObject_setPos(avatar,
         moveHorizontally * speedFraction + GameObject_getX(avatar),
         moveVertically * speedFraction + GameObject_getY(avatar));
+    GameObject_setPos(actionGauge, GameObject_getX(avatar), GameObject_getY(avatar));
+    GameObject_setPos(actionGaugeFrame, GameObject_getX(avatar), GameObject_getY(avatar));
     Drawable_setZ(GameObject_getDrawable(avatar), GameObject_getY(avatar));
 
     deleteOldObjects();
@@ -274,6 +299,7 @@ static void init()
     Engine_init();
     Engine_addObjects(world, 0, map1Size());
     Engine_addObject(avatar);
+    createActionGauge(320, 240);
 
     monsters[0] = newMonster(MONSTER_SHELLY, 32, 32);
     monsters[1] = newMonster(MONSTER_SHROOM, 32, 128);
