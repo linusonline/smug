@@ -18,6 +18,7 @@
 #include <monster.h>
 #include <attack.h>
 #include <objects.h>
+#include <actiongauge.h>
 
 static const int INITIAL_WINDOW_WIDTH = 640;
 static const int INITIAL_WINDOW_HEIGHT = 480;
@@ -53,28 +54,6 @@ static float avatarSpeed = 100; // Units per second.
 static int avatarFacing = BUTTON_DOWN;
 
 static LinkedList* objectsToDelete;
-
-static SpriteSheet* guiSheet = NULL;
-static GameObject* actionGauge = NULL;
-static GameObject* actionGaugeFrame = NULL;
-
-static void createActionGauge(float posX, float posY)
-{
-    float spaceUnderAvatar = 8;
-    guiSheet = SpriteSheet_new("res/gui/gauge.png", "res/gui/gauge.txt");
-    Drawable* d = Drawable_newFromSpriteAndSize(SpriteSheet_getSprite(guiSheet, 0), 32, spaceUnderAvatar);
-    actionGaugeFrame = GameObject_new(posX, posY);
-    Drawable_setZ(d, 2000);
-    GameObject_addDrawableAt(actionGaugeFrame, d, -16, 8);
-
-    actionGauge = GameObject_new(posX, posY);
-    Drawable* d2 = Drawable_newFromColorAndSize(1.0, 0.85, 0.0, 1.0, 24, 4);
-    Drawable_setZ(d2, 2000);
-    GameObject_addDrawableAt(actionGauge, d2, -12, spaceUnderAvatar + 2);
-
-    Engine_addObject(actionGauge);
-    Engine_addObject(actionGaugeFrame);
-}
 
 static void setAllLeft()
 {
@@ -237,8 +216,7 @@ static void _logicCallback()
     GameObject_setPos(avatar,
         moveHorizontally * speedFraction + GameObject_getX(avatar),
         moveVertically * speedFraction + GameObject_getY(avatar));
-    GameObject_setPos(actionGauge, GameObject_getX(avatar), GameObject_getY(avatar));
-    GameObject_setPos(actionGaugeFrame, GameObject_getX(avatar), GameObject_getY(avatar));
+    setActionGaugePosition(GameObject_getX(avatar), GameObject_getY(avatar));
     Drawable_setZ(GameObject_getDrawable(avatar), GameObject_getY(avatar));
 
     deleteOldObjects();
@@ -341,6 +319,7 @@ static void deinit()
     Controller_delete(theController);
 
     deleteOldObjects();
+    deleteActionGauge();
     Engine_removeAllObjects();
     Engine_terminate();
     Graphics_terminate();
