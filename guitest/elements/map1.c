@@ -25,7 +25,7 @@ static const int MAP_WIDTH = 20;
 static const int MAP_HEIGHT = 15;
 
 #define sprite(type, xi, yi) SpriteSheet_getSpriteXY(type, xi, yi)
-#define landtile(s, x, y) GameObject_newWithDrawable(x * TILE_WIDTH, y * TILE_HEIGHT, Drawable_newFromSpriteAndDimensions(s, TILE_WIDTH, TILE_HEIGHT), 0.0f, 0.0f)
+#define landtile(s, x, y) GameObject_newWithDrawable(x * TILE_WIDTH, y * TILE_HEIGHT, Drawable_newFromSpriteAndSize(s, TILE_WIDTH, TILE_HEIGHT), 0.0f, 0.0f)
 #define GRASS_SPRITE sprite(dirtSprites, 0, 0)
 
 int map1Size()

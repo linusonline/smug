@@ -9,8 +9,8 @@ struct _Drawable;
 typedef struct _Drawable Drawable;
 
 Drawable* Drawable_newFromSprite(Sprite* sprite);
-Drawable* Drawable_newFromSpriteAndDimensions(Sprite* sprite, float width, float height);
-Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, float width, float height);
+Drawable* Drawable_newFromSpriteAndSize(Sprite* sprite, float width, float height);
+Drawable* Drawable_newFromSpriteAnimationAndSize(SpriteAnimation* sprite, float width, float height);
 void Drawable_delete(Drawable* self);
 void Drawable_deleteVoid(void* self);
 void Drawable_setSize(Drawable* self, float width, float height);

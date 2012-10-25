@@ -27,7 +27,7 @@ GameObject* createAttack(float posX, float posY)
     SpriteAnimation_start(a);
     SpriteAnimation_doLoop(a, FALSE);
 
-    Drawable* d = Drawable_newFromSpriteAnimationAndDimensions(a, 32, 32);
+    Drawable* d = Drawable_newFromSpriteAnimationAndSize(a, 32, 32);
     Drawable_setZ(d, 1000);
     GameObject* attack = GameObject_new(posX, posY);
     GameObject_addDrawableAt(attack, d, -16, -16);

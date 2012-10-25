@@ -19,10 +19,10 @@ static SpriteAnimation* _animateSprite(Sprite* sprite)
 Drawable* Drawable_newFromSprite(Sprite* sprite)
 {
     // TODO: Default to sprite pixel size?
-    return Drawable_newFromSpriteAndDimensions(sprite, 0, 0);
+    return Drawable_newFromSpriteAndSize(sprite, 0, 0);
 }
 
-Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, float width, float height)
+Drawable* Drawable_newFromSpriteAnimationAndSize(SpriteAnimation* sprite, float width, float height)
 {
     Drawable* newDrawable = allocate(Drawable);
     newDrawable->sprite = sprite;
@@ -34,10 +34,10 @@ Drawable* Drawable_newFromSpriteAnimationAndDimensions(SpriteAnimation* sprite, 
     return newDrawable;
 }
 
-Drawable* Drawable_newFromSpriteAndDimensions(Sprite* sprite, float width, float height)
+Drawable* Drawable_newFromSpriteAndSize(Sprite* sprite, float width, float height)
 {
     SpriteAnimation* sa = _animateSprite(sprite);
-    Drawable* newDrawable = Drawable_newFromSpriteAnimationAndDimensions(sa, width, height);
+    Drawable* newDrawable = Drawable_newFromSpriteAnimationAndSize(sa, width, height);
     newDrawable->createdLocally = TRUE;
     return newDrawable;
 }

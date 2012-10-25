@@ -76,7 +76,7 @@ static void afterDrawing()
     RenderQueue_clear(renderQueue);
 }
 
-#define _newObjectFromSpriteAndDimensions(sprite, w, h, x, y) GameObject_newWithDrawable(x, y, Drawable_newFromSpriteAndDimensions(sprite, w, h), 0, 0)
+#define _newObjectFromSpriteAndDimensions(sprite, w, h, x, y) GameObject_newWithDrawable(x, y, Drawable_newFromSpriteAndSize(sprite, w, h), 0, 0)
 
 static void createBackground()
 {
@@ -429,7 +429,7 @@ static void createBackground()
     SpriteAnimation_addFrame(animHouse, buildingSprites[10], 0.5);
     SpriteAnimation_addFrame(animHouse, buildingSprites[11], 0.5);
     world[312] = GameObject_new(U*4, U*6);
-    GameObject_addDrawableAt(world[312], Drawable_newFromSpriteAnimationAndDimensions(animHouse, 40, 64), 0.0, 0.0);
+    GameObject_addDrawableAt(world[312], Drawable_newFromSpriteAnimationAndSize(animHouse, 40, 64), 0.0, 0.0);
     SpriteAnimation_start(animHouse);
 }
 
@@ -438,7 +438,7 @@ static void createCursor(int posX, int posY)
     cursorSheet = SpriteSheet_new("res/cursor.png", NULL);
     cursorSprite = SpriteSheet_getSprite(cursorSheet, 0);
     cursor = GameObject_new(posX*U, posY*U);
-    GameObject_addDrawableAt(cursor, Drawable_newFromSpriteAndDimensions(cursorSprite, U, U), 0.0, 0.0);
+    GameObject_addDrawableAt(cursor, Drawable_newFromSpriteAndSize(cursorSprite, U, U), 0.0, 0.0);
     world[313] = cursor;
 }
 
