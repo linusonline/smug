@@ -95,7 +95,7 @@ static void runMainLoop()
 
         drawSprites(spritesRenderBatch);
         Texture_activate(spriteSheet);
-        RenderBatch_render(spritesRenderBatch);
+        RenderBatch_render(spritesRenderBatch, Texture_getId(spriteSheet));
 
         // Swap front and back rendering buffers
         glfwSwapBuffers();

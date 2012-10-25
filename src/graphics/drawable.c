@@ -6,7 +6,22 @@
 
 static BOOL _invariant(Drawable* self)
 {
-    return self != NULL && self->sprite != NULL;
+    return self != NULL && (self->sprite != NULL || self->createdLocally == FALSE);
+}
+
+static Drawable* _new(float width, float height)
+{
+    Drawable* newDrawable = allocate(Drawable);
+    newDrawable->width = width;
+    newDrawable->height = height;
+    newDrawable->z = 0.0f;
+    newDrawable->sprite = NULL;
+    newDrawable->createdLocally = FALSE;
+    newDrawable->r = 0.0f;
+    newDrawable->g = 0.0f;
+    newDrawable->b = 0.0f;
+    newDrawable->a = 0.0f;
+    return newDrawable;
 }
 
 static SpriteAnimation* _animateSprite(Sprite* sprite)
@@ -24,12 +39,8 @@ Drawable* Drawable_newFromSprite(Sprite* sprite)
 
 Drawable* Drawable_newFromSpriteAnimationAndSize(SpriteAnimation* sprite, float width, float height)
 {
-    Drawable* newDrawable = allocate(Drawable);
+    Drawable* newDrawable = _new(width, height);
     newDrawable->sprite = sprite;
-    newDrawable->width = width;
-    newDrawable->height = height;
-    newDrawable->z = 0.0f;
-    newDrawable->createdLocally = FALSE;
     smug_assert(_invariant(newDrawable));
     return newDrawable;
 }
@@ -39,6 +50,16 @@ Drawable* Drawable_newFromSpriteAndSize(Sprite* sprite, float width, float heigh
     SpriteAnimation* sa = _animateSprite(sprite);
     Drawable* newDrawable = Drawable_newFromSpriteAnimationAndSize(sa, width, height);
     newDrawable->createdLocally = TRUE;
+    return newDrawable;
+}
+
+Drawable* Drawable_newFromColorAndSize(float r, float g, float b, float a, float width, float height)
+{
+    Drawable* newDrawable = _new(width, height);
+    newDrawable->r = r;
+    newDrawable->g = g;
+    newDrawable->b = b;
+    newDrawable->a = a;
     return newDrawable;
 }
 
@@ -84,13 +105,21 @@ SpriteAnimation* Drawable_getSpriteAnimation(Drawable* self)
 Sprite* Drawable_getSprite(Drawable* self)
 {
     smug_assert(_invariant(self));
-    return SpriteAnimation_getCurrentSprite(self->sprite);
+    return self->sprite != NULL ? SpriteAnimation_getCurrentSprite(self->sprite) : NULL;
 }
 
 void Drawable_addRenderData(Drawable* self, RenderBatch* renderBatch, float positionX, float positionY)
 {
     smug_assert(_invariant(self));
-    Sprite_addRenderData(SpriteAnimation_getCurrentSprite(self->sprite), renderBatch, positionX, positionY, self->width, self->height, self->z);
+    if (self->sprite != NULL)
+    {
+        Sprite_addRenderData(SpriteAnimation_getCurrentSprite(self->sprite), renderBatch, positionX, positionY, self->width, self->height, self->z);
+    }
+    else
+    {
+        RenderBatch_addColoredRect(renderBatch, positionX, positionY, positionX + self->width, positionY + self->height, self->z,
+                                   self->r, self->g, self->b, self->a);
+    }
 }
 
 void Drawable_useSprite(Drawable* self, Sprite* sprite)

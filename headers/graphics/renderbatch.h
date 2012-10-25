@@ -23,7 +23,7 @@ void RenderBatch_addColoredRect(RenderBatch* self,
 /** Requires OpenGL to be initialized, and GL_VERTEX_ARRAY and
  *  GL_TEXTURE_COORD_ARRAY to be enabled.
  */
-void RenderBatch_render(RenderBatch* self);
+void RenderBatch_render(RenderBatch* self, int textureId);
 
 #ifdef GREY_BOX
 float* RenderBatch_getVertexArray(RenderBatch* self);

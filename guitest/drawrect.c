@@ -53,7 +53,7 @@ void runMainLoop()
         glClear(GL_COLOR_BUFFER_BIT);
 
         drawStuff(renderBatch);
-        RenderBatch_render(renderBatch);
+        RenderBatch_render(renderBatch, 0);
 
         // Swap front and back rendering buffers
         glfwSwapBuffers();

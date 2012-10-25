@@ -183,17 +183,27 @@ void RenderBatch_addColoredRect(RenderBatch* self,
     self->addedElements += 4;
 }
 
-void RenderBatch_render(RenderBatch* self)
+void RenderBatch_render(RenderBatch* self, int textureId)
 {
-    glVertexPointer(PRIMITIVES_PER_VERTEX, GL_FLOAT, 0, self->vertexArray);
+    smug_assert((_usesTexture(self) && textureId > 0) ||
+                (!_usesTexture(self) && textureId == 0));
     if (_usesTexture(self))
     {
+        glDisableClientState(GL_COLOR_ARRAY);
+        glEnable(GL_TEXTURE_2D);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glBindTexture(GL_TEXTURE_2D, textureId);
+        glColor4f(1.0, 1.0, 1.0, 1.0);
         glTexCoordPointer(PRIMITIVES_PER_TEXTURE_COORDINATE, GL_FLOAT, 0, self->textureArray);
     }
     else
     {
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        glDisable(GL_TEXTURE_2D);
+        glEnableClientState(GL_COLOR_ARRAY);
         glColorPointer(PRIMITIVES_PER_COLOR, GL_FLOAT, 0, self->colorArray);
     }
+    glVertexPointer(PRIMITIVES_PER_VERTEX, GL_FLOAT, 0, self->vertexArray);
     glDrawArrays(GL_QUADS, 0, self->addedElements);
 }
 

@@ -116,11 +116,11 @@ static void runMainLoop()
 
         drawTest(testRenderBatch);
         Texture_activate(testTexture);
-        RenderBatch_render(testRenderBatch);
+        RenderBatch_render(testRenderBatch, Texture_getId(testTexture));
 
         drawSprites(spritesRenderBatch);
         Texture_activate(spriteSheet);
-        RenderBatch_render(spritesRenderBatch);
+        RenderBatch_render(spritesRenderBatch, Texture_getId(spriteSheet));
 
         // Swap front and back rendering buffers
         glfwSwapBuffers();

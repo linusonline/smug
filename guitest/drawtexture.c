@@ -80,7 +80,7 @@ void runMainLoop()
 
         drawStuff();
         Texture_activate(texture);
-        RenderBatch_render(renderBatch);
+        RenderBatch_render(renderBatch, Texture_getId(texture));
 
         // Swap front and back rendering buffers
         glfwSwapBuffers();

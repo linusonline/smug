@@ -63,12 +63,18 @@ void RenderQueue_addDrawable(RenderQueue* self, Drawable* drawable, float positi
 {
     smug_assert(_invariant(self));
     Sprite* sprite = Drawable_getSprite(drawable);
-    smug_assert(sprite != NULL);
-    int id = Sprite_getTextureId(sprite);
+    int id = 0;
+    BOOL useTexture = FALSE;
+    if (sprite != NULL)
+    {
+        id = Sprite_getTextureId(sprite);
+        useTexture = TRUE;
+    }
+    smug_assert((useTexture && id > 0) || (!useTexture && id == 0));
     RenderBatch* renderBatch = (RenderBatch*)Map_get(self->renderBatches, &id);
     if (renderBatch == NULL)
     {
-        renderBatch = RenderBatch_new(RENDERBATCH_INITIAL_SIZE, TRUE);
+        renderBatch = RenderBatch_new(RENDERBATCH_INITIAL_SIZE, useTexture);
         Map_set(self->renderBatches, _allocInt(id), renderBatch);
     }
     Drawable_addRenderData(drawable, renderBatch, positionX, positionY);
@@ -84,8 +90,7 @@ void RenderQueue_render(RenderQueue* self)
     MapPair* pair = MapIterator_getNextPair(iter);
     while (pair != NULL)
     {
-        glBindTexture(GL_TEXTURE_2D, *(int*)pair->key);
-        RenderBatch_render((RenderBatch*)pair->value);
+        RenderBatch_render((RenderBatch*)pair->value, *(int*)pair->key);
         pair = MapIterator_getNextPair(iter);
     }
     MapIterator_delete(iter);
