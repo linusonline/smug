@@ -5,5 +5,7 @@
 
 GameObject* createAttack(float posX, float posY);
 void deleteAttack(GameObject* self);
+void attackHitObject(GameObject* attack, GameObject* other);
+BOOL attackHasHitObject(GameObject* attack, GameObject* other);
 
 #endif /* ELEMENTS_ATTACK_H */

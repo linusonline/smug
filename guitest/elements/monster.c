@@ -20,55 +20,64 @@ static SpriteSheet* beeSheet = NULL;
 
 static const float WALK_FRAME_DURATION = 0.2;
 
-Monster newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float posX, float posY, float offsetX, float offsetY)
+#define toMonster(object) ((MonsterData*)GameObject_getUserData(object))
+
+static GameObject* newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float posX, float posY, float offsetX, float offsetY, float hp)
 {
-    Monster monster;
-    monster.walkDown = SpriteAnimation_newEmpty();
-    monster.walkUp = SpriteAnimation_newEmpty();
-    monster.walkRight = SpriteAnimation_newEmpty();
-    monster.walkLeft = SpriteAnimation_newEmpty();
+    MonsterData* data = allocate(MonsterData);
+    data->walkDown = SpriteAnimation_newEmpty();
+    data->walkUp = SpriteAnimation_newEmpty();
+    data->walkRight = SpriteAnimation_newEmpty();
+    data->walkLeft = SpriteAnimation_newEmpty();
 
-    SpriteAnimation_addFrame(monster.walkDown, SpriteSheet_getSpriteXY(sheet, 0, 0), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkDown, SpriteSheet_getSpriteXY(sheet, 1, 0), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkDown, SpriteSheet_getSpriteXY(sheet, 0, 0), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkDown, SpriteSheet_getSpriteXY(sheet, 2, 0), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkDown, SpriteSheet_getSpriteXY(sheet, 0, 0), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkDown, SpriteSheet_getSpriteXY(sheet, 1, 0), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkDown, SpriteSheet_getSpriteXY(sheet, 0, 0), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkDown, SpriteSheet_getSpriteXY(sheet, 2, 0), WALK_FRAME_DURATION);
 
-    SpriteAnimation_addFrame(monster.walkUp, SpriteSheet_getSpriteXY(sheet, 0, 1), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkUp, SpriteSheet_getSpriteXY(sheet, 1, 1), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkUp, SpriteSheet_getSpriteXY(sheet, 0, 1), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkUp, SpriteSheet_getSpriteXY(sheet, 2, 1), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkUp, SpriteSheet_getSpriteXY(sheet, 0, 1), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkUp, SpriteSheet_getSpriteXY(sheet, 1, 1), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkUp, SpriteSheet_getSpriteXY(sheet, 0, 1), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkUp, SpriteSheet_getSpriteXY(sheet, 2, 1), WALK_FRAME_DURATION);
 
-    SpriteAnimation_addFrame(monster.walkRight, SpriteSheet_getSpriteXY(sheet, 0, 2), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkRight, SpriteSheet_getSpriteXY(sheet, 1, 2), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkRight, SpriteSheet_getSpriteXY(sheet, 0, 2), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkRight, SpriteSheet_getSpriteXY(sheet, 2, 2), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkRight, SpriteSheet_getSpriteXY(sheet, 0, 2), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkRight, SpriteSheet_getSpriteXY(sheet, 1, 2), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkRight, SpriteSheet_getSpriteXY(sheet, 0, 2), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkRight, SpriteSheet_getSpriteXY(sheet, 2, 2), WALK_FRAME_DURATION);
 
-    SpriteAnimation_addFrame(monster.walkLeft, SpriteSheet_getSpriteXY(sheet, 0, 3), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkLeft, SpriteSheet_getSpriteXY(sheet, 1, 3), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkLeft, SpriteSheet_getSpriteXY(sheet, 0, 3), WALK_FRAME_DURATION);
-    SpriteAnimation_addFrame(monster.walkLeft, SpriteSheet_getSpriteXY(sheet, 2, 3), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkLeft, SpriteSheet_getSpriteXY(sheet, 0, 3), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkLeft, SpriteSheet_getSpriteXY(sheet, 1, 3), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkLeft, SpriteSheet_getSpriteXY(sheet, 0, 3), WALK_FRAME_DURATION);
+    SpriteAnimation_addFrame(data->walkLeft, SpriteSheet_getSpriteXY(sheet, 2, 3), WALK_FRAME_DURATION);
 
-    SpriteAnimation_start(monster.walkLeft);
-    SpriteAnimation_start(monster.walkRight);
-    SpriteAnimation_start(monster.walkUp);
-    SpriteAnimation_start(monster.walkDown);
+    SpriteAnimation_start(data->walkLeft);
+    SpriteAnimation_start(data->walkRight);
+    SpriteAnimation_start(data->walkUp);
+    SpriteAnimation_start(data->walkDown);
 
-    Drawable* d = Drawable_newFromSpriteAnimationAndSize(monster.walkDown, width, height);
+    GameObject* monster = GameObject_new(posX, posY);
+
+    Drawable* d = Drawable_newFromSpriteAnimationAndSize(data->walkDown, width, height);
     Drawable_setZ(d, posY);
-    monster.monsterObject = GameObject_new(posX, posY);
-    GameObject_addDrawableAt(monster.monsterObject, d, offsetX, offsetY);
+    GameObject_addDrawableAt(monster, d, offsetX, offsetY);
+
     Body* b = Body_newRectangle(width, height);
     Body_addTag(b, OBJECT_MONSTER);
-    GameObject_addBodyAt(monster.monsterObject, b, offsetX, offsetY);
+    GameObject_addBodyAt(monster, b, offsetX, offsetY);
+
+    data->data.actionGauge = 100;
+    data->data.hp = hp;
+    GameObject_setUserData(monster, data);
     return monster;
 }
 
-Monster newMonster(int type, float posX, float posY)
+GameObject* newMonster(int type, float posX, float posY)
 {
     SpriteSheet** monsterSheet = NULL;
     static char* imageFile = NULL;
     static char* dataFile = NULL;
     float width, height;
+    float hp;
     float offsetX, offsetY;
     switch (type)
     {
@@ -80,6 +89,7 @@ Monster newMonster(int type, float posX, float posY)
             height = 32;
             offsetX = -16;
             offsetY = -32;
+            hp = 150;
             break;
         case MONSTER_SHROOM:
             monsterSheet = &shroomSheet;
@@ -89,6 +99,7 @@ Monster newMonster(int type, float posX, float posY)
             height = 32;
             offsetX = -16;
             offsetY = -32;
+            hp = 50;
             break;
         case MONSTER_MINKEY:
             monsterSheet = &minkeySheet;
@@ -98,6 +109,7 @@ Monster newMonster(int type, float posX, float posY)
             height = 32;
             offsetX = -16;
             offsetY = -32;
+            hp = 100;
             break;
         case MONSTER_GOLEM:
             monsterSheet = &golemSheet;
@@ -107,6 +119,7 @@ Monster newMonster(int type, float posX, float posY)
             height = 32;
             offsetX = -16;
             offsetY = -32;
+            hp = 200;
             break;
         case MONSTER_SNELL:
             monsterSheet = &snellSheet;
@@ -116,6 +129,7 @@ Monster newMonster(int type, float posX, float posY)
             height = 16;
             offsetX = -8;
             offsetY = -16;
+            hp = 20;
             break;
         case MONSTER_TROLLEY:
             monsterSheet = &trolleySheet;
@@ -125,6 +139,7 @@ Monster newMonster(int type, float posX, float posY)
             height = 32;
             offsetX = -8;
             offsetY = -32;
+            hp = 70;
             break;
         case MONSTER_SKELETON:
             monsterSheet = &skeletonSheet;
@@ -134,6 +149,7 @@ Monster newMonster(int type, float posX, float posY)
             height = 32;
             offsetX = -8;
             offsetY = -32;
+            hp = 60;
             break;
         case MONSTER_FIRESKULL:
             monsterSheet = &fireskullSheet;
@@ -143,6 +159,7 @@ Monster newMonster(int type, float posX, float posY)
             height = 32;
             offsetX = -8;
             offsetY = -32;
+            hp = 50;
             break;
         case MONSTER_BEE:
             monsterSheet = &beeSheet;
@@ -152,6 +169,7 @@ Monster newMonster(int type, float posX, float posY)
             height = 32;
             offsetX = -16;
             offsetY = -32;
+            hp = 50;
             break;
         default:
             smug_assert(FALSE);
@@ -160,36 +178,46 @@ Monster newMonster(int type, float posX, float posY)
     {
         *monsterSheet = SpriteSheet_new(imageFile, dataFile);
     }
-    return newMonsterFromSheet(*monsterSheet, width, height, posX, posY, offsetX, offsetY);
+    GameObject* monster = newMonsterFromSheet(*monsterSheet, width, height, posX, posY, offsetX, offsetY, hp);
+    return monster;
 }
 
-void deleteMonster(Monster monster)
+BOOL damageMonster(GameObject* monster, float damage)
 {
-    GameObject_delete(monster.monsterObject);
-    SpriteAnimation_delete(monster.walkLeft);
-    SpriteAnimation_delete(monster.walkRight);
-    SpriteAnimation_delete(monster.walkUp);
-    SpriteAnimation_delete(monster.walkDown);
+    MonsterData* data = toMonster(monster);
+    BOOL dead = data->data.hp - damage <= 0;
+    data->data.hp = max(0, data->data.hp - damage);
+    return dead;
 }
 
-void setMonsterLeft(Monster monster)
+void deleteMonster(GameObject* monster)
 {
-    Drawable_useSpriteAnimation(GameObject_getDrawable(monster.monsterObject), monster.walkLeft);
+    MonsterData* data = toMonster(monster);
+    SpriteAnimation_delete(data->walkLeft);
+    SpriteAnimation_delete(data->walkRight);
+    SpriteAnimation_delete(data->walkUp);
+    SpriteAnimation_delete(data->walkDown);
+    GameObject_delete(monster);
 }
 
-void setMonsterRight(Monster monster)
+void setMonsterLeft(GameObject* monster)
 {
-    Drawable_useSpriteAnimation(GameObject_getDrawable(monster.monsterObject), monster.walkRight);
+    Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkLeft);
 }
 
-void setMonsterUp(Monster monster)
+void setMonsterRight(GameObject* monster)
 {
-    Drawable_useSpriteAnimation(GameObject_getDrawable(monster.monsterObject), monster.walkUp);
+    Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkRight);
 }
 
-void setMonsterDown(Monster monster)
+void setMonsterUp(GameObject* monster)
 {
-    Drawable_useSpriteAnimation(GameObject_getDrawable(monster.monsterObject), monster.walkDown);
+    Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkUp);
+}
+
+void setMonsterDown(GameObject* monster)
+{
+    Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkDown);
 }
 
 void deinitMonsters()

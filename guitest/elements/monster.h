@@ -15,21 +15,28 @@
 #define MONSTER_FIRESKULL   8
 #define MONSTER_BEE         9
 
-typedef struct Monster
+typedef struct CharacterData
 {
-    GameObject* monsterObject;
+    float actionGauge;
+    float hp;
+} CharacterData;
+
+typedef struct MonsterData
+{
     SpriteAnimation* walkLeft;
     SpriteAnimation* walkRight;
     SpriteAnimation* walkUp;
     SpriteAnimation* walkDown;
-} Monster;
+    CharacterData data;
+} MonsterData;
 
-Monster newMonster(int type, float posX, float posY);
-void deleteMonster(Monster monster);
-void setMonsterLeft(Monster monster);
-void setMonsterRight(Monster monster);
-void setMonsterUp(Monster monster);
-void setMonsterDown(Monster monster);
+GameObject* newMonster(int type, float posX, float posY);
+void deleteMonster(GameObject* monster);
+void setMonsterLeft(GameObject* monster);
+void setMonsterRight(GameObject* monster);
+void setMonsterUp(GameObject* monster);
+void setMonsterDown(GameObject* monster);
+BOOL damageMonster(GameObject* monster, float damage);
 
 void deinitMonsters();
 

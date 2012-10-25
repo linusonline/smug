@@ -138,6 +138,18 @@ void GameObject_setBodyOffset(GameObject* self, float offsetX, float offsetY)
     _updateBodyPosition(self);
 }
 
+BOOL GameObject_bodyHasTag(GameObject* self, int tag)
+{
+    if (self->body != NULL)
+    {
+        return Body_hasTag(self->body, tag);
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
 void GameObject_setPos(GameObject* self, float x, float y)
 {
     smug_assert(_invariant(self));
@@ -169,4 +181,14 @@ void GameObject_addObject(GameObject* self, GameObject* newChild)
 void GameObject_removeObject(GameObject* self, GameObject* child)
 {
     LinkedList_removeItem(self->subObjects, (void*)child);
+}
+
+void GameObject_setUserData(GameObject* self, void* data)
+{
+    self->userData = data;
+}
+
+void* GameObject_getUserData(GameObject* self)
+{
+    return self->userData;
 }

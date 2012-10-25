@@ -30,7 +30,8 @@ static Camera* camera;
 
 static GameObject** world = NULL;
 static GameObject* avatar;
-static Monster monsters[13];
+static const int NUM_MONSTERS = 13;
+static GameObject* monsters[13];
 static LinkedList* objectsToDelete;
 
 static Controller* theController = NULL;
@@ -45,12 +46,7 @@ static Controller* theController = NULL;
 static const int WORLD_WIDTH = 640;     // This world happens to be just one screen big.
 static const int WORLD_HEIGHT = 480;
 
-typedef struct PlayerData
-{
-    float actionGauge;
-} PlayerData;
-
-static PlayerData playerData;
+static CharacterData playerData;
 static const float actionGaugeRefillSpeed = 10;
 static const float actionGaugeMovementCost = 20;
 static const float actionGaugeAttackCost = 50;
@@ -63,7 +59,7 @@ static void setAllLeft()
 {
     setAvatarLeft();
     avatarFacing = BUTTON_LEFT;
-    for (int i = 0; i < 13; i++)
+    for (int i = 0; i < NUM_MONSTERS; i++)
     {
         setMonsterLeft(monsters[i]);
     }
@@ -73,7 +69,7 @@ static void setAllRight()
 {
     avatarFacing = BUTTON_RIGHT;
     setAvatarRight();
-    for (int i = 0; i < 13; i++)
+    for (int i = 0; i < NUM_MONSTERS; i++)
     {
         setMonsterRight(monsters[i]);
     }
@@ -83,7 +79,7 @@ static void setAllUp()
 {
     avatarFacing = BUTTON_UP;
     setAvatarUp();
-    for (int i = 0; i < 13; i++)
+    for (int i = 0; i < NUM_MONSTERS; i++)
     {
         setMonsterUp(monsters[i]);
     }
@@ -93,7 +89,7 @@ static void setAllDown()
 {
     avatarFacing = BUTTON_DOWN;
     setAvatarDown();
-    for (int i = 0; i < 13; i++)
+    for (int i = 0; i < NUM_MONSTERS; i++)
     {
         setMonsterDown(monsters[i]);
     }
@@ -245,23 +241,48 @@ static void _logicCallback()
     deleteOldObjects();
 }
 
+static void damageOrKillMonster(GameObject* monster, float damage)
+{
+    if (damageMonster(monster, damage))
+    {
+        Engine_removeObject(monster);
+        deleteMonster(monster);
+        LOG(LOG_USER1, "Hit monster with attack! It died!");
+        return;
+    }
+    LOG(LOG_USER1, "Hit monster with attack! Has %i HP left.", (int)((MonsterData*)GameObject_getUserData(monster))->data.hp);
+}
+
 static void _collisionCallback(GameObject* obj1, GameObject* obj2)
 {
     if (obj1 == avatar || obj2 == avatar)
     {
         GameObject* other = obj1 == avatar ? obj2 : obj1;
-        if (Body_hasTag(GameObject_getBody(other), OBJECT_MONSTER))
+        if (GameObject_bodyHasTag(other, OBJECT_MONSTER))
         {
             LOG(LOG_USER1, "Hit by monster!");
         }
     }
-    if (Body_hasTag(GameObject_getBody(obj1), OBJECT_ATTACK) ||
-        Body_hasTag(GameObject_getBody(obj2), OBJECT_ATTACK))
+    if (GameObject_bodyHasTag(obj1, OBJECT_ATTACK) ||
+        GameObject_bodyHasTag(obj2, OBJECT_ATTACK))
     {
-        GameObject* other = Body_hasTag(GameObject_getBody(obj1), OBJECT_ATTACK) ? obj2 : obj1;
-        if (Body_hasTag(GameObject_getBody(other), OBJECT_MONSTER))
+        GameObject* other;
+        GameObject* attack;
+        if (GameObject_bodyHasTag(obj1, OBJECT_ATTACK))
         {
-            LOG(LOG_USER1, "Hit monster with attack!");
+            attack = obj1;
+            other = obj2;
+        }
+        else
+        {
+            attack = obj2;
+            other = obj1;
+        }
+        if (GameObject_bodyHasTag(other, OBJECT_MONSTER) &&
+            !attackHasHitObject(attack, other))
+        {
+            attackHitObject(attack, other);
+            damageOrKillMonster(other, 50);
         }
     }
 }
@@ -303,6 +324,7 @@ static void init()
     createActionGauge(320, 240);
 
     playerData.actionGauge = 100;
+    playerData.hp = 100;
 
     monsters[0] = newMonster(MONSTER_SHELLY, 32, 32);
     monsters[1] = newMonster(MONSTER_SHROOM, 32, 128);
@@ -318,9 +340,9 @@ static void init()
     monsters[11] = newMonster(MONSTER_FIRESKULL, 256, 384);
     monsters[12] = newMonster(MONSTER_BEE, 384, 32);
 
-    for (int i = 0; i < 13; i++)
+    for (int i = 0; i < NUM_MONSTERS; i++)
     {
-        Engine_addObject(monsters[i].monsterObject);
+        Engine_addObject(monsters[i]);
     }
 
     objectsToDelete = LinkedList_new();
@@ -331,7 +353,7 @@ static void deinit()
 {
     deleteMap1();
     deleteAvatar();
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < NUM_MONSTERS; i++)
     {
         deleteMonster(monsters[i]);
     }

@@ -14,6 +14,7 @@ typedef struct _GameObject
 {
     LinkedList* subObjects;
     GameObject* parent;
+    void* userData;
     float positionX;    // If object has parent, this position is relative to the parent.
     float positionY;
     Drawable* drawable;
@@ -37,6 +38,7 @@ void GameObject_draw(GameObject* self, RenderQueue* renderQueue);
 GameObject* GameObject_addBodyAt(GameObject* self, Body* body, float offsetX, float offsetY);
 Body* GameObject_getBody(GameObject* self);
 void GameObject_setBodyOffset(GameObject* self, float offsetX, float offsetY);
+BOOL GameObject_bodyHasTag(GameObject* self, int tag);
 
 void GameObject_setPos(GameObject* self, float x, float y);
 float GameObject_getX(GameObject* self);
@@ -44,5 +46,8 @@ float GameObject_getY(GameObject* self);
 
 void GameObject_addObject(GameObject* self, GameObject* newChild);
 void GameObject_removeObject(GameObject* self, GameObject* child);
+
+void GameObject_setUserData(GameObject* self, void* data);
+void* GameObject_getUserData(GameObject* self);
 
 #endif /* SMUG_ENGINE_GAMEOBJECT_H */
