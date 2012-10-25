@@ -9,7 +9,14 @@
 static SpriteSheet* guiSheet = NULL;
 static GameObject* actionGauge = NULL;
 static GameObject* actionGaugeFrame = NULL;
+static Drawable* gaugeDrawable = NULL;
+static float MAX_WIDTH = 24;
 static float SPACE_UNDER_AVATAR = 8;
+
+void setActionGaugeValue(float value)
+{
+    Drawable_setSize(gaugeDrawable, MAX_WIDTH * value / 100.0f, 4);
+}
 
 void createActionGauge(float posX, float posY)
 {
@@ -20,9 +27,9 @@ void createActionGauge(float posX, float posY)
     GameObject_addDrawableAt(actionGaugeFrame, d, -16, SPACE_UNDER_AVATAR);
 
     actionGauge = GameObject_new(posX, posY);
-    Drawable* d2 = Drawable_newFromColorAndSize(0.5, 0.2, 0.0, 1.0, 24, 4);
-    Drawable_setZ(d2, 2001);
-    GameObject_addDrawableAt(actionGauge, d2, -12, SPACE_UNDER_AVATAR + 2);
+    gaugeDrawable = Drawable_newFromColorAndSize(0.5, 0.2, 0.0, 1.0, 24, 4);
+    Drawable_setZ(gaugeDrawable, 2001);
+    GameObject_addDrawableAt(actionGauge, gaugeDrawable, -12, SPACE_UNDER_AVATAR + 2);
 
     Engine_addObject(actionGauge);
     Engine_addObject(actionGaugeFrame);

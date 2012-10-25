@@ -45,6 +45,15 @@ static Controller* theController = NULL;
 static const int WORLD_WIDTH = 640;     // This world happens to be just one screen big.
 static const int WORLD_HEIGHT = 480;
 
+typedef struct PlayerData
+{
+    float actionGauge;
+} PlayerData;
+
+static PlayerData playerData;
+static const float actionGaugeRefillSpeed = 10;
+static const float actionGaugeMovementCost = 20;
+static const float actionGaugeAttackCost = 50;
 static int moveHorizontally = 0;
 static int moveVertically = 0;
 static float avatarSpeed = 100; // Units per second.
@@ -113,6 +122,11 @@ static void alignAvatar()
 static void _attackEndCallback(SpriteAnimation* attack, void* callbackData)
 {
     LinkedList_addLast(objectsToDelete, callbackData);
+}
+
+static BOOL playerIsActionReady()
+{
+    return playerData.actionGauge >= 99.99;
 }
 
 static void attack()
@@ -187,7 +201,11 @@ static void _buttonCallback(Controller* controller, int buttonIndex, int state)
         case BUTTON_ATTACK:
             if (state == SMUG_KEY_PRESS)
             {
-                attack();
+                if (playerIsActionReady())
+                {
+                    attack();
+                    playerData.actionGauge -= actionGaugeAttackCost;
+                }
             }
             break;
         default:
@@ -213,6 +231,16 @@ static void _logicCallback()
         moveVertically * speedFraction + GameObject_getY(avatar));
     setActionGaugePosition(GameObject_getX(avatar), GameObject_getY(avatar));
     Drawable_setZ(GameObject_getDrawable(avatar), GameObject_getY(avatar));
+
+    if (moveHorizontally == 0 && moveVertically == 0)
+    {
+        playerData.actionGauge = min(100, playerData.actionGauge + actionGaugeRefillSpeed / Mainloop_getLogicFps());
+    }
+    else
+    {
+        playerData.actionGauge = max(0, playerData.actionGauge - actionGaugeMovementCost / Mainloop_getLogicFps());
+    }
+    setActionGaugeValue(playerData.actionGauge);
 
     deleteOldObjects();
 }
@@ -273,6 +301,8 @@ static void init()
     Engine_addObjects(world, 0, map1Size());
     Engine_addObject(avatar);
     createActionGauge(320, 240);
+
+    playerData.actionGauge = 100;
 
     monsters[0] = newMonster(MONSTER_SHELLY, 32, 32);
     monsters[1] = newMonster(MONSTER_SHROOM, 32, 128);
