@@ -47,8 +47,8 @@ static const int WORLD_WIDTH = 640;     // This world happens to be just one scr
 static const int WORLD_HEIGHT = 480;
 
 static CharacterData playerData;
-static const float actionGaugeRefillSpeed = 10;
-static const float actionGaugeMovementCost = 20;
+static const float actionGaugeRefillSpeed = 20;
+static const float actionGaugeMovementCost = 30;
 static const float actionGaugeAttackCost = 50;
 static int moveHorizontally = 0;
 static int moveVertically = 0;
@@ -122,7 +122,7 @@ static void _attackEndCallback(SpriteAnimation* attack, void* callbackData)
 
 static BOOL playerIsActionReady()
 {
-    return playerData.actionGauge >= 99.99;
+    return playerData.actionGauge >= ACTION_GAUGE_FULL;
 }
 
 static void attack()
@@ -245,8 +245,7 @@ static void damageOrKillMonster(GameObject* monster, float damage)
 {
     if (damageMonster(monster, damage))
     {
-        Engine_removeObject(monster);
-        deleteMonster(monster);
+        LinkedList_addLast(objectsToDelete, monster);
         LOG(LOG_USER1, "Hit monster with attack! It died!");
         return;
     }

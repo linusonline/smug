@@ -21,6 +21,7 @@ Sprite* Drawable_getSprite(Drawable* self);
 SpriteAnimation* Drawable_getSpriteAnimation(Drawable* self);
 void Drawable_useSprite(Drawable* self, Sprite* sprite);
 void Drawable_useSpriteAnimation(Drawable* self, SpriteAnimation* spriteAnimation);
+void Drawable_useColor(Drawable* self, float r, float g, float b, float a);
 void Drawable_addRenderData(Drawable* self, RenderBatch* renderBatch, float positionX, float positionY);
 
 #endif /* SMUG_GRAPHICS_DRAWABLE_H */

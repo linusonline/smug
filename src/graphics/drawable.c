@@ -141,3 +141,16 @@ void Drawable_useSpriteAnimation(Drawable* self, SpriteAnimation* spriteAnimatio
     self->sprite = spriteAnimation;
     self->createdLocally = FALSE;
 }
+
+void Drawable_useColor(Drawable* self, float r, float g, float b, float a)
+{
+    if (self->createdLocally)
+    {
+        SpriteAnimation_delete(self->sprite);
+    }
+    self->sprite = NULL;
+    self->r = r;
+    self->g = g;
+    self->b = b;
+    self->a = a;
+}

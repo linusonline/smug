@@ -15,7 +15,15 @@ static float SPACE_UNDER_AVATAR = 8;
 
 void setActionGaugeValue(float value)
 {
-    Drawable_setSize(gaugeDrawable, MAX_WIDTH * value / 100.0f, 4);
+    Drawable_setSize(gaugeDrawable, MAX_WIDTH * value / ACTION_GAUGE_MAX, 4);
+    if (value >= ACTION_GAUGE_FULL)
+    {
+        Drawable_useColor(gaugeDrawable, 0.0, 1.0, 0.0, 1.0);
+    }
+    else
+    {
+        Drawable_useColor(gaugeDrawable, 0.5, 0.2, 0.0, 1.0);
+    }
 }
 
 void createActionGauge(float posX, float posY)
@@ -34,6 +42,8 @@ void createActionGauge(float posX, float posY)
 
     Engine_addObject(actionGauge);
     Engine_addObject(actionGaugeFrame);
+
+    setActionGaugeValue(ACTION_GAUGE_MAX);
 }
 
 void setActionGaugePosition(float x, float y)
