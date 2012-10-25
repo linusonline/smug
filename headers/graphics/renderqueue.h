@@ -18,4 +18,9 @@ void RenderQueue_addDrawable(RenderQueue* self, Drawable* drawable, float positi
  */
 void RenderQueue_render(RenderQueue* self);
 
+#ifdef GREY_BOX
+#include <utils/map.h>
+Map* RenderQueue_getBatches(RenderQueue* self);
+#endif /* GREY_BOX */
+
 #endif /* SMUG_GRAPHICS_RENDERQUEUE_H */

@@ -26,10 +26,11 @@ void createActionGauge(float posX, float posY)
     Drawable_setZ(d, 2000);
     GameObject_addDrawableAt(actionGaugeFrame, d, -16, SPACE_UNDER_AVATAR);
 
-    actionGauge = GameObject_new(posX, posY);
+    actionGauge = GameObject_new(0, 0);
     gaugeDrawable = Drawable_newFromColorAndSize(0.5, 0.2, 0.0, 1.0, 24, 4);
     Drawable_setZ(gaugeDrawable, 2001);
     GameObject_addDrawableAt(actionGauge, gaugeDrawable, -12, SPACE_UNDER_AVATAR + 2);
+    GameObject_addObject(actionGaugeFrame, actionGauge);
 
     Engine_addObject(actionGauge);
     Engine_addObject(actionGaugeFrame);
@@ -37,7 +38,6 @@ void createActionGauge(float posX, float posY)
 
 void setActionGaugePosition(float x, float y)
 {
-    GameObject_setPos(actionGauge, x, y);
     GameObject_setPos(actionGaugeFrame, x, y);
 }
 

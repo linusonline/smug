@@ -8,4 +8,5 @@ project (SmugGraphics)
 include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 
 add_library(SmugGraphics renderbatch.c renderqueue.c image.c texture.c sprite.c spritesheet.c spriteanimation.c drawable.c camera.c graphics.c lodepng/lodepng.c)
-target_link_libraries(SmugGraphics SmugUtils)
+find_package(OpenGL)
+target_link_libraries(SmugGraphics SmugUtils SmugPlatform glfw ${OPENGL_LIBRARIES})

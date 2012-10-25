@@ -5,13 +5,16 @@
 #include <engine/body.h>
 #include <graphics/drawable.h>
 #include <graphics/renderqueue.h>
+#include <utils/linkedlist.h>
 
 struct _GameObject;
 typedef struct _GameObject GameObject;
 
 typedef struct _GameObject
 {
-    float positionX;
+    LinkedList* subObjects;
+    GameObject* parent;
+    float positionX;    // If object has parent, this position is relative to the parent.
     float positionY;
     Drawable* drawable;
     float drawableOffsetX;
@@ -38,5 +41,8 @@ void GameObject_setBodyOffset(GameObject* self, float offsetX, float offsetY);
 void GameObject_setPos(GameObject* self, float x, float y);
 float GameObject_getX(GameObject* self);
 float GameObject_getY(GameObject* self);
+
+void GameObject_addObject(GameObject* self, GameObject* newChild);
+void GameObject_removeObject(GameObject* self, GameObject* child);
 
 #endif /* SMUG_ENGINE_GAMEOBJECT_H */

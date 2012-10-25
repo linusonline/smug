@@ -1,5 +1,7 @@
 #include <common.h>
 #include <graphics/drawable.h>
+#include <utils/linkedlist.h>
+
 #include <engine/gameobject.h>
 
 static BOOL _invariant(GameObject* self)
@@ -7,17 +9,43 @@ static BOOL _invariant(GameObject* self)
     return self != NULL;
 }
 
+static float _getAbsolutePositionX(GameObject* self)
+{
+    if (self->parent == NULL)
+    {
+        return self->positionX;
+    }
+    else
+    {
+        return self->positionX + _getAbsolutePositionX(self->parent);
+    }
+}
+
+static float _getAbsolutePositionY(GameObject* self)
+{
+    if (self->parent == NULL)
+    {
+        return self->positionY;
+    }
+    else
+    {
+        return self->positionY + _getAbsolutePositionY(self->parent);
+    }
+}
+
 static void _updateBodyPosition(GameObject* self)
 {
     if (self->body != NULL)
     {
-        Body_setPosition(self->body, self->positionX + self->bodyOffsetX, self->positionY + self->bodyOffsetY);
+        Body_setPosition(self->body, _getAbsolutePositionX(self) + self->bodyOffsetX, _getAbsolutePositionY(self) + self->bodyOffsetY);
     }
 }
 
 GameObject* GameObject_new(float posX, float posY)
 {
     GameObject* newObject = allocate(GameObject);
+    newObject->subObjects = LinkedList_new();
+    newObject->parent = NULL;
     newObject->positionX = posX;
     newObject->positionY = posY;
     newObject->drawable = NULL;
@@ -38,6 +66,7 @@ GameObject* GameObject_newWithDrawable(float posX, float posY, Drawable* drawabl
 
 void GameObject_delete(GameObject* self)
 {
+    LinkedList_delete(self->subObjects);
     if (self->drawable != NULL)
     {
         Drawable_delete(self->drawable);
@@ -79,8 +108,8 @@ void GameObject_draw(GameObject* self, RenderQueue* renderQueue)
     {
         RenderQueue_addDrawable(renderQueue,
             self->drawable,
-            self->positionX + self->drawableOffsetX,
-            self->positionY + self->drawableOffsetY);
+            _getAbsolutePositionX(self) + self->drawableOffsetX,
+            _getAbsolutePositionY(self) + self->drawableOffsetY);
     }
 }
 
@@ -127,4 +156,17 @@ float GameObject_getY(GameObject* self)
 {
     smug_assert(_invariant(self));
     return self->positionY;
+}
+
+void GameObject_addObject(GameObject* self, GameObject* newChild)
+{
+    smug_assert(newChild->parent == NULL);
+    LinkedList_addLast(self->subObjects, (void*)newChild);
+    newChild->parent = self;
+    _updateBodyPosition(newChild);
+}
+
+void GameObject_removeObject(GameObject* self, GameObject* child)
+{
+    LinkedList_removeItem(self->subObjects, (void*)child);
 }

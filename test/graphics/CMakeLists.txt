@@ -11,5 +11,4 @@ include_directories ("${PROJECT_SOURCE_DIR}/../headers")
 
 add_library(SmugGraphicsTest imagetest.c renderbatchtest.c texturetest.c spritesheettest.c spriteanimationtest.c)
 
-find_package(OpenGL)
-target_link_libraries (SmugGraphicsTest SmugGraphics SmugPlatform glfw ${OPENGL_LIBRARIES})
+target_link_libraries (SmugGraphicsTest SmugGraphics SmugPlatform)

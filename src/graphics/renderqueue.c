@@ -19,6 +19,13 @@ static BOOL _invariant(RenderQueue* self)
         self->renderBatches != NULL;
 }
 
+#ifdef GREY_BOX
+Map* RenderQueue_getBatches(RenderQueue* self)
+{
+    return self->renderBatches;
+}
+#endif /* GREY_BOX */
+
 RenderQueue* RenderQueue_new()
 {
     RenderQueue* newRenderQueue = allocate(RenderQueue);

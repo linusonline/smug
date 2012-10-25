@@ -9,6 +9,6 @@ include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 # Local header files for tests.
 include_directories ("${PROJECT_SOURCE_DIR}/../headers")
 
-add_library(SmugEngineTest bodytest.c)
+add_library(SmugEngineTest bodytest.c gameobjecttest.c)
 
-target_link_libraries (SmugEngineTest SmugEngine SmugUtils)
+target_link_libraries (SmugEngineTest SmugEngine SmugUtils SmugGraphics SmugPlatform)

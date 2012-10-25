@@ -8,3 +8,4 @@ project (SmugEngine)
 include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
 
 add_library(SmugEngine engine.c mainloop.c gameobject.c collisiondetector.c body.c)
+target_link_libraries (SmugEngine SmugGraphics SmugUtils)
