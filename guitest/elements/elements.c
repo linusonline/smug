@@ -25,16 +25,15 @@ static const int INITIAL_WINDOW_HEIGHT = 480;
 static int windowWidth = 640;
 static int windowHeight = 480;
 
-static GameObject** world = NULL;
-static GameObject* avatar;
-
 static Console* console = NULL;
-
-static Controller* theController = NULL;
-
 static Camera* camera;
 
+static GameObject** world = NULL;
+static GameObject* avatar;
 static Monster monsters[13];
+static LinkedList* objectsToDelete;
+
+static Controller* theController = NULL;
 
 #define BUTTON_UP 0
 #define BUTTON_DOWN 1
@@ -48,12 +47,8 @@ static const int WORLD_HEIGHT = 480;
 
 static int moveHorizontally = 0;
 static int moveVertically = 0;
-
 static float avatarSpeed = 100; // Units per second.
-
 static int avatarFacing = BUTTON_DOWN;
-
-static LinkedList* objectsToDelete;
 
 static void setAllLeft()
 {
