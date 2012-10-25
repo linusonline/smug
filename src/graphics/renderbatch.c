@@ -67,6 +67,52 @@ static void _expandArraysIfNeeded(RenderBatch* self, int neededSpace)
     self->maxElements = newCapacity;
 }
 
+static void _writeVerticesForRect(RenderBatch* self, float x1, float y1, float x2, float y2, float z)
+{
+    int start = self->addedElements * PRIMITIVES_PER_VERTEX;
+    self->vertexArray[start++] = x1;
+    self->vertexArray[start++] = y1;
+    self->vertexArray[start++] = z;
+    self->vertexArray[start++] = x1;
+    self->vertexArray[start++] = y2;
+    self->vertexArray[start++] = z;
+    self->vertexArray[start++] = x2;
+    self->vertexArray[start++] = y2;
+    self->vertexArray[start++] = z;
+    self->vertexArray[start++] = x2;
+    self->vertexArray[start++] = y1;
+    self->vertexArray[start++] = z;
+    smug_assert(start == (self->addedElements + 4) * PRIMITIVES_PER_VERTEX);
+}
+
+static void _writeTextureCoordinatesForRect(RenderBatch* self, float s1, float t1, float s2, float t2)
+{
+    int start = self->addedElements * PRIMITIVES_PER_TEXTURE_COORDINATE;
+    self->textureArray[start++] = s1;
+    self->textureArray[start++] = t1;
+    self->textureArray[start++] = s1;
+    self->textureArray[start++] = t2;
+    self->textureArray[start++] = s2;
+    self->textureArray[start++] = t2;
+    self->textureArray[start++] = s2;
+    self->textureArray[start++] = t1;
+    smug_assert(start == (self->addedElements + 4) * PRIMITIVES_PER_TEXTURE_COORDINATE);
+}
+
+static void _writeColorsForRect(RenderBatch* self, float r, float g, float b, float a)
+{
+    int start = self->addedElements * PRIMITIVES_PER_COLOR;
+    int offset;
+    for (offset = start; offset < start + 4 * PRIMITIVES_PER_COLOR;)
+    {
+        self->colorArray[offset++] = r;
+        self->colorArray[offset++] = g;
+        self->colorArray[offset++] = b;
+        self->colorArray[offset++] = a;
+    }
+    smug_assert(offset == (self->addedElements + 4) * PRIMITIVES_PER_COLOR);
+}
+
 RenderBatch* RenderBatch_new(unsigned int initialSize, BOOL useTexture)
 {
     smug_assert(initialSize > 0);
@@ -113,38 +159,6 @@ int RenderBatch_getNumberOfAddedElements(RenderBatch* self)
     return self->addedElements;
 }
 
-static void _writeVerticesForRect(RenderBatch* self, float x1, float y1, float x2, float y2, float z)
-{
-    int start = self->addedElements * PRIMITIVES_PER_VERTEX;
-    self->vertexArray[start++] = x1;
-    self->vertexArray[start++] = y1;
-    self->vertexArray[start++] = z;
-    self->vertexArray[start++] = x1;
-    self->vertexArray[start++] = y2;
-    self->vertexArray[start++] = z;
-    self->vertexArray[start++] = x2;
-    self->vertexArray[start++] = y2;
-    self->vertexArray[start++] = z;
-    self->vertexArray[start++] = x2;
-    self->vertexArray[start++] = y1;
-    self->vertexArray[start++] = z;
-    smug_assert(start == (self->addedElements + 4) * PRIMITIVES_PER_VERTEX);
-}
-
-static void _writeTextureCoordinatesForRect(RenderBatch* self, float s1, float t1, float s2, float t2)
-{
-    int start = self->addedElements * PRIMITIVES_PER_TEXTURE_COORDINATE;
-    self->textureArray[start++] = s1;
-    self->textureArray[start++] = t1;
-    self->textureArray[start++] = s1;
-    self->textureArray[start++] = t2;
-    self->textureArray[start++] = s2;
-    self->textureArray[start++] = t2;
-    self->textureArray[start++] = s2;
-    self->textureArray[start++] = t1;
-    smug_assert(start == (self->addedElements + 4) * PRIMITIVES_PER_TEXTURE_COORDINATE);
-}
-
 void RenderBatch_addTexturedRect(RenderBatch* self,
                                  float x1, float y1, float x2, float y2,
                                  float z,
@@ -157,20 +171,6 @@ void RenderBatch_addTexturedRect(RenderBatch* self,
     _writeTextureCoordinatesForRect(self, s1, t1, s2, t2);
 
     self->addedElements += 4;
-}
-
-static void _writeColorsForRect(RenderBatch* self, float r, float g, float b, float a)
-{
-    int start = self->addedElements * PRIMITIVES_PER_COLOR;
-    int offset;
-    for (offset = start; offset < start + 4 * PRIMITIVES_PER_COLOR;)
-    {
-        self->colorArray[offset++] = r;
-        self->colorArray[offset++] = g;
-        self->colorArray[offset++] = b;
-        self->colorArray[offset++] = a;
-    }
-    smug_assert(offset == (self->addedElements + 4) * PRIMITIVES_PER_COLOR);
 }
 
 void RenderBatch_addColoredRect(RenderBatch* self,
