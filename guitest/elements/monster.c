@@ -23,6 +23,11 @@ static const float WALK_FRAME_DURATION = 0.2;
 
 #define toMonster(object) ((MonsterData*)GameObject_getUserData(object))
 
+static BOOL isMonster(GameObject* object)
+{
+    return GameObject_bodyHasTag(object, OBJECT_MONSTER);
+}
+
 static GameObject* newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float posX, float posY, float offsetX, float offsetY, float hp)
 {
     MonsterData* data = allocate(MonsterData);
@@ -203,32 +208,47 @@ BOOL damageMonster(GameObject* monster, float damage)
 
 void deleteMonster(GameObject* monster)
 {
-    MonsterData* data = toMonster(monster);
-    SpriteAnimation_delete(data->walkLeft);
-    SpriteAnimation_delete(data->walkRight);
-    SpriteAnimation_delete(data->walkUp);
-    SpriteAnimation_delete(data->walkDown);
-    GameObject_delete(monster);
+    if (isMonster(monster))
+    {
+        MonsterData* data = toMonster(monster);
+        SpriteAnimation_delete(data->walkLeft);
+        SpriteAnimation_delete(data->walkRight);
+        SpriteAnimation_delete(data->walkUp);
+        SpriteAnimation_delete(data->walkDown);
+        GameObject_delete(monster);
+    }
 }
 
 void setMonsterLeft(GameObject* monster)
 {
-    Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkLeft);
+    if (isMonster(monster))
+    {
+        Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkLeft);
+    }
 }
 
 void setMonsterRight(GameObject* monster)
 {
-    Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkRight);
+    if (isMonster(monster))
+    {
+        Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkRight);
+    }
 }
 
 void setMonsterUp(GameObject* monster)
 {
-    Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkUp);
+    if (isMonster(monster))
+    {
+        Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkUp);
+    }
 }
 
 void setMonsterDown(GameObject* monster)
 {
-    Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkDown);
+    if (isMonster(monster))
+    {
+        Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkDown);
+    }
 }
 
 void deinitMonsters()

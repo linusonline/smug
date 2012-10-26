@@ -59,40 +59,28 @@ static void setAllLeft()
 {
     setAvatarLeft();
     avatarFacing = BUTTON_LEFT;
-    for (int i = 0; i < NUM_MONSTERS; i++)
-    {
-        setMonsterLeft(monsters[i]);
-    }
+    Engine_doForAllObjects(setMonsterLeft);
 }
 
 static void setAllRight()
 {
     avatarFacing = BUTTON_RIGHT;
     setAvatarRight();
-    for (int i = 0; i < NUM_MONSTERS; i++)
-    {
-        setMonsterRight(monsters[i]);
-    }
+    Engine_doForAllObjects(setMonsterRight);
 }
 
 static void setAllUp()
 {
     avatarFacing = BUTTON_UP;
     setAvatarUp();
-    for (int i = 0; i < NUM_MONSTERS; i++)
-    {
-        setMonsterUp(monsters[i]);
-    }
+    Engine_doForAllObjects(setMonsterUp);
 }
 
 static void setAllDown()
 {
     avatarFacing = BUTTON_DOWN;
     setAvatarDown();
-    for (int i = 0; i < NUM_MONSTERS; i++)
-    {
-        setMonsterDown(monsters[i]);
-    }
+    Engine_doForAllObjects(setMonsterDown);
 }
 
 static void alignAvatar()
@@ -350,12 +338,12 @@ static void init()
 
 static void deinit()
 {
+    Engine_removeAllObjects();
     deleteMap1();
     deleteAvatar();
-    for (int i = 0; i < NUM_MONSTERS; i++)
-    {
-        deleteMonster(monsters[i]);
-    }
+    Engine_doForAllObjects(deleteMonster);
+    deinitMonsters();
+    deleteActionGauge();
 
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_UP);
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_DOWN);
@@ -364,9 +352,6 @@ static void deinit()
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_ESC);
     Controller_delete(theController);
 
-    deleteOldObjects();
-    deleteActionGauge();
-    Engine_removeAllObjects();
     Engine_terminate();
     Graphics_terminate();
     Input_terminate();

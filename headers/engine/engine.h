@@ -30,6 +30,8 @@ void Engine_removeAllObjects();
 void Engine_drawObjects(RenderQueue* renderQueue);
 void Engine_collideObjects();
 
+void Engine_doForAllObjects(void (*function)(GameObject*));
+
 #endif /* SMUG_ENGINE_ENGINE_H */
 
 /**@}*/

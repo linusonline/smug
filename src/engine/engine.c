@@ -76,3 +76,8 @@ void Engine_collideObjects()
 {
     CollisionDetector_detect(gameObjects);
 }
+
+void Engine_doForAllObjects(void (*function)(GameObject*))
+{
+    LinkedList_doList(gameObjects, (void (*)(void*))function);
+}
