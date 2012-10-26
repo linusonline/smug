@@ -20,6 +20,7 @@ static void _addDrawableVoid(void* gameobject)
 int Engine_init()
 {
     gameObjects = LinkedList_new();
+    CollisionDetector_initialize();
 
     isInitialized = TRUE;
     return 1;
@@ -35,6 +36,7 @@ void Engine_terminate()
     smug_assert(isInitialized);
     LinkedList_deleteContents(gameObjects, GameObject_deleteVoid);
     LinkedList_delete(gameObjects);
+    CollisionDetector_terminate();
 
     isInitialized = FALSE;
 }
@@ -75,6 +77,7 @@ void Engine_drawObjects(RenderQueue* renderQueue)
 void Engine_collideObjects()
 {
     CollisionDetector_detect(gameObjects);
+    CollisionDetector_callCollisionCallbacks();
 }
 
 void Engine_doForAllObjects(void (*function)(GameObject*))

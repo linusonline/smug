@@ -8,7 +8,10 @@
 
 typedef void (*CollisionCallback)(GameObject* object1, GameObject* object2);
 
+void CollisionDetector_initialize();
+void CollisionDetector_terminate();
 void CollisionDetector_detect(LinkedList* objects);
+void CollisionDetector_callCollisionCallbacks();
 void CollisionDetector_collideTags(int tag1, int tag2, CollisionCallback callback);
 
 #endif /* SMUG_ENGINE_COLLISION_DETECTOR_H */
