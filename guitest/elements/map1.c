@@ -4,17 +4,17 @@
 #include <engine/gameobject.h>
 
 static const char* dirtFile = "res/inquisitor/Inq XP MT - Dirt.png";
-static const char* grassFile = "res/inquisitor/Inq XP MT - Long Grass2.png";
-static const char* mudFile = "res/inquisitor/Inq XP MT - Mud.png";
-static const char* roadFile1 = "res/inquisitor/Inq XP MT - Road.png";
-static const char* roadFile2 = "res/inquisitor/Inq XP MT - Road 2.png";
+// static const char* grassFile = "res/inquisitor/Inq XP MT - Long Grass2.png";
+// static const char* mudFile = "res/inquisitor/Inq XP MT - Mud.png";
+// static const char* roadFile1 = "res/inquisitor/Inq XP MT - Road.png";
+// static const char* roadFile2 = "res/inquisitor/Inq XP MT - Road 2.png";
 static const char* dataFile = "res/inquisitor/inquisitor-tiles.txt";
 
 static SpriteSheet* dirtSheet = NULL;
-static SpriteSheet* grassSheet = NULL;
-static SpriteSheet* mudSheet = NULL;
-static SpriteSheet* roadSheet1 = NULL;
-static SpriteSheet* roadSheet2 = NULL;
+// static SpriteSheet* grassSheet = NULL;
+// static SpriteSheet* mudSheet = NULL;
+// static SpriteSheet* roadSheet1 = NULL;
+// static SpriteSheet* roadSheet2 = NULL;
 
 static GameObject** world = NULL;
 
@@ -42,19 +42,19 @@ void deleteMap1()
     free(world);
 
     SpriteSheet_delete(dirtSheet);
-    SpriteSheet_delete(grassSheet);
+    // SpriteSheet_delete(grassSheet);
     // SpriteSheet_delete(mudSheet);
-    SpriteSheet_delete(roadSheet1);
-    SpriteSheet_delete(roadSheet2);
+    // SpriteSheet_delete(roadSheet1);
+    // SpriteSheet_delete(roadSheet2);
 }
 
 GameObject** createMap1()
 {
     dirtSheet = SpriteSheet_new(dirtFile, dataFile);
-    grassSheet = SpriteSheet_new(grassFile, dataFile);
+    // grassSheet = SpriteSheet_new(grassFile, dataFile);
     // mudSheet = SpriteSheet_new(mudFile, dataFile);
-    roadSheet1 = SpriteSheet_new(roadFile1, dataFile);
-    roadSheet2 = SpriteSheet_new(roadFile2, dataFile);
+    // roadSheet1 = SpriteSheet_new(roadFile1, dataFile);
+    // roadSheet2 = SpriteSheet_new(roadFile2, dataFile);
 
     world = allocatev(GameObject*, MAP_WIDTH * MAP_HEIGHT);
 
