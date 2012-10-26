@@ -18,6 +18,7 @@ Controller* Controller_new(int numberOfAxes, int numberOfButtons, int numberOfPo
     newController->numberOfPointers = numberOfPointers;
     newController->buttonCallback = NULL;
     newController->pointerCallback = NULL;
+    return newController;
 }
 
 void Controller_delete(Controller* controller)

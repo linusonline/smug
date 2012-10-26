@@ -79,7 +79,7 @@ void GameObject_deleteVoid(void* self)
     GameObject_delete((GameObject*)self);
 }
 
-GameObject* GameObject_addDrawableAt(GameObject* self, Drawable* drawable, float offsetX, float offsetY)
+void GameObject_addDrawableAt(GameObject* self, Drawable* drawable, float offsetX, float offsetY)
 {
     if (self->drawable != NULL)
     {
@@ -113,7 +113,7 @@ void GameObject_draw(GameObject* self, RenderQueue* renderQueue)
     }
 }
 
-GameObject* GameObject_addBodyAt(GameObject* self, Body* body, float offsetX, float offsetY)
+void GameObject_addBodyAt(GameObject* self, Body* body, float offsetX, float offsetY)
 {
     if (self->body != NULL)
     {

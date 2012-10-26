@@ -30,12 +30,12 @@ GameObject* GameObject_newWithDrawable(float posX, float posY, Drawable* drawabl
 void GameObject_delete(GameObject* self);
 void GameObject_deleteVoid(void* self);
 
-GameObject* GameObject_addDrawableAt(GameObject* self, Drawable* drawable, float offsetX, float offsetY);
+void GameObject_addDrawableAt(GameObject* self, Drawable* drawable, float offsetX, float offsetY);
 Drawable* GameObject_getDrawable(GameObject* self);
 void GameObject_setDrawableOffset(GameObject* self, float offsetX, float offsetY);
 void GameObject_draw(GameObject* self, RenderQueue* renderQueue);
 
-GameObject* GameObject_addBodyAt(GameObject* self, Body* body, float offsetX, float offsetY);
+void GameObject_addBodyAt(GameObject* self, Body* body, float offsetX, float offsetY);
 Body* GameObject_getBody(GameObject* self);
 void GameObject_setBodyOffset(GameObject* self, float offsetX, float offsetY);
 BOOL GameObject_bodyHasTag(GameObject* self, int tag);
