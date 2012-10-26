@@ -47,6 +47,7 @@
  */
 BOOL Log_init(Console* console);
 
+BOOL Log_initStdOut(void);
 
 /** Returns true if the system is initialized
  */

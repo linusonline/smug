@@ -15,10 +15,17 @@ static char* gIndentString;
 static LinkedList* gPrefixStack = NULL;
 static const int MAX_MESSAGE_SIZE = 1024;
 static Console* gConsole = NULL;
+static BOOL deleteStdoutConsoleOnExit = FALSE;
 
 static BOOL _isInitialized()
 {
     return gPrefixStack != NULL && gConsole != NULL;
+}
+
+BOOL Log_initStdOut()
+{
+    deleteStdoutConsoleOnExit = TRUE;
+    return Log_init(StdoutConsole_new());
 }
 
 BOOL Log_init(Console* console)
@@ -56,6 +63,10 @@ void Log_terminate()
     smug_assert(_isInitialized());
     LinkedList_delete(gPrefixStack);
     gPrefixStack = NULL;
+    if (deleteStdoutConsoleOnExit)
+    {
+        StdoutConsole_delete(gConsole);
+    }
     gConsole = NULL;
 }
 
