@@ -334,7 +334,7 @@ static void init()
     monsters[6] = newMonster(MONSTER_TROLLEY, 256, 32);
     monsters[7] = newMonster(MONSTER_SKELETON, 256, 128);
     monsters[8] = newMonster(MONSTER_FIRESKULL, 256, 256);
-    monsters[9] = newMonster(MONSTER_FIRESKULL, 32, 384);
+    monsters[9] = newMonster(MONSTER_BEETLE, 32, 384);
     monsters[10] = newMonster(MONSTER_FIRESKULL, 128, 384);
     monsters[11] = newMonster(MONSTER_FIRESKULL, 256, 384);
     monsters[12] = newMonster(MONSTER_BEE, 384, 32);

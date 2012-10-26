@@ -14,6 +14,7 @@
 #define MONSTER_SKELETON    7
 #define MONSTER_FIRESKULL   8
 #define MONSTER_BEE         9
+#define MONSTER_BEETLE      10
 
 typedef struct CharacterData
 {
