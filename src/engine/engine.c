@@ -34,7 +34,7 @@ BOOL Engine_isInitialized()
 void Engine_terminate()
 {
     smug_assert(isInitialized);
-    LinkedList_deleteContents(gameObjects, GameObject_deleteVoid);
+    LinkedList_doList(gameObjects, GameObject_deleteVoid);
     LinkedList_delete(gameObjects);
     CollisionDetector_terminate();
 

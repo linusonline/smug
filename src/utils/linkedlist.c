@@ -451,13 +451,6 @@ LinkedList* LinkedList_deepCopy(LinkedList* self, void* (*itemCopier)(void*))
     return newList;
 }
 
-void LinkedList_deleteContents(LinkedList* self, void (*deleter)(void*))
-{
-    smug_assert(_invariant(self));
-    LinkedList_doList(self, deleter);
-    _clear(self);
-}
-
 LinkedListIterator LinkedList_getIterator(LinkedList* self)
 {
     LinkedListIterator iter;

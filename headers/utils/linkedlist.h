@@ -156,23 +156,6 @@ void* LinkedList_popLast(LinkedList* self);
 void* LinkedList_popFirst(LinkedList* self);
 
 /**
- * Deletes the contents of the list.
- *
- * Calls the passed function on every data item in the list and then empties
- * the list. Assumes the passed function deletes the stored datatype correctly.
- * The list still exists, empty, after the call.
- *
- * @relates LinkedList
- * @param self The list.
- * @param deleter The destructor function for the type the list holds.
- */
-void LinkedList_deleteContents(LinkedList* self, void (*deleter)(void*));
-/* Create the deleter function like this:
-ContentItem_destroy(void* contentItem) {
-    free((ContentItem*)contentItem);
-}*/
-
-/**
  * Makes a deep copy of a linked list.
  *
  * @param itemCopier a function that copies the type of item the list contains.

@@ -509,7 +509,7 @@ void LinkedList_map_shouldReturnCorrectResult(CuTest* tc)
     CuAssertTrue(tc, LinkedList_length(l2) == 2);
     CuAssertTrue(tc, *(int*)LinkedList_getFirst(l2) == 4);
     CuAssertTrue(tc, *(int*)LinkedList_getLast(l2) == 6);
-    LinkedList_deleteContents(l2, freeInt);
+    LinkedList_doList(l2, freeInt);
     LinkedList_delete(ll);
     LinkedList_delete(l2);
 }

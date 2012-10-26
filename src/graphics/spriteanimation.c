@@ -177,7 +177,7 @@ Sprite* SpriteAnimation_getSpriteAtIndex(SpriteAnimation* self, int index)
 void SpriteAnimation_delete(SpriteAnimation* self)
 {
     LinkedList_delete(self->sprites);
-    LinkedList_deleteContents(self->durations, _deleteInt);
+    LinkedList_doList(self->durations, _deleteInt);
     LinkedList_delete(self->durations);
     free(self);
 }
