@@ -268,7 +268,7 @@ static void _collisionCallback(GameObject* obj1, GameObject* obj2)
         if (GameObject_bodyHasTag(other, OBJECT_MONSTER) &&
             !attackHasHitObject(attack, other))
         {
-            attackHitObject(attack, other);
+            setAttackHasHitObject(attack, other);
             damageOrKillMonster(other, 50);
         }
     }

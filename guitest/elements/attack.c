@@ -54,7 +54,7 @@ void deleteAttack(GameObject* self)
     SpriteAnimation_delete(sa);
 }
 
-void attackHitObject(GameObject* attack, GameObject* other)
+void setAttackHasHitObject(GameObject* attack, GameObject* other)
 {
     LinkedList_addFirst(((AttackData*)GameObject_getUserData(attack))->hitObjects, other);
 }
