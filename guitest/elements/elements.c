@@ -12,6 +12,7 @@
 #include <engine/engine.h>
 #include <engine/mainloop.h>
 #include <engine/collisiondetector.h>
+#include <audio/audio.h>
 
 #include <maps.h>
 #include <avatar.h>
@@ -54,6 +55,8 @@ static int moveHorizontally = 0;
 static int moveVertically = 0;
 static float avatarSpeed = 100; // Units per second.
 static int avatarFacing = BUTTON_DOWN;
+
+static Sound* hitSound = NULL;
 
 static void setAllLeft()
 {
@@ -231,6 +234,7 @@ static void _logicCallback()
 
 static void damageOrKillMonster(GameObject* monster, float damage)
 {
+    Sound_play(hitSound);
     if (damageMonster(monster, damage))
     {
         LinkedList_addLast(objectsToDelete, monster);
@@ -274,12 +278,30 @@ static void _collisionCallback(GameObject* obj1, GameObject* obj2)
     }
 }
 
+static void makeSounds()
+{
+    hitSound = Sound_new("res/audio/flyswatter.wav");
+}
+
+static void deleteSounds()
+{
+    Sound_delete(hitSound);
+}
+
 static void init()
 {
     console = StdoutConsole_new();
     smug_assert(console != NULL);
     Log_init(console);
     Log_activateScopes(LOG_USER1);
+
+    Log_indent();
+    LOG(LOG_SOUND, "Initializing sound...");
+    Audio_initialize();
+    LOG(LOG_SOUND, "Loading sounds...");
+    makeSounds();
+    LOG(LOG_SOUND, "...done");
+    Log_dedent();
 
     camera = Camera_new();
     camera->posX = INITIAL_WINDOW_WIDTH / 2;
@@ -338,6 +360,9 @@ static void init()
 
 static void deinit()
 {
+    deleteSounds();
+    Audio_terminate();
+
     Engine_removeAllObjects();
     deleteMap1();
     deleteAvatar();

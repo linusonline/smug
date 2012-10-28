@@ -36,6 +36,7 @@
 #define LOG_DEFAULT         0x0800
 #define LOG_DEBUG           0x1000
 #define LOG_USER1           0x2000
+#define LOG_SOUND           0x4000
 
 // Define macros for the Log_Write function
 #define DEBUG(...) Log_addEntry(LOG_DEBUG, __FILE__, __LINE__, ##__VA_ARGS__)

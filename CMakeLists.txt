@@ -5,7 +5,10 @@
 cmake_minimum_required (VERSION 2.6)
 project (AllSmug)
 
+set(MY_LIB_DIR ${PROJECT_SOURCE_DIR}/tools/lib)
+
 ## Build the sub-projects in these directories. Each has its own CMakeLists.txt.
+add_subdirectory (src/audio)
 add_subdirectory (src/utils)
 add_subdirectory (src/graphics)
 add_subdirectory (src/platform)
