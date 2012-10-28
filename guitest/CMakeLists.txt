@@ -4,9 +4,6 @@
 cmake_minimum_required (VERSION 2.6)
 project (SmugGuiTest)
 
-# Local header files for tests.
-include_directories ("${PROJECT_SOURCE_DIR}/../headers")
-
 add_subdirectory (elements)
 add_subdirectory (audio)
 

@@ -4,11 +4,6 @@
 cmake_minimum_required (VERSION 2.6)
 project (SmugGraphicsTest)
 
-# Header files for Smug library.
-include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
-# Local header files for tests.
-include_directories ("${PROJECT_SOURCE_DIR}/../headers")
-
 add_library(SmugGraphicsTest imagetest.c renderbatchtest.c texturetest.c spritesheettest.c spriteanimationtest.c)
 
 target_link_libraries (SmugGraphicsTest SmugGraphics SmugPlatform)

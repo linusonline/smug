@@ -4,10 +4,6 @@
 cmake_minimum_required (VERSION 2.6)
 project (AudioTest)
 
-# Directory for library header files.
-include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
-include_directories ("${PROJECT_SOURCE_DIR}/../../tools/include")
-
 add_executable(AudioTest test.c)
 target_link_libraries(AudioTest SmugUtils SmugPlatform SmugGraphics SmugEngine SmugInput ${MY_LIB_DIR}/libfmodexL.a)
 

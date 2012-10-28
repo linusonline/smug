@@ -7,6 +7,9 @@ project (AllSmug)
 
 set(MY_LIB_DIR ${PROJECT_SOURCE_DIR}/tools/lib)
 
+include_directories ("${PROJECT_SOURCE_DIR}/headers")
+include_directories ("${PROJECT_SOURCE_DIR}/tools/include")
+
 ## Build the sub-projects in these directories. Each has its own CMakeLists.txt.
 add_subdirectory (src/audio)
 add_subdirectory (src/utils)

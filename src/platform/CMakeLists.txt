@@ -4,9 +4,6 @@
 cmake_minimum_required (VERSION 2.6)
 project (SmugPlatform)
 
-# Directory for library header files.
-include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
-
 # Add a target to build the library "SmugUtils" from the specified sources.
 add_library(SmugPlatform file.c)
 target_link_libraries(SmugPlatform SmugUtils)

@@ -4,10 +4,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (Elements)
 
-# Local header files for tests.
 include_directories ("${PROJECT_SOURCE_DIR}")
-include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
-include_directories ("${PROJECT_SOURCE_DIR}/../../tools/include")
 
 add_executable(Elements elements.c map1.c avatar.c monster.c attack.c actiongauge.c)
 

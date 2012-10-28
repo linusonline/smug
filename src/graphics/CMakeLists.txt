@@ -4,9 +4,6 @@
 cmake_minimum_required (VERSION 2.6)
 project (SmugGraphics)
 
-# Directory for library header files.
-include_directories ("${PROJECT_SOURCE_DIR}/../../headers")
-
 add_library(SmugGraphics renderbatch.c renderqueue.c image.c texture.c sprite.c spritesheet.c spriteanimation.c drawable.c camera.c graphics.c lodepng/lodepng.c)
 find_package(OpenGL)
 target_link_libraries(SmugGraphics SmugUtils SmugPlatform glfw ${OPENGL_LIBRARIES})
