@@ -8,6 +8,7 @@ project (SmugGuiTest)
 include_directories ("${PROJECT_SOURCE_DIR}/../headers")
 
 add_subdirectory (elements)
+add_subdirectory (audio)
 
 # Add a target to build the executable "SmugGuiTest" from the specified sources.
 add_executable(WindowTest window.c)
