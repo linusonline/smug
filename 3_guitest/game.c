@@ -503,7 +503,7 @@ static void useMouse(BOOL use)
 
 static void _pointerCallback(Controller* controller, int pointerIndex, int xDelta, int yDelta)
 {
-    DEBUG("Pointer moved by %i, %i", xDelta, yDelta);
+    DEBUG("Pointer moved to %i, %i", xDelta, yDelta);
 }
 
 static void _buttonCallback(Controller* controller, int buttonIndex, int state)
