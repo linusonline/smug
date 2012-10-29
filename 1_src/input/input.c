@@ -135,7 +135,7 @@ static void _mousePositionCallback(int xPos, int yPos)
 void Input_pushControllerScheme(ControllerScheme* newScheme)
 {
     smug_assert(isInitialized);
-    LinkedList_addLast(controllerSchemeStack, newScheme);
+    LinkedList_addFirst(controllerSchemeStack, newScheme);
 }
 
 ControllerScheme* Input_popControllerScheme()
@@ -143,7 +143,7 @@ ControllerScheme* Input_popControllerScheme()
     smug_assert(isInitialized);
     // User is not allowed to pop the default scheme.
     smug_assert(LinkedList_length(controllerSchemeStack) > 1);
-    return LinkedList_popLast(controllerSchemeStack);
+    return LinkedList_popFirst(controllerSchemeStack);
 }
 
 void Input_initialize()
@@ -165,7 +165,7 @@ void Input_terminate()
     _deleteBindings(mouseButtonBindings);
     Map_delete(mouseButtonBindings);
     // Delete default controller scheme.
-    ControllerScheme_delete(LinkedList_popFirst(controllerSchemeStack));
+    ControllerScheme_delete(LinkedList_popLast(controllerSchemeStack));
     LinkedList_delete(controllerSchemeStack);
     isInitialized = FALSE;
 }
