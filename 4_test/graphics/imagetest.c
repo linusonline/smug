@@ -79,6 +79,14 @@ void Image_loadFromFile_works(CuTest* tc)
     Image_delete(image);
 }
 
+void Image_loadFromFile_shouldReturnFalseOnImageNotFound(CuTest* tc)
+{
+    Image* image = Image_new();
+    BOOL result = Image_loadFromFile(image, "idontexist.png");
+    CuAssertTrue(tc, result == FALSE);
+    Image_delete(image);
+}
+
 void Image_loadFromFile_shouldYieldRightDimensions(CuTest* tc)
 {
     Image* image = Image_new();
@@ -165,6 +173,7 @@ CuSuite* ImageTest_GetSuite()
 	SUITE_ADD_TEST(suite, Image_newFromData_shouldNotDeleteAlphaValues);
 	SUITE_ADD_TEST(suite, Image_saveToFile_works);
 	SUITE_ADD_TEST(suite, Image_loadFromFile_works);
+	SUITE_ADD_TEST(suite, Image_loadFromFile_shouldReturnFalseOnImageNotFound);
 	SUITE_ADD_TEST(suite, Image_loadFromFile_shouldYieldRightDimensions);
 	SUITE_ADD_TEST(suite, Image_loadFromFile_shouldYieldCorrectImage);
 	SUITE_ADD_TEST(suite, Image_fillOut_shouldYieldCorrectImageInTrivialCase);
