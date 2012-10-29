@@ -7,17 +7,17 @@ project (AllSmug)
 
 set(MY_LIB_DIR ${PROJECT_SOURCE_DIR}/tools/lib)
 
-include_directories ("${PROJECT_SOURCE_DIR}/headers")
+include_directories ("${PROJECT_SOURCE_DIR}/2_headers")
 include_directories ("${PROJECT_SOURCE_DIR}/tools/include")
 
 ## Build the sub-projects in these directories. Each has its own CMakeLists.txt.
-add_subdirectory (src/audio)
-add_subdirectory (src/utils)
-add_subdirectory (src/graphics)
-add_subdirectory (src/platform)
-add_subdirectory (src/input)
-add_subdirectory (src/engine)
-add_subdirectory (test)
-add_subdirectory (guitest)
+add_subdirectory (1_src/audio)
+add_subdirectory (1_src/utils)
+add_subdirectory (1_src/graphics)
+add_subdirectory (1_src/platform)
+add_subdirectory (1_src/input)
+add_subdirectory (1_src/engine)
+add_subdirectory (4_test)
+add_subdirectory (3_guitest)
 
-file(COPY "${PROJECT_SOURCE_DIR}/res" DESTINATION "${PROJECT_BINARY_DIR}")
+file(COPY "${PROJECT_SOURCE_DIR}/5_res" DESTINATION "${PROJECT_BINARY_DIR}")
