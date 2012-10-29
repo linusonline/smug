@@ -36,12 +36,31 @@ static ControllerIndex* mousePositionPointerBinding = NULL;
 static ControllerIndex* mouseWheelPointerBinding = NULL;
 
 static BOOL isInitialized = FALSE;
-
 static LinkedList* controllerSchemeStack = NULL; // ControllerScheme
+
+static int oldMouseXPos = 0;
+static int oldMouseYPos = 0;
+static BOOL mousePositionSet = FALSE;
 
 static ControllerScheme* _getDefaultScheme()
 {
     return (ControllerScheme*)LinkedList_getLast(controllerSchemeStack);
+}
+
+static void _deleteBindings(Map* bindings)
+{
+    MapIterator* iter = Map_getIterator(bindings);
+    MapPair* mp;
+    while (MapIterator_hasMore(iter))
+    {
+        mp = MapIterator_getNextPair(iter);
+        Map_deleteInt((int*)mp->key);
+        if (mp->value != NULL)
+        {
+            ControllerIndex_delete((ControllerIndex*)mp->value);
+        }
+    }
+    MapIterator_delete(iter);
 }
 
 static void _keyboardCallback(int keyid, int state)
@@ -75,9 +94,6 @@ static void _keyboardCallback(int keyid, int state)
     }
 }
 
-static int oldMouseXPos = 0;
-static int oldMouseYPos = 0;
-static BOOL mousePositionSet = FALSE;
 static void _mousePositionCallback(int xPos, int yPos)
 {
     // Yes, absolute coordinates...
@@ -124,22 +140,6 @@ void Input_initialize()
     controllerSchemeStack = LinkedList_new();
     LinkedList_addLast(controllerSchemeStack, ControllerScheme_new());
     isInitialized = TRUE;
-}
-
-static void _deleteBindings(Map* bindings)
-{
-    MapIterator* iter = Map_getIterator(bindings);
-    MapPair* mp;
-    while (MapIterator_hasMore(iter))
-    {
-        mp = MapIterator_getNextPair(iter);
-        Map_deleteInt((int*)mp->key);
-        if (mp->value != NULL)
-        {
-            ControllerIndex_delete((ControllerIndex*)mp->value);
-        }
-    }
-    MapIterator_delete(iter);
 }
 
 void Input_terminate()
@@ -246,19 +246,3 @@ PointerCallback Input_getPointerCallback(Controller* c)
 {
     return ControllerScheme_getPointerCallback(_getDefaultScheme(), c);
 }
-
-// void _mouseButtonCallback(int mouseButton, int state)
-// {
-    // GLFW_MOUSE_BUTTON_1 -> GLFW_MOUSE_BUTTON_8
-    // GLFW_MOUSE_BUTTON_LEFT
-    // GLFW_MOUSE_BUTTON_RIGHT
-    // GLFW_MOUSE_BUTTON_MIDDLE
-
-    // state => GLFW_PRESS, GLFW_RELEASE
-// }
-// void _mouseWheelCallback(int position)
-// {
-// }
-
-// glfwSetMouseButtonCallback(_mouseButtonCallback)
-// glfwSetMouseWheelCallback(_mouseWheelCallback)
