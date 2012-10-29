@@ -31,6 +31,37 @@ void SpriteSheet_new_shouldReturnNonNull(CuTest* tc)
     deinit();
 }
 
+void SpriteSheet_new_shouldReturnNonNullOnNullDataFile(CuTest* tc)
+{
+    init();
+
+    SpriteSheet* ss = SpriteSheet_new("../5_res/unittests/landscape.png", NULL);
+    CuAssertTrue(tc, ss != NULL);
+    SpriteSheet_delete(ss);
+
+    deinit();
+}
+
+void SpriteSheet_new_shouldReturnNullOnNonexistingImage(CuTest* tc)
+{
+    init();
+
+    SpriteSheet* ss = SpriteSheet_new("idontexist.png", "../5_res/unittests/landscape.txt");
+    CuAssertTrue(tc, ss == NULL);
+
+    deinit();
+}
+
+void SpriteSheet_new_shouldReturnNullOnNonexistingDataFile(CuTest* tc)
+{
+    init();
+
+    SpriteSheet* ss = SpriteSheet_new("../5_res/unittests/landscape.png", "idontexist.txt");
+    CuAssertTrue(tc, ss == NULL);
+
+    deinit();
+}
+
 void SpriteSheet_new_shouldYieldRightNumberOfSprites(CuTest* tc)
 {
     init();
@@ -75,6 +106,9 @@ CuSuite* SpriteSheetTest_GetSuite()
 	CuSuite* suite = CuSuiteNew();
 
 	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnNonNull);
+	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnNonNullOnNullDataFile);
+	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnNullOnNonexistingImage);
+	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnNullOnNonexistingDataFile);
 	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldYieldRightNumberOfSprites);
 	SUITE_ADD_TEST(suite, SpriteSheet_getSprite_shouldReturnSameObjectForSameIndex);
 	SUITE_ADD_TEST(suite, SpriteSheet_getSprite_shouldReturnSpriteForValidIndex);

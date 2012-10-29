@@ -51,10 +51,20 @@ SpriteSheet* SpriteSheet_new(const char* imageFile, const char* dataFile)
     }
 
     Image* spritesImage = Image_new();
-    Image_loadFromFile(spritesImage, imageFile);
+    if (!Image_loadFromFile(spritesImage, imageFile))
+    {
+        Image_delete(spritesImage);
+        ERROR("Could not create spritesheet due to failure to load image.");
+        return NULL;
+    }
     Texture* texture = Texture_newFromImage(spritesImage);
     Image_delete(spritesImage);
     spritesImage = NULL;
+    if (texture == NULL)
+    {
+        ERROR("Could not create spritesheet due to failure to create texture.");
+        return NULL;
+    }
 
     LOG(LOG_SPRITESHEET, "Successfully loaded Spritesheet image file.");
 
