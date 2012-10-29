@@ -38,10 +38,6 @@ static ControllerIndex* mouseWheelPointerBinding = NULL;
 static BOOL isInitialized = FALSE;
 static LinkedList* controllerSchemeStack = NULL; // ControllerScheme
 
-static int oldMouseXPos = 0;
-static int oldMouseYPos = 0;
-static BOOL mousePositionSet = FALSE;
-
 static ControllerScheme* _getDefaultScheme()
 {
     return (ControllerScheme*)LinkedList_getLast(controllerSchemeStack);
@@ -96,7 +92,6 @@ static void _keyboardCallback(int keyid, int state)
 
 static void _mousePositionCallback(int xPos, int yPos)
 {
-    // Yes, absolute coordinates...
     smug_assert(mousePositionPointerBinding != NULL);
     PointerCallback pi = ControllerScheme_getPointerCallback(_getDefaultScheme(), mousePositionPointerBinding->controller);
     if (pi == NULL)
@@ -104,17 +99,7 @@ static void _mousePositionCallback(int xPos, int yPos)
         ERROR("Mouse position was mapped to pointer %i on controller %x, but no pointer callback was set for that controller!", mousePositionPointerBinding->index, mousePositionPointerBinding->controller);
         return;
     }
-    if (mousePositionSet)
-    {
-        pi(mousePositionPointerBinding->controller, mousePositionPointerBinding->index, xPos - oldMouseXPos, yPos - oldMouseYPos);
-    }
-    else
-    {
-        pi(mousePositionPointerBinding->controller, mousePositionPointerBinding->index, 0, 0);
-        mousePositionSet = TRUE;
-    }
-    oldMouseXPos = xPos;
-    oldMouseYPos = yPos;
+    pi(mousePositionPointerBinding->controller, mousePositionPointerBinding->index, xPos, yPos);
 }
 
 void Input_pushControllerScheme(ControllerScheme* newScheme)
