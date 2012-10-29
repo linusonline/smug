@@ -501,17 +501,18 @@ static void useMouse(BOOL use)
     }
 }
 
-static void _pointerCallback(Controller* controller, int pointerIndex, int xDelta, int yDelta)
+static BOOL _pointerCallback(Controller* controller, int pointerIndex, int xDelta, int yDelta)
 {
     DEBUG("Pointer moved to %i, %i", xDelta, yDelta);
+    return TRUE;
 }
 
-static void _buttonCallback(Controller* controller, int buttonIndex, int state)
+static BOOL _buttonCallback(Controller* controller, int buttonIndex, int state)
 {
     smug_assert(controller == theController);
     if (state == SMUG_KEY_RELEASE)
     {
-        return;
+        return TRUE;
     }
     switch (buttonIndex)
     {
@@ -532,6 +533,7 @@ static void _buttonCallback(Controller* controller, int buttonIndex, int state)
         default:
             smug_assert(FALSE);
     }
+    return TRUE;
 }
 
 static void _resizeCallback(int width, int height)
