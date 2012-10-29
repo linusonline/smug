@@ -89,8 +89,8 @@ GameObject* newMonster(int type, float posX, float posY)
     {
         case MONSTER_SHELLY:
             monsterSheet = &shellySheet;
-            imageFile = "res/characters/monsters/shelly32x32.png";
-            dataFile = "res/characters/monsters/32x32.txt";
+            imageFile = "5_res/characters/monsters/shelly32x32.png";
+            dataFile = "5_res/characters/monsters/32x32.txt";
             width = 32;
             height = 32;
             offsetX = -16;
@@ -99,8 +99,8 @@ GameObject* newMonster(int type, float posX, float posY)
             break;
         case MONSTER_SHROOM:
             monsterSheet = &shroomSheet;
-            imageFile = "res/characters/monsters/shroom32x32.png";
-            dataFile = "res/characters/monsters/32x32.txt";
+            imageFile = "5_res/characters/monsters/shroom32x32.png";
+            dataFile = "5_res/characters/monsters/32x32.txt";
             width = 32;
             height = 32;
             offsetX = -16;
@@ -109,8 +109,8 @@ GameObject* newMonster(int type, float posX, float posY)
             break;
         case MONSTER_MINKEY:
             monsterSheet = &minkeySheet;
-            imageFile = "res/characters/monsters/minkey32x32.png";
-            dataFile = "res/characters/monsters/32x32.txt";
+            imageFile = "5_res/characters/monsters/minkey32x32.png";
+            dataFile = "5_res/characters/monsters/32x32.txt";
             width = 32;
             height = 32;
             offsetX = -16;
@@ -119,8 +119,8 @@ GameObject* newMonster(int type, float posX, float posY)
             break;
         case MONSTER_GOLEM:
             monsterSheet = &golemSheet;
-            imageFile = "res/characters/monsters/golem32x32.png";
-            dataFile = "res/characters/monsters/32x32.txt";
+            imageFile = "5_res/characters/monsters/golem32x32.png";
+            dataFile = "5_res/characters/monsters/32x32.txt";
             width = 32;
             height = 32;
             offsetX = -16;
@@ -129,8 +129,8 @@ GameObject* newMonster(int type, float posX, float posY)
             break;
         case MONSTER_SNELL:
             monsterSheet = &snellSheet;
-            imageFile = "res/characters/monsters/snell16x16.png";
-            dataFile = "res/characters/monsters/16x16.txt";
+            imageFile = "5_res/characters/monsters/snell16x16.png";
+            dataFile = "5_res/characters/monsters/16x16.txt";
             width = 16;
             height = 16;
             offsetX = -8;
@@ -139,8 +139,8 @@ GameObject* newMonster(int type, float posX, float posY)
             break;
         case MONSTER_TROLLEY:
             monsterSheet = &trolleySheet;
-            imageFile = "res/characters/monsters/trolley16x32.png";
-            dataFile = "res/characters/monsters/16x32.txt";
+            imageFile = "5_res/characters/monsters/trolley16x32.png";
+            dataFile = "5_res/characters/monsters/16x32.txt";
             width = 16;
             height = 32;
             offsetX = -8;
@@ -149,8 +149,8 @@ GameObject* newMonster(int type, float posX, float posY)
             break;
         case MONSTER_SKELETON:
             monsterSheet = &skeletonSheet;
-            imageFile = "res/characters/monsters/deathletor16x32.png";
-            dataFile = "res/characters/monsters/16x32.txt";
+            imageFile = "5_res/characters/monsters/deathletor16x32.png";
+            dataFile = "5_res/characters/monsters/16x32.txt";
             width = 16;
             height = 32;
             offsetX = -8;
@@ -159,8 +159,8 @@ GameObject* newMonster(int type, float posX, float posY)
             break;
         case MONSTER_FIRESKULL:
             monsterSheet = &fireskullSheet;
-            imageFile = "res/characters/monsters/fireskull16x32.png";
-            dataFile = "res/characters/monsters/16x32.txt";
+            imageFile = "5_res/characters/monsters/fireskull16x32.png";
+            dataFile = "5_res/characters/monsters/16x32.txt";
             width = 16;
             height = 32;
             offsetX = -8;
@@ -169,8 +169,8 @@ GameObject* newMonster(int type, float posX, float posY)
             break;
         case MONSTER_BEE:
             monsterSheet = &beeSheet;
-            imageFile = "res/characters/monsters/bee32x32.png";
-            dataFile = "res/characters/monsters/32x32.txt";
+            imageFile = "5_res/characters/monsters/bee32x32.png";
+            dataFile = "5_res/characters/monsters/32x32.txt";
             width = 32;
             height = 32;
             offsetX = -16;
@@ -179,8 +179,8 @@ GameObject* newMonster(int type, float posX, float posY)
             break;
         case MONSTER_BEETLE:
             monsterSheet = &beetleSheet;
-            imageFile = "res/characters/monsters/beetle32x32.png";
-            dataFile = "res/characters/monsters/32x32.txt";
+            imageFile = "5_res/characters/monsters/beetle32x32.png";
+            dataFile = "5_res/characters/monsters/32x32.txt";
             width = 32;
             height = 32;
             offsetX = -16;

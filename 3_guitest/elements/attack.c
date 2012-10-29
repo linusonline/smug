@@ -8,8 +8,8 @@
 #include <attack.h>
 
 static SpriteSheet* attackSheet = NULL;
-static const char* imageFile = "res/effects/cold.png";
-static const char* dataFile = "res/effects/32x32.txt";
+static const char* imageFile = "5_res/effects/cold.png";
+static const char* dataFile = "5_res/effects/32x32.txt";
 
 static const float ATTACK_FRAME_DURATION = 0.1;
 

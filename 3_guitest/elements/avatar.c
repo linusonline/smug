@@ -21,7 +21,7 @@ static BOOL walking = FALSE;
 
 GameObject* getAvatar(float width, float height, float posX, float posY)
 {
-    avatarSheet = SpriteSheet_new("res/characters/rpg_sprite_walk.png", "res/characters/rpg_sprite_walk.txt");
+    avatarSheet = SpriteSheet_new("5_res/characters/rpg_sprite_walk.png", "5_res/characters/rpg_sprite_walk.txt");
 
     walkLeft = SpriteAnimation_newEmpty();
     walkRight = SpriteAnimation_newEmpty();

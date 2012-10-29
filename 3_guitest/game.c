@@ -80,8 +80,8 @@ static void afterDrawing()
 
 static void createBackground()
 {
-    landscapeSheet = SpriteSheet_new("res/landscape.png", "res/landscape.txt");
-    buildingsSheet = SpriteSheet_new("res/buildings.png", "res/buildings.txt");
+    landscapeSheet = SpriteSheet_new("5_res/landscape.png", "5_res/landscape.txt");
+    buildingsSheet = SpriteSheet_new("5_res/buildings.png", "5_res/buildings.txt");
 
     landscapeSprites = allocatev(Sprite*, SpriteSheet_getNrOfSprites(landscapeSheet));
     buildingSprites = allocatev(Sprite*, SpriteSheet_getNrOfSprites(buildingsSheet));
@@ -435,7 +435,7 @@ static void createBackground()
 
 static void createCursor(int posX, int posY)
 {
-    cursorSheet = SpriteSheet_new("res/cursor.png", NULL);
+    cursorSheet = SpriteSheet_new("5_res/cursor.png", NULL);
     cursorSprite = SpriteSheet_getSprite(cursorSheet, 0);
     cursor = GameObject_new(posX*U, posY*U);
     GameObject_addDrawableAt(cursor, Drawable_newFromSpriteAndSize(cursorSprite, U, U), 0.0, 0.0);
