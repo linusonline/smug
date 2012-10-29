@@ -92,12 +92,12 @@ static void _logicCallback()
     printf("Time %02d:%02d:%02d/%02d:%02d:%02d : %s : Channels Playing %2d\r", ms / 1000 / 60, ms / 1000 % 60, ms / 10 % 100, lenms / 1000 / 60, lenms / 1000 % 60, lenms / 10 % 100, paused ? "Paused " : playing ? "Playing" : "Stopped", channelsplaying);
 }
 
-static void _buttonCallback(Controller* controller, int buttonIndex, int state)
+static BOOL _buttonCallback(Controller* controller, int buttonIndex, int state)
 {
     smug_assert(controller == theController);
     if (state == SMUG_KEY_RELEASE)
     {
-        return;
+        return TRUE;
     }
     switch (buttonIndex)
     {
@@ -117,6 +117,7 @@ static void _buttonCallback(Controller* controller, int buttonIndex, int state)
             Mainloop_exit();
             break;
     }
+    return TRUE;
 }
 
 int main(int argc, char *argv[])

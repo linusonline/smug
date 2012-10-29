@@ -156,7 +156,7 @@ static void deleteOldObjects()
     LinkedList_removeAll(objectsToDelete);
 }
 
-static void _buttonCallback(Controller* controller, int buttonIndex, int state)
+static BOOL _buttonCallback(Controller* controller, int buttonIndex, int state)
 {
     smug_assert(controller == theController);
     int reverse = 1;
@@ -198,6 +198,7 @@ static void _buttonCallback(Controller* controller, int buttonIndex, int state)
         default:
             smug_assert(FALSE);
     }
+    return TRUE;
 }
 
 static void _resizeCallback(int width, int height)

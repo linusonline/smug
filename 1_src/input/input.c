@@ -74,32 +74,62 @@ static void _keyboardCallback(int keyid, int state)
             return;
     }
     ControllerIndex* ci = (ControllerIndex*)Map_get(keyboardBindings, &keyid);
-    if (ci != NULL)
+    if (ci == NULL)
     {
-        ButtonCallback bc = ControllerScheme_getButtonCallback(_getDefaultScheme(), ci->controller);
-        if (bc == NULL)
+        LOG(LOG_INPUT, "%s on unmapped key %i", (userState == SMUG_KEY_PRESS ? "Press" : "Release"), keyid);
+    }
+
+    ControllerScheme* scheme = (ControllerScheme*)LinkedList_getFirst(controllerSchemeStack);
+    for (;;)
+    {
+        ButtonCallback callback = ControllerScheme_getButtonCallback(scheme, ci->controller);
+        if (callback == NULL)
         {
             ERROR("Key %i was mapped to button %i on controller %x, but no button callback was set for that controller!", keyid, ci->index, ci->controller);
             return;
         }
-        bc(ci->controller, ci->index, userState);
-    }
-    else
-    {
-        LOG(LOG_INPUT, "%s on unmapped key %i", (userState == SMUG_KEY_PRESS ? "Press" : "Release"), keyid);
+        if (callback(ci->controller, ci->index, userState))
+        {
+            break;
+        }
+        else
+        {
+            scheme = (ControllerScheme*)LinkedList_getNext(controllerSchemeStack);
+            if (scheme == NULL)
+            {
+                WARNING("Button %i on controller %x was pressed, but it was not handled in any controller scheme!", ci->index, ci->controller);
+                break;
+            }
+        }
     }
 }
 
 static void _mousePositionCallback(int xPos, int yPos)
 {
     smug_assert(mousePositionPointerBinding != NULL);
-    PointerCallback pi = ControllerScheme_getPointerCallback(_getDefaultScheme(), mousePositionPointerBinding->controller);
-    if (pi == NULL)
+    ControllerScheme* scheme = (ControllerScheme*)LinkedList_getFirst(controllerSchemeStack);
+    for (;;)
     {
-        ERROR("Mouse position was mapped to pointer %i on controller %x, but no pointer callback was set for that controller!", mousePositionPointerBinding->index, mousePositionPointerBinding->controller);
-        return;
+        PointerCallback callback = ControllerScheme_getPointerCallback(scheme, mousePositionPointerBinding->controller);
+        if (callback == NULL)
+        {
+            ERROR("Mouse position was mapped to pointer %i on controller %x, but no pointer callback was set for that controller!", mousePositionPointerBinding->index, mousePositionPointerBinding->controller);
+            return;
+        }
+        if (callback(mousePositionPointerBinding->controller, mousePositionPointerBinding->index, xPos, yPos))
+        {
+            break;
+        }
+        else
+        {
+            scheme = (ControllerScheme*)LinkedList_getNext(controllerSchemeStack);
+            if (scheme == NULL)
+            {
+                WARNING("Pointer %i on controller %x was moved, but it was not handled in any controller scheme!", mousePositionPointerBinding->index, mousePositionPointerBinding->controller);
+                break;
+            }
+        }
     }
-    pi(mousePositionPointerBinding->controller, mousePositionPointerBinding->index, xPos, yPos);
 }
 
 void Input_pushControllerScheme(ControllerScheme* newScheme)

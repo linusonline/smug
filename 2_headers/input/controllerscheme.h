@@ -3,8 +3,8 @@
 
 #include <input/controller.h>
 
-typedef void (*ButtonCallback)(Controller* controller, int buttonIndex, int state);
-typedef void (*PointerCallback)(Controller* controller, int pointerIndex, int xDelta, int yDelta);
+typedef BOOL (*ButtonCallback)(Controller* controller, int buttonIndex, int state);
+typedef BOOL (*PointerCallback)(Controller* controller, int pointerIndex, int xDelta, int yDelta);
 
 struct _ControllerScheme;
 typedef struct _ControllerScheme ControllerScheme;
