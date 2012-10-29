@@ -28,7 +28,7 @@ void setActionGaugeValue(float value)
 
 void createActionGauge(float posX, float posY)
 {
-    guiSheet = SpriteSheet_new("res/gui/gauge.png", "res/gui/gauge.txt");
+    guiSheet = SpriteSheet_new("5_res/gui/gauge.png", "5_res/gui/gauge.txt");
     Drawable* d = Drawable_newFromSpriteAndSize(SpriteSheet_getSprite(guiSheet, 0), 32, 8);
     actionGaugeFrame = GameObject_new(posX, posY);
     Drawable_setZ(d, 2000);

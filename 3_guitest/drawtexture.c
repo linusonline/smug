@@ -60,7 +60,7 @@ void init()
     renderBatch = RenderBatch_new(4, TRUE);
 
     image = Image_new();
-    Image_loadFromFile(image, "res/box.png");
+    Image_loadFromFile(image, "5_res/box.png");
     texture = Texture_newFromImage(image);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

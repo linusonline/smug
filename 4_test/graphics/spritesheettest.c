@@ -24,7 +24,7 @@ void SpriteSheet_new_shouldReturnNonNull(CuTest* tc)
 {
     init();
 
-    SpriteSheet* ss = SpriteSheet_new("../res/unittests/landscape.png", "../res/unittests/landscape.txt");
+    SpriteSheet* ss = SpriteSheet_new("../5_res/unittests/landscape.png", "../5_res/unittests/landscape.txt");
     CuAssertTrue(tc, ss != NULL);
     SpriteSheet_delete(ss);
 
@@ -35,7 +35,7 @@ void SpriteSheet_new_shouldYieldRightNumberOfSprites(CuTest* tc)
 {
     init();
 
-    SpriteSheet* ss = SpriteSheet_new("../res/unittests/landscape.png", "../res/unittests/landscape.txt");
+    SpriteSheet* ss = SpriteSheet_new("../5_res/unittests/landscape.png", "../5_res/unittests/landscape.txt");
     CuAssertTrue(tc, SpriteSheet_getNrOfSprites(ss) == 24);
     SpriteSheet_delete(ss);
 
@@ -46,7 +46,7 @@ void SpriteSheet_getSprite_shouldReturnSameObjectForSameIndex(CuTest* tc)
 {
     init();
 
-    SpriteSheet* ss = SpriteSheet_new("../res/unittests/landscape.png", "../res/unittests/landscape.txt");
+    SpriteSheet* ss = SpriteSheet_new("../5_res/unittests/landscape.png", "../5_res/unittests/landscape.txt");
     Sprite* s = SpriteSheet_getSprite(ss, 0);
     CuAssertTrue(tc, SpriteSheet_getSprite(ss, 0) == s);
     SpriteSheet_delete(ss);
@@ -58,7 +58,7 @@ void SpriteSheet_getSprite_shouldReturnSpriteForValidIndex(CuTest* tc)
 {
     init();
 
-    SpriteSheet* ss = SpriteSheet_new("../res/unittests/landscape.png", "../res/unittests/landscape.txt");
+    SpriteSheet* ss = SpriteSheet_new("../5_res/unittests/landscape.png", "../5_res/unittests/landscape.txt");
 
     for (int i = 0; i < 24; i++)
     {

@@ -3,12 +3,12 @@
 #include <graphics/spritesheet.h>
 #include <engine/gameobject.h>
 
-static const char* dirtFile = "res/inquisitor/Inq XP MT - Dirt.png";
-// static const char* grassFile = "res/inquisitor/Inq XP MT - Long Grass2.png";
-// static const char* mudFile = "res/inquisitor/Inq XP MT - Mud.png";
-// static const char* roadFile1 = "res/inquisitor/Inq XP MT - Road.png";
-// static const char* roadFile2 = "res/inquisitor/Inq XP MT - Road 2.png";
-static const char* dataFile = "res/inquisitor/inquisitor-tiles.txt";
+static const char* dirtFile = "5_res/inquisitor/Inq XP MT - Dirt.png";
+// static const char* grassFile = "5_res/inquisitor/Inq XP MT - Long Grass2.png";
+// static const char* mudFile = "5_res/inquisitor/Inq XP MT - Mud.png";
+// static const char* roadFile1 = "5_res/inquisitor/Inq XP MT - Road.png";
+// static const char* roadFile2 = "5_res/inquisitor/Inq XP MT - Road 2.png";
+static const char* dataFile = "5_res/inquisitor/inquisitor-tiles.txt";
 
 static SpriteSheet* dirtSheet = NULL;
 // static SpriteSheet* grassSheet = NULL;

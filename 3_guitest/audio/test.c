@@ -153,16 +153,16 @@ int main(int argc, char *argv[])
     result = FMOD_System_Init(fmodSystem, 32, FMOD_INIT_NORMAL, NULL);
     ERRCHECK(result);
 
-    result = FMOD_System_CreateSound(fmodSystem, "res/audio/media/drumloop.wav", FMOD_HARDWARE, 0, &sound1);
+    result = FMOD_System_CreateSound(fmodSystem, "5_res/audio/media/drumloop.wav", FMOD_HARDWARE, 0, &sound1);
     ERRCHECK(result);
 
     result = FMOD_Sound_SetMode(sound1, FMOD_LOOP_OFF); /* drumloop.wav has embedded loop points which automatically makes looping turn on, */
     ERRCHECK(result);                                   /* so turn it off here.  We could have also just put FMOD_LOOP_OFF in the above CreateSound call. */
 
-    result = FMOD_System_CreateSound(fmodSystem, "res/audio/media/jaguar.wav", FMOD_SOFTWARE, 0, &sound2);
+    result = FMOD_System_CreateSound(fmodSystem, "5_res/audio/media/jaguar.wav", FMOD_SOFTWARE, 0, &sound2);
     ERRCHECK(result);
 
-    result = FMOD_System_CreateSound(fmodSystem, "res/audio/media/swish.wav", FMOD_HARDWARE, 0, &sound3);
+    result = FMOD_System_CreateSound(fmodSystem, "5_res/audio/media/swish.wav", FMOD_HARDWARE, 0, &sound3);
     ERRCHECK(result);
 
     printf("===================================================================\n");

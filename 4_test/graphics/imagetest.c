@@ -74,7 +74,7 @@ void Image_saveToFile_works(CuTest* tc)
 void Image_loadFromFile_works(CuTest* tc)
 {
     Image* image = Image_new();
-    BOOL result = Image_loadFromFile(image, "res/test.png");
+    BOOL result = Image_loadFromFile(image, "5_res/test.png");
     CuAssert(tc, "Could not load image.", result == TRUE);
     Image_delete(image);
 }
@@ -82,7 +82,7 @@ void Image_loadFromFile_works(CuTest* tc)
 void Image_loadFromFile_shouldYieldRightDimensions(CuTest* tc)
 {
     Image* image = Image_new();
-    Image_loadFromFile(image, "res/test.png");
+    Image_loadFromFile(image, "5_res/test.png");
     CuAssert(tc, "Image dimensions incorrect.", image->width == 6 && image->height == 8);
     CuAssertTrue(tc, image->channels == 3);
     CuAssertTrue(tc, image->bpp == 4);
@@ -94,7 +94,7 @@ void Image_loadFromFile_shouldYieldRightDimensions(CuTest* tc)
 void Image_loadFromFile_shouldYieldCorrectImage(CuTest* tc)
 {
     Image* image = Image_new();
-    Image_loadFromFile(image, "res/test.png");
+    Image_loadFromFile(image, "5_res/test.png");
 
     CuAssert(tc, "Image contents incorrect.", memcmp(testImage, image->data, 6*8*4) == 0);
 

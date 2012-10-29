@@ -94,13 +94,13 @@ static void init()
     spritesRenderBatch = RenderBatch_new(4, TRUE);
 
     testImage = Image_new();
-    Image_loadFromFile(testImage, "res/test2.png");
+    Image_loadFromFile(testImage, "5_res/test2.png");
     testTexture = Texture_newFromImage(testImage);
     Image_delete(testImage);
     testImage = NULL;
 
     spritesImage = Image_new();
-    Image_loadFromFile(spritesImage, "res/units.png");
+    Image_loadFromFile(spritesImage, "5_res/units.png");
     spriteSheet = Texture_newFromImage(spritesImage);
     Image_delete(spritesImage);
     spritesImage = NULL;

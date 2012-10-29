@@ -75,7 +75,7 @@ static void init()
     spritesRenderBatch = RenderBatch_new(4, TRUE);
 
     spritesImage = Image_new();
-    Image_loadFromFile(spritesImage, "res/units.png");
+    Image_loadFromFile(spritesImage, "5_res/units.png");
     spriteSheet = Texture_newFromImage(spritesImage);
     Image_delete(spritesImage);
     spritesImage = NULL;

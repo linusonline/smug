@@ -280,7 +280,7 @@ static void _collisionCallback(GameObject* obj1, GameObject* obj2)
 
 static void makeSounds()
 {
-    hitSound = Sound_new("res/audio/flyswatter.wav");
+    hitSound = Sound_new("5_res/audio/flyswatter.wav");
 }
 
 static void deleteSounds()
