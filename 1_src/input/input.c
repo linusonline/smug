@@ -4,7 +4,9 @@
 #include <common.h>
 #include <utils/log.h>
 #include <utils/map.h>
+#include <utils/linkedlist.h>
 #include <input/controller.h>
+#include <input/controllerscheme.h>
 
 #include <input/input.h>
 
@@ -27,10 +29,20 @@ static void ControllerIndex_delete(ControllerIndex* self)
     free(self);
 }
 
+// These data represent a "binding set". TODO: Allow binding sets to be saved and loaded.
 static Map* keyboardBindings = NULL;        // keyboard enum -> ControllerIndex
 static Map* mouseButtonBindings = NULL;     // mouse button enum -> ControllerIndex
 static ControllerIndex* mousePositionPointerBinding = NULL;
 static ControllerIndex* mouseWheelPointerBinding = NULL;
+
+static BOOL isInitialized = FALSE;
+
+static LinkedList* controllerSchemeStack = NULL; // ControllerScheme
+
+static ControllerScheme* _getDefaultScheme()
+{
+    return (ControllerScheme*)LinkedList_getLast(controllerSchemeStack);
+}
 
 static void _keyboardCallback(int keyid, int state)
 {
@@ -49,7 +61,7 @@ static void _keyboardCallback(int keyid, int state)
     ControllerIndex* ci = (ControllerIndex*)Map_get(keyboardBindings, &keyid);
     if (ci != NULL)
     {
-        ButtonCallback bc = Controller_getButtonCallback(ci->controller);
+        ButtonCallback bc = ControllerScheme_getButtonCallback(_getDefaultScheme(), ci->controller);
         if (bc == NULL)
         {
             ERROR("Key %i was mapped to button %i on controller %x, but no button callback was set for that controller!", keyid, ci->index, ci->controller);
@@ -70,7 +82,7 @@ static void _mousePositionCallback(int xPos, int yPos)
 {
     // Yes, absolute coordinates...
     smug_assert(mousePositionPointerBinding != NULL);
-    PointerCallback pi = Controller_getPointerCallback(mousePositionPointerBinding->controller);
+    PointerCallback pi = ControllerScheme_getPointerCallback(_getDefaultScheme(), mousePositionPointerBinding->controller);
     if (pi == NULL)
     {
         ERROR("Mouse position was mapped to pointer %i on controller %x, but no pointer callback was set for that controller!", mousePositionPointerBinding->index, mousePositionPointerBinding->controller);
@@ -89,10 +101,29 @@ static void _mousePositionCallback(int xPos, int yPos)
     oldMouseYPos = yPos;
 }
 
+void Input_pushControllerScheme(ControllerScheme* newScheme)
+{
+    smug_assert(isInitialized);
+    LinkedList_addLast(controllerSchemeStack, newScheme);
+}
+
+ControllerScheme* Input_popControllerScheme()
+{
+    smug_assert(isInitialized);
+    // User is not allowed to pop the default scheme.
+    smug_assert(LinkedList_length(controllerSchemeStack) > 1);
+    return LinkedList_popLast(controllerSchemeStack);
+}
+
 void Input_initialize()
 {
+    smug_assert(!isInitialized);
     keyboardBindings = Map_new(Map_compareInts);
     mouseButtonBindings = Map_new(Map_compareInts);
+    // Create default controller scheme.
+    controllerSchemeStack = LinkedList_new();
+    LinkedList_addLast(controllerSchemeStack, ControllerScheme_new());
+    isInitialized = TRUE;
 }
 
 static void _deleteBindings(Map* bindings)
@@ -113,14 +144,20 @@ static void _deleteBindings(Map* bindings)
 
 void Input_terminate()
 {
+    smug_assert(isInitialized);
     _deleteBindings(keyboardBindings);
     Map_delete(keyboardBindings);
     _deleteBindings(mouseButtonBindings);
     Map_delete(mouseButtonBindings);
+    // Delete default controller scheme.
+    ControllerScheme_delete(LinkedList_popFirst(controllerSchemeStack));
+    LinkedList_delete(controllerSchemeStack);
+    isInitialized = FALSE;
 }
 
 void Input_linkControllerToKeyboardKey(Controller* controller, int buttonIndex, int keyid)
 {
+    smug_assert(isInitialized);
     smug_assert(Controller_hasButton(controller, buttonIndex));
     ControllerIndex* ci = (ControllerIndex*)Map_get(keyboardBindings, &keyid);
     if (ci != NULL)
@@ -137,6 +174,7 @@ void Input_linkControllerToKeyboardKey(Controller* controller, int buttonIndex, 
 
 void Input_unlinkControllersFromKeyboardKey(int keyid)
 {
+    smug_assert(isInitialized);
     ControllerIndex* ci = (ControllerIndex*)Map_get(keyboardBindings, &keyid);
     if (ci != NULL)
     {
@@ -162,6 +200,7 @@ void Input_unlinkControllersFromKeyboardKey(int keyid)
 
 void Input_linkControllerToMousePosition(Controller* controller, int pointerIndex)
 {
+    smug_assert(isInitialized);
     smug_assert(Controller_hasPointer(controller, pointerIndex));
     if (mousePositionPointerBinding != NULL)
     {
@@ -175,6 +214,7 @@ void Input_linkControllerToMousePosition(Controller* controller, int pointerInde
 
 void Input_unlinkControllersFromMousePosition()
 {
+    smug_assert(isInitialized);
     if (mousePositionPointerBinding != NULL)
     {
         ControllerIndex_delete(mousePositionPointerBinding);
@@ -185,6 +225,26 @@ void Input_unlinkControllersFromMousePosition()
     {
         WARNING("Tried to unlink mouse position, but it was not mapped to anything!");
     }
+}
+
+void Input_setButtonCallbackForController(Controller* c, ButtonCallback buttonCallback)
+{
+    ControllerScheme_setButtonCallbackForController(_getDefaultScheme(), c, buttonCallback);
+}
+
+ButtonCallback Input_getButtonCallback(Controller* c)
+{
+    return ControllerScheme_getButtonCallback(_getDefaultScheme(), c);
+}
+
+void Input_setPointerCallbackForController(Controller* c, PointerCallback pointerCallback)
+{
+    ControllerScheme_setPointerCallbackForController(_getDefaultScheme(), c, pointerCallback);
+}
+
+PointerCallback Input_getPointerCallback(Controller* c)
+{
+    return ControllerScheme_getPointerCallback(_getDefaultScheme(), c);
 }
 
 // void _mouseButtonCallback(int mouseButton, int state)

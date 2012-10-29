@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
 
     Input_initialize();
     theController = Controller_new(0, 4, 0);
-    Controller_setButtonCallback(theController, _buttonCallback);
+    Input_setButtonCallbackForController(theController, _buttonCallback);
     Input_linkControllerToKeyboardKey(theController, 0, '1');
     Input_linkControllerToKeyboardKey(theController, 1, '2');
     Input_linkControllerToKeyboardKey(theController, 2, '3');

@@ -567,8 +567,8 @@ static void init()
 
     Input_initialize();
     theController = Controller_new(0, 10, 1);
-    Controller_setButtonCallback(theController, _buttonCallback);
-    Controller_setPointerCallback(theController, _pointerCallback);
+    Input_setButtonCallbackForController(theController, _buttonCallback);
+    Input_setPointerCallbackForController(theController, _pointerCallback);
     Input_linkControllerToKeyboardKey(theController, BUTTON_UP, GLFW_KEY_UP);
     Input_linkControllerToKeyboardKey(theController, BUTTON_DOWN, GLFW_KEY_DOWN);
     Input_linkControllerToKeyboardKey(theController, BUTTON_LEFT, GLFW_KEY_LEFT);
