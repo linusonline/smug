@@ -350,7 +350,7 @@ static void deleteSounds()
 static void init()
 {
     gameState = STATE_STARTUP;
-    Log_initStdout();
+    Log_initStdOut();
     Log_activateScopes(LOG_USER1);
 
     Log_indent();
