@@ -13,4 +13,7 @@ BOOL Controller_hasButton(Controller* self, int index);
 BOOL Controller_hasAxis(Controller* self, int index);
 BOOL Controller_hasPointer(Controller* self, int index);
 
+BOOL Controller_isButtonPressed(Controller* self, int index);
+void Controller_setButtonPressed(Controller* self, int index, BOOL pressed);
+
 #endif /* SMUG_INPUT_CONTROLLER_H */
