@@ -23,7 +23,6 @@ static const float MIN_Z = -10000.0f;
 static const float MAX_Z = 10000.0f;
 
 static Camera* camera = NULL;
-static BOOL userCamera = FALSE;
 
 static BOOL fullscreen = FALSE;
 
@@ -115,10 +114,8 @@ void Graphics_terminate()
 {
     smug_assert(isInitialized);
 
-    if (!userCamera)
-    {
-        Camera_delete(camera);
-    }
+    Camera_delete(camera);
+
     glfwCloseWindow();
     glfwTerminate();
 
@@ -144,14 +141,9 @@ void Graphics_setCoordinateSystemForWindow(float left, float top, float width, f
     useWindowCoordinates = TRUE;
 }
 
-void Graphics_useCamera(Camera* newCamera)
+Camera* Graphics_getCamera()
 {
-    if (!userCamera)
-    {
-        Camera_delete(camera);
-    }
-    camera = newCamera;
-    userCamera = TRUE;
+    return camera;
 }
 
 void Graphics_setWindowResizeCallback(void (*callback)(int w, int h))

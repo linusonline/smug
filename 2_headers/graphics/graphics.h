@@ -11,7 +11,7 @@ BOOL Graphics_isInitialized();
 
 void Graphics_setBackgroundColor(float red, float green, float blue);
 void Graphics_setCoordinateSystemForWindow(float left, float top, float width, float height);
-void Graphics_useCamera(Camera* newCamera);
+Camera* Graphics_getCamera(void);
 void Graphics_setWindowResizeCallback(void (*callback)(int w, int h));
 
 void Graphics_render(RenderQueue* renderQueue);

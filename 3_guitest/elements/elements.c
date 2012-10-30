@@ -28,8 +28,6 @@ static const int INITIAL_WINDOW_HEIGHT = 480;
 static int windowWidth = 640;
 static int windowHeight = 480;
 
-static Camera* camera;
-
 static GameObject* avatar;
 static LinkedList* objectsToDelete;
 
@@ -363,14 +361,14 @@ static void init()
     LOG(LOG_SOUND, "...done");
     Log_dedent();
 
-    camera = Camera_new();
+    Graphics_initialize(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, FALSE);
+
+    Camera* camera = Graphics_getCamera();
     camera->posX = INITIAL_WINDOW_WIDTH / 2;
     camera->posY = INITIAL_WINDOW_HEIGHT / 2;
 
-    Graphics_initialize(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, FALSE);
     Graphics_setCoordinateSystemForWindow(-WORLD_WIDTH/2, -WORLD_HEIGHT/2, WORLD_WIDTH, WORLD_HEIGHT);
     Graphics_setBackgroundColor(0.5, 0.0, 0.5);
-    Graphics_useCamera(camera);
     Graphics_setWindowResizeCallback(_resizeCallback);
 
     Input_initialize();
