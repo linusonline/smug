@@ -6,6 +6,7 @@ typedef struct _Controller
     int numberOfAxes;
     int numberOfButtons;
     int numberOfPointers;
+    BOOL* buttonsPressed;
 } _Controller;
 
 Controller* Controller_new(int numberOfAxes, int numberOfButtons, int numberOfPointers)
@@ -14,6 +15,11 @@ Controller* Controller_new(int numberOfAxes, int numberOfButtons, int numberOfPo
     newController->numberOfAxes = numberOfAxes;
     newController->numberOfButtons = numberOfButtons;
     newController->numberOfPointers = numberOfPointers;
+    newController->buttonsPressed = allocatev(BOOL, numberOfButtons);
+    for (int i = 0; i < numberOfButtons; i++)
+    {
+        newController->buttonsPressed[i] = FALSE;
+    }
     return newController;
 }
 
@@ -35,4 +41,16 @@ BOOL Controller_hasAxis(Controller* self, int index)
 BOOL Controller_hasPointer(Controller* self, int index)
 {
     return index >= 0 && index < self->numberOfPointers;
+}
+
+BOOL Controller_isButtonPressed(Controller* self, int index)
+{
+    smug_assert(Controller_hasButton(self, index));
+    return self->buttonsPressed[index];
+}
+
+void Controller_setButtonPressed(Controller* self, int index, BOOL pressed)
+{
+    smug_assert(Controller_hasButton(self, index));
+    self->buttonsPressed[index] = pressed;
 }
