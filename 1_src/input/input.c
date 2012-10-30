@@ -161,6 +161,8 @@ void Input_initialize()
 
 void Input_terminate()
 {
+    glfwSetKeyCallback(NULL);
+    glfwSetMousePosCallback(NULL);
     smug_assert(isInitialized);
     _deleteBindings(keyboardBindings);
     Map_delete(keyboardBindings);
