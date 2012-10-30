@@ -8,8 +8,9 @@
 
 #include <engine/mainloop.h>
 
-static BOOL fpsSet = FALSE;
-static TIME logicDelay = 0.0;
+#define DEFAULT_LOGIC_FPS 30.0f
+
+static TIME logicDelay = 1.0f / DEFAULT_LOGIC_FPS;
 static TIME SMALLEST_SLEEP_TIME = 1.0/500;
 
 static TIME discreteTime;
@@ -54,10 +55,6 @@ void Mainloop_run()
     // Setup timing variables
     TIME lastFpsCheck = _getTime();
     int fps = 0;
-    if (!fpsSet)
-    {
-        Mainloop_setLogicFps(30.0f);
-    }
     TIME nextLogicTick;
     TIME time;
     nextLogicTick = _getTime();
@@ -108,7 +105,6 @@ void Mainloop_run()
 void Mainloop_setLogicFps(float fps)
 {
     logicDelay = 1.0 / fps;
-    fpsSet = TRUE;
 }
 
 float Mainloop_getLogicFps()
