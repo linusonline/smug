@@ -58,7 +58,6 @@ static int moveHorizontally = 0;
 static int moveVertically = 0;
 static float avatarSpeed = 100; // Units per second.
 static int avatarFacing = BUTTON_DOWN;
-static const double ATTACK_TIME = 0.8;
 
 static Sound* hitSound = NULL;
 
