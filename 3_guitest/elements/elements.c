@@ -67,7 +67,6 @@ static Sound* hitSound = NULL;
 #define STATE_NORMAL    2
 #define STATE_ATTACKING 3
 static unsigned int gameState = STATE_UNDEFINED;
-static double changeTime = 0;
 
 static void setAllLeft()
 {
@@ -120,6 +119,28 @@ static void alignAvatar()
 static void _attackEndCallback(SpriteAnimation* attack, void* callbackData)
 {
     LinkedList_addLast(objectsToDelete, callbackData);
+
+    // Go to normal state
+    gameState = STATE_NORMAL;
+    ControllerScheme* scheme = Input_popControllerScheme();
+    smug_assert(scheme == schemeAttacking);
+    if (Controller_isButtonPressed(theController, BUTTON_UP))
+    {
+        moveVertically += -1;
+    }
+    if (Controller_isButtonPressed(theController, BUTTON_DOWN))
+    {
+        moveVertically += 1;
+    }
+    if (Controller_isButtonPressed(theController, BUTTON_LEFT))
+    {
+        moveHorizontally += -1;
+    }
+    if (Controller_isButtonPressed(theController, BUTTON_RIGHT))
+    {
+        moveHorizontally += 1;
+    }
+    alignAvatar();
 }
 
 static BOOL playerIsActionReady()
@@ -158,7 +179,6 @@ static void attack()
     Input_pushControllerScheme(schemeAttacking);
     moveHorizontally = moveVertically = 0;
     avatarWalk(FALSE);
-    changeTime = glfwGetTime();
     gameState = STATE_ATTACKING;
 }
 
@@ -255,48 +275,16 @@ static void _logicCallback()
         Mainloop_exit();
     }
 
-    switch (gameState)
+    if (gameState == STATE_NORMAL)
     {
-        case STATE_NORMAL:
+        if (moveHorizontally == 0 && moveVertically == 0)
         {
-            if (moveHorizontally == 0 && moveVertically == 0)
-            {
-                playerData.actionGauge = min(100, playerData.actionGauge + actionGaugeRefillSpeed / Mainloop_getLogicFps());
-            }
-            else
-            {
-                playerData.actionGauge = max(0, playerData.actionGauge - actionGaugeMovementCost / Mainloop_getLogicFps());
-            }
+            playerData.actionGauge = min(100, playerData.actionGauge + actionGaugeRefillSpeed / Mainloop_getLogicFps());
         }
-        break;
-        case STATE_ATTACKING:
+        else
         {
-            if (glfwGetTime() - changeTime > ATTACK_TIME)
-            {
-                // Go to normal state
-                gameState = STATE_NORMAL;
-                ControllerScheme* scheme = Input_popControllerScheme();
-                smug_assert(scheme == schemeAttacking);
-                if (Controller_isButtonPressed(theController, BUTTON_UP))
-                {
-                    moveVertically += -1;
-                }
-                if (Controller_isButtonPressed(theController, BUTTON_DOWN))
-                {
-                    moveVertically += 1;
-                }
-                if (Controller_isButtonPressed(theController, BUTTON_LEFT))
-                {
-                    moveHorizontally += -1;
-                }
-                if (Controller_isButtonPressed(theController, BUTTON_RIGHT))
-                {
-                    moveHorizontally += 1;
-                }
-                alignAvatar();
-            }
+            playerData.actionGauge = max(0, playerData.actionGauge - actionGaugeMovementCost / Mainloop_getLogicFps());
         }
-        break;
     }
     setActionGaugeValue(playerData.actionGauge);
 
