@@ -6,6 +6,8 @@
 #include <graphics/drawable.h>
 #include <graphics/spritesheet.h>
 #include <input/input.h>
+#include <input/controller.h>
+#include <input/controllerscheme.h>
 #include <utils/log.h>
 #include <utils/stdout_console.h>
 #include <utils/linkedlist.h>
@@ -36,6 +38,7 @@ static GameObject* monsters[13];
 static LinkedList* objectsToDelete;
 
 static Controller* theController = NULL;
+static ControllerScheme* schemeAttacking = NULL;
 
 #define BUTTON_UP 0
 #define BUTTON_DOWN 1
@@ -55,8 +58,16 @@ static int moveHorizontally = 0;
 static int moveVertically = 0;
 static float avatarSpeed = 100; // Units per second.
 static int avatarFacing = BUTTON_DOWN;
+static const double ATTACK_TIME = 0.8;
 
 static Sound* hitSound = NULL;
+
+#define STATE_UNDEFINED 0
+#define STATE_STARTUP   1
+#define STATE_NORMAL    2
+#define STATE_ATTACKING 3
+static unsigned int gameState = STATE_UNDEFINED;
+static double changeTime = 0;
 
 static void setAllLeft()
 {
@@ -142,6 +153,13 @@ static void attack()
     GameObject* attack = createAttack(GameObject_getX(avatar) + offsetX, GameObject_getY(avatar) + offsetY);
     SpriteAnimation_setStopCallback(Drawable_getSpriteAnimation(GameObject_getDrawable(attack)), _attackEndCallback, attack);
     Engine_addObject(attack);
+
+    // Go to attack state
+    Input_pushControllerScheme(schemeAttacking);
+    moveHorizontally = moveVertically = 0;
+    avatarWalk(FALSE);
+    changeTime = glfwGetTime();
+    gameState = STATE_ATTACKING;
 }
 
 static void deleteOldObjects()
@@ -156,8 +174,31 @@ static void deleteOldObjects()
     LinkedList_removeAll(objectsToDelete);
 }
 
-static BOOL _buttonCallback(Controller* controller, int buttonIndex, int state)
+static BOOL _buttonCallbackAttacking(Controller* controller, int buttonIndex, int state)
 {
+    LOG(LOG_USER1, "Attack button callback!");
+    smug_assert(controller == theController);
+    switch (buttonIndex)
+    {
+        case BUTTON_EXIT:
+            Mainloop_exit();
+            break;
+        case BUTTON_UP:
+        case BUTTON_DOWN:
+        case BUTTON_LEFT:
+        case BUTTON_RIGHT:
+        case BUTTON_ATTACK:
+            // These should do nothing while the player is attacking.
+            break;
+        default:
+            smug_assert(FALSE);
+    }
+    return TRUE;
+}
+
+static BOOL _buttonCallbackNormal(Controller* controller, int buttonIndex, int state)
+{
+    LOG(LOG_USER1, "Normal button callback!");
     smug_assert(controller == theController);
     int reverse = 1;
     if (state == SMUG_KEY_RELEASE)
@@ -190,8 +231,8 @@ static BOOL _buttonCallback(Controller* controller, int buttonIndex, int state)
             {
                 if (playerIsActionReady())
                 {
-                    attack();
                     playerData.actionGauge -= actionGaugeAttackCost;
+                    attack();
                 }
             }
             break;
@@ -213,22 +254,58 @@ static void _logicCallback()
     {
         Mainloop_exit();
     }
+
+    switch (gameState)
+    {
+        case STATE_NORMAL:
+        {
+            if (moveHorizontally == 0 && moveVertically == 0)
+            {
+                playerData.actionGauge = min(100, playerData.actionGauge + actionGaugeRefillSpeed / Mainloop_getLogicFps());
+            }
+            else
+            {
+                playerData.actionGauge = max(0, playerData.actionGauge - actionGaugeMovementCost / Mainloop_getLogicFps());
+            }
+        }
+        break;
+        case STATE_ATTACKING:
+        {
+            if (glfwGetTime() - changeTime > ATTACK_TIME)
+            {
+                // Go to normal state
+                gameState = STATE_NORMAL;
+                ControllerScheme* scheme = Input_popControllerScheme();
+                smug_assert(scheme == schemeAttacking);
+                if (Controller_isButtonPressed(theController, BUTTON_UP))
+                {
+                    moveVertically += -1;
+                }
+                if (Controller_isButtonPressed(theController, BUTTON_DOWN))
+                {
+                    moveVertically += 1;
+                }
+                if (Controller_isButtonPressed(theController, BUTTON_LEFT))
+                {
+                    moveHorizontally += -1;
+                }
+                if (Controller_isButtonPressed(theController, BUTTON_RIGHT))
+                {
+                    moveHorizontally += 1;
+                }
+                alignAvatar();
+            }
+        }
+        break;
+    }
+    setActionGaugeValue(playerData.actionGauge);
+
     float speedFraction = avatarSpeed / Mainloop_getLogicFps();
     GameObject_setPos(avatar,
         moveHorizontally * speedFraction + GameObject_getX(avatar),
         moveVertically * speedFraction + GameObject_getY(avatar));
     setActionGaugePosition(GameObject_getX(avatar), GameObject_getY(avatar));
     Drawable_setZ(GameObject_getDrawable(avatar), GameObject_getY(avatar));
-
-    if (moveHorizontally == 0 && moveVertically == 0)
-    {
-        playerData.actionGauge = min(100, playerData.actionGauge + actionGaugeRefillSpeed / Mainloop_getLogicFps());
-    }
-    else
-    {
-        playerData.actionGauge = max(0, playerData.actionGauge - actionGaugeMovementCost / Mainloop_getLogicFps());
-    }
-    setActionGaugeValue(playerData.actionGauge);
 
     deleteOldObjects();
 }
@@ -291,6 +368,7 @@ static void deleteSounds()
 
 static void init()
 {
+    gameState = STATE_STARTUP;
     console = StdoutConsole_new();
     smug_assert(console != NULL);
     Log_init(console);
@@ -316,13 +394,15 @@ static void init()
 
     Input_initialize();
     theController = Controller_new(0, 10, 0);
-    Input_setButtonCallbackForController(theController, _buttonCallback);
     Input_linkControllerToKeyboardKey(theController, BUTTON_UP, GLFW_KEY_UP);
     Input_linkControllerToKeyboardKey(theController, BUTTON_DOWN, GLFW_KEY_DOWN);
     Input_linkControllerToKeyboardKey(theController, BUTTON_LEFT, GLFW_KEY_LEFT);
     Input_linkControllerToKeyboardKey(theController, BUTTON_RIGHT, GLFW_KEY_RIGHT);
     Input_linkControllerToKeyboardKey(theController, BUTTON_EXIT, GLFW_KEY_ESC);
     Input_linkControllerToKeyboardKey(theController, BUTTON_ATTACK, GLFW_KEY_SPACE);
+    Input_setButtonCallbackForController(theController, _buttonCallbackNormal);
+    schemeAttacking = ControllerScheme_new();
+    ControllerScheme_setButtonCallbackForController(schemeAttacking, theController, _buttonCallbackAttacking);
 
     Mainloop_setLogicCallback(_logicCallback);
 
@@ -357,6 +437,8 @@ static void init()
 
     objectsToDelete = LinkedList_new();
     CollisionDetector_collideTags(0, 0, _collisionCallback);
+
+    gameState = STATE_NORMAL;
 }
 
 static void deinit()
@@ -376,6 +458,7 @@ static void deinit()
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_LEFT);
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_RIGHT);
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_ESC);
+    ControllerScheme_delete(schemeAttacking);
     Controller_delete(theController);
 
     Engine_terminate();
