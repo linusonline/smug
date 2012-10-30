@@ -28,13 +28,9 @@ static const int INITIAL_WINDOW_HEIGHT = 480;
 static int windowWidth = 640;
 static int windowHeight = 480;
 
-static Console* console = NULL;
 static Camera* camera;
 
-static GameObject** world = NULL;
 static GameObject* avatar;
-static const int NUM_MONSTERS = 13;
-static GameObject* monsters[13];
 static LinkedList* objectsToDelete;
 
 static Controller* theController = NULL;
@@ -356,9 +352,7 @@ static void deleteSounds()
 static void init()
 {
     gameState = STATE_STARTUP;
-    console = StdoutConsole_new();
-    smug_assert(console != NULL);
-    Log_init(console);
+    Log_initStdout();
     Log_activateScopes(LOG_USER1);
 
     Log_indent();
@@ -393,34 +387,28 @@ static void init()
 
     Mainloop_setLogicCallback(_logicCallback);
 
-    world = createMap1();
     avatar = getAvatar(24, 32, 320, 240);
     Engine_init();
-    Engine_addObjects(world, 0, map1Size());
+    Engine_addObjects(createMap1(), 0, map1Size());
     Engine_addObject(avatar);
     createActionGauge(320, 240);
 
     playerData.actionGauge = 100;
     playerData.hp = 100;
 
-    monsters[0] = newMonster(MONSTER_SHELLY, 32, 32);
-    monsters[1] = newMonster(MONSTER_SHROOM, 32, 128);
-    monsters[2] = newMonster(MONSTER_MINKEY, 32, 256);
-    monsters[3] = newMonster(MONSTER_GOLEM, 128, 32);
-    monsters[4] = newMonster(MONSTER_GOLEM, 128, 128);
-    monsters[5] = newMonster(MONSTER_SNELL, 128, 256);
-    monsters[6] = newMonster(MONSTER_TROLLEY, 256, 32);
-    monsters[7] = newMonster(MONSTER_SKELETON, 256, 128);
-    monsters[8] = newMonster(MONSTER_FIRESKULL, 256, 256);
-    monsters[9] = newMonster(MONSTER_BEETLE, 32, 384);
-    monsters[10] = newMonster(MONSTER_FIRESKULL, 128, 384);
-    monsters[11] = newMonster(MONSTER_FIRESKULL, 256, 384);
-    monsters[12] = newMonster(MONSTER_BEE, 384, 32);
-
-    for (int i = 0; i < NUM_MONSTERS; i++)
-    {
-        Engine_addObject(monsters[i]);
-    }
+    Engine_addObject(newMonster(MONSTER_SHELLY, 32, 32));
+    Engine_addObject(newMonster(MONSTER_SHROOM, 32, 128));
+    Engine_addObject(newMonster(MONSTER_MINKEY, 32, 256));
+    Engine_addObject(newMonster(MONSTER_GOLEM, 128, 32));
+    Engine_addObject(newMonster(MONSTER_GOLEM, 128, 128));
+    Engine_addObject(newMonster(MONSTER_SNELL, 128, 256));
+    Engine_addObject(newMonster(MONSTER_TROLLEY, 256, 32));
+    Engine_addObject(newMonster(MONSTER_SKELETON, 256, 128));
+    Engine_addObject(newMonster(MONSTER_FIRESKULL, 256, 256));
+    Engine_addObject(newMonster(MONSTER_BEETLE, 32, 384));
+    Engine_addObject(newMonster(MONSTER_FIRESKULL, 128, 384));
+    Engine_addObject(newMonster(MONSTER_FIRESKULL, 256, 384));
+    Engine_addObject(newMonster(MONSTER_BEE, 384, 32));
 
     objectsToDelete = LinkedList_new();
     CollisionDetector_collideTags(0, 0, _collisionCallback);
@@ -452,7 +440,6 @@ static void deinit()
     Graphics_terminate();
     Input_terminate();
     Log_terminate();
-    StdoutConsole_delete(console);
 }
 
 int main()
