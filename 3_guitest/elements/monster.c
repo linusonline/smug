@@ -18,7 +18,12 @@ typedef struct MonsterData
     SpriteAnimation* walkUp;
     SpriteAnimation* walkDown;
     int state;
+    Sound* hitSound;
+    Sound* dieSound;
 } MonsterData;
+
+static Sound* gHitSound = NULL;
+static Sound* gDieSound = NULL;
 
 static SpriteSheet* shroomSheet = NULL;
 static SpriteSheet* minkeySheet = NULL;
@@ -29,8 +34,6 @@ static SpriteSheet* skeletonSheet = NULL;
 static SpriteSheet* fireskullSheet = NULL;
 static SpriteSheet* beeSheet = NULL;
 static SpriteSheet* beetleSheet = NULL;
-
-static Sound* hitSound = NULL;
 
 static const float WALK_FRAME_DURATION = 0.2;
 
@@ -53,7 +56,7 @@ static void deleteMonsterData(GameObject* monster)
 }
 
 // Protected
-GameObject* newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float posX, float posY, float offsetX, float offsetY, float hp)
+GameObject* newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float posX, float posY, float offsetX, float offsetY, float hp, Sound* hitSound, Sound* dieSound)
 {
     MonsterData* data = allocate(MonsterData);
     data->walkDown = SpriteAnimation_newEmpty();
@@ -86,6 +89,8 @@ GameObject* newMonsterFromSheet(SpriteSheet* sheet, float width, float height, f
     SpriteAnimation_start(data->walkUp);
     SpriteAnimation_start(data->walkDown);
 
+    data->hitSound = hitSound;
+    data->dieSound = dieSound;
     data->state = MONSTER_STATE_NORMAL;
     data->data.actionGauge = 100;
     data->data.hp = hp;
@@ -209,12 +214,16 @@ GameObject* newMonster(int type, float posX, float posY)
     {
         *monsterSheet = SpriteSheet_new(imageFile, dataFile);
     }
-    if (hitSound == NULL)
+    if (gHitSound == NULL)
     {
-        hitSound = Sound_new("5_res/audio/flyswatter.wav");
+        gHitSound = Sound_new("5_res/audio/flyswatter.wav");
+    }
+    if (gDieSound == NULL)
+    {
+        gDieSound = Sound_new("5_res/audio/monster-die.wav");
     }
 
-    GameObject* monster = newMonsterFromSheet(*monsterSheet, width, height, posX, posY, offsetX, offsetY, hp);
+    GameObject* monster = newMonsterFromSheet(*monsterSheet, width, height, posX, posY, offsetX, offsetY, hp, gHitSound, gDieSound);
     return monster;
 }
 
@@ -226,14 +235,14 @@ void damageOrKillMonster(GameObject* monster, float damage)
     }
     if (CharacterLogic_takeDamage(monster, damage))
     {
-        // Sound_play(dieSound);
+        Sound_play(toMonster(monster)->dieSound);
         killObject(monster);
         LOG(LOG_USER1, "Hit monster with attack! It died!");
         return;
     }
     else
     {
-        Sound_play(hitSound);
+        Sound_play(toMonster(monster)->hitSound);
     }
     LOG(LOG_USER1, "Hit monster with attack! Has %i HP left.", (int)toMonster(monster)->data.hp);
 }
@@ -272,7 +281,7 @@ void setMonsterDown(GameObject* monster)
 
 void deinitMonsters()
 {
-    Sound_delete(hitSound);
+    Sound_delete(gHitSound);
     if (shroomSheet != NULL)
     {
         SpriteSheet_delete(shroomSheet);
