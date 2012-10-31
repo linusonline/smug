@@ -24,6 +24,8 @@
 #include <actiongauge.h>
 #include <characterlogic.h>
 
+#include <monsters/tortoise.h>
+
 static const int INITIAL_WINDOW_WIDTH = 640;
 static const int INITIAL_WINDOW_HEIGHT = 480;
 static int windowWidth = 640;
@@ -373,7 +375,7 @@ static void init()
     playerData.actionGauge = 100;
     playerData.hp = 100;
 
-    Engine_addObject(newMonster(MONSTER_SHELLY, 32, 32));
+    Engine_addObject(newMonsterTortoise(32, 32));
     Engine_addObject(newMonster(MONSTER_SHROOM, 32, 128));
     Engine_addObject(newMonster(MONSTER_MINKEY, 32, 256));
     Engine_addObject(newMonster(MONSTER_GOLEM, 128, 32));

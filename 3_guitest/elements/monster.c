@@ -20,7 +20,6 @@ typedef struct MonsterData
     int state;
 } MonsterData;
 
-static SpriteSheet* shellySheet = NULL;
 static SpriteSheet* shroomSheet = NULL;
 static SpriteSheet* minkeySheet = NULL;
 static SpriteSheet* golemSheet = NULL;
@@ -53,7 +52,8 @@ static void deleteMonsterData(GameObject* monster)
     free(data);
 }
 
-static GameObject* newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float posX, float posY, float offsetX, float offsetY, float hp)
+// Protected
+GameObject* newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float posX, float posY, float offsetX, float offsetY, float hp)
 {
     MonsterData* data = allocate(MonsterData);
     data->walkDown = SpriteAnimation_newEmpty();
@@ -112,16 +112,6 @@ GameObject* newMonster(int type, float posX, float posY)
     float offsetX, offsetY;
     switch (type)
     {
-        case MONSTER_SHELLY:
-            monsterSheet = &shellySheet;
-            imageFile = "5_res/characters/monsters/shelly32x32.png";
-            dataFile = "5_res/characters/monsters/32x32.txt";
-            width = 32;
-            height = 32;
-            offsetX = -16;
-            offsetY = -32;
-            hp = 150;
-            break;
         case MONSTER_SHROOM:
             monsterSheet = &shroomSheet;
             imageFile = "5_res/characters/monsters/shroom32x32.png";
@@ -283,10 +273,6 @@ void setMonsterDown(GameObject* monster)
 void deinitMonsters()
 {
     Sound_delete(hitSound);
-    if (shellySheet != NULL)
-    {
-        SpriteSheet_delete(shellySheet);
-    }
     if (shroomSheet != NULL)
     {
         SpriteSheet_delete(shroomSheet);

@@ -4,7 +4,6 @@
 #include <common.h>
 #include <engine/gameobject.h>
 
-#define MONSTER_SHELLY      1
 #define MONSTER_SHROOM      2
 #define MONSTER_MINKEY      3
 #define MONSTER_GOLEM       4
