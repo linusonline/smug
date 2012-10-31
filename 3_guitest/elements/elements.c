@@ -22,6 +22,7 @@
 #include <attack.h>
 #include <objects.h>
 #include <actiongauge.h>
+#include <characterlogic.h>
 
 static const int INITIAL_WINDOW_WIDTH = 640;
 static const int INITIAL_WINDOW_HEIGHT = 480;
@@ -29,7 +30,6 @@ static int windowWidth = 640;
 static int windowHeight = 480;
 
 static GameObject* avatar;
-static LinkedList* objectsToDelete;
 
 static Controller* theController = NULL;
 static ControllerScheme* schemeAttacking = NULL;
@@ -44,7 +44,7 @@ static ControllerScheme* schemeAttacking = NULL;
 static const int WORLD_WIDTH = 640;     // This world happens to be just one screen big.
 static const int WORLD_HEIGHT = 480;
 
-static CharacterData playerData;
+static CharacterLogic playerData;
 static const float actionGaugeRefillSpeed = 20;
 static const float actionGaugeMovementCost = 30;
 static const float actionGaugeAttackCost = 50;
@@ -52,8 +52,6 @@ static int moveHorizontally = 0;
 static int moveVertically = 0;
 static float avatarSpeed = 100; // Units per second.
 static int avatarFacing = BUTTON_DOWN;
-
-static Sound* hitSound = NULL;
 
 #define STATE_UNDEFINED 0
 #define STATE_STARTUP   1
@@ -109,9 +107,9 @@ static void alignAvatar()
     }
 }
 
-static void _attackEndCallback(SpriteAnimation* attack, void* callbackData)
+static void _attackAnimationEndCallback(SpriteAnimation* attack, void* callbackData)
 {
-    LinkedList_addLast(objectsToDelete, callbackData);
+    killObject((GameObject*)callbackData);
 
     // Go to normal state
     gameState = STATE_NORMAL;
@@ -165,7 +163,7 @@ static void attack()
             break;
     }
     GameObject* attack = createAttack(GameObject_getX(avatar) + offsetX, GameObject_getY(avatar) + offsetY);
-    SpriteAnimation_setStopCallback(Drawable_getSpriteAnimation(GameObject_getDrawable(attack)), _attackEndCallback, attack);
+    SpriteAnimation_setStopCallback(Drawable_getSpriteAnimation(GameObject_getDrawable(attack)), _attackAnimationEndCallback, attack);
     Engine_addObject(attack);
 
     // Go to attack state
@@ -173,18 +171,6 @@ static void attack()
     moveHorizontally = moveVertically = 0;
     avatarWalk(FALSE);
     gameState = STATE_ATTACKING;
-}
-
-static void deleteOldObjects()
-{
-    GameObject* go = (GameObject*)LinkedList_getFirst(objectsToDelete);
-    while (go != NULL)
-    {
-        Engine_removeObject(go);
-        deleteAttack(go);
-        go = (GameObject*)LinkedList_getNext(objectsToDelete);
-    }
-    LinkedList_removeAll(objectsToDelete);
 }
 
 static BOOL _buttonCallbackAttacking(Controller* controller, int buttonIndex, int state)
@@ -261,11 +247,27 @@ static void _resizeCallback(int width, int height)
     windowHeight = height;
 }
 
+static void killGame()
+{
+    Engine_doForAllObjects(killObject);
+    Engine_removeAndDeleteAllObjects();
+    Mainloop_exit();
+
+    Objects_terminate();
+
+    deleteMap1Data();
+    deleteAvatarData();
+
+    deinitMonsters();
+    deleteActionGauge();
+}
+
 static void _logicCallback()
 {
     if (!glfwGetWindowParam(GLFW_OPENED))
     {
-        Mainloop_exit();
+        killGame();
+        return;
     }
 
     if (gameState == STATE_NORMAL)
@@ -288,19 +290,7 @@ static void _logicCallback()
     setActionGaugePosition(GameObject_getX(avatar), GameObject_getY(avatar));
     Drawable_setZ(GameObject_getDrawable(avatar), GameObject_getY(avatar));
 
-    deleteOldObjects();
-}
-
-static void damageOrKillMonster(GameObject* monster, float damage)
-{
-    Sound_play(hitSound);
-    if (damageMonster(monster, damage))
-    {
-        LinkedList_addLast(objectsToDelete, monster);
-        LOG(LOG_USER1, "Hit monster with attack! It died!");
-        return;
-    }
-    LOG(LOG_USER1, "Hit monster with attack! Has %i HP left.", (int)((MonsterData*)GameObject_getUserData(monster))->data.hp);
+    removeAndDeleteDeadObjects();
 }
 
 static void _collisionCallback(GameObject* obj1, GameObject* obj2)
@@ -337,16 +327,6 @@ static void _collisionCallback(GameObject* obj1, GameObject* obj2)
     }
 }
 
-static void makeSounds()
-{
-    hitSound = Sound_new("5_res/audio/flyswatter.wav");
-}
-
-static void deleteSounds()
-{
-    Sound_delete(hitSound);
-}
-
 static void init()
 {
     gameState = STATE_STARTUP;
@@ -357,7 +337,6 @@ static void init()
     LOG(LOG_SOUND, "Initializing sound...");
     Audio_initialize();
     LOG(LOG_SOUND, "Loading sounds...");
-    makeSounds();
     LOG(LOG_SOUND, "...done");
     Log_dedent();
 
@@ -408,23 +387,16 @@ static void init()
     Engine_addObject(newMonster(MONSTER_FIRESKULL, 256, 384));
     Engine_addObject(newMonster(MONSTER_BEE, 384, 32));
 
-    objectsToDelete = LinkedList_new();
     CollisionDetector_collideTags(0, 0, _collisionCallback);
+
+    Objects_initialize();
 
     gameState = STATE_NORMAL;
 }
 
 static void deinit()
 {
-    deleteSounds();
     Audio_terminate();
-
-    Engine_removeAllObjects();
-    deleteMap1();
-    deleteAvatar();
-    Engine_doForAllObjects(deleteMonster);
-    deinitMonsters();
-    deleteActionGauge();
 
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_UP);
     Input_unlinkControllersFromKeyboardKey(GLFW_KEY_DOWN);

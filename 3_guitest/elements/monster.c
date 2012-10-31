@@ -4,9 +4,21 @@
 #include <engine/gameobject.h>
 #include <graphics/spritesheet.h>
 #include <graphics/spriteanimation.h>
+#include <audio/audio.h>
 
 #include <objects.h>
 #include <monster.h>
+#include <characterlogic.h>
+
+typedef struct MonsterData
+{
+    CharacterLogic data;
+    SpriteAnimation* walkLeft;
+    SpriteAnimation* walkRight;
+    SpriteAnimation* walkUp;
+    SpriteAnimation* walkDown;
+    int state;
+} MonsterData;
 
 static SpriteSheet* shellySheet = NULL;
 static SpriteSheet* shroomSheet = NULL;
@@ -19,13 +31,26 @@ static SpriteSheet* fireskullSheet = NULL;
 static SpriteSheet* beeSheet = NULL;
 static SpriteSheet* beetleSheet = NULL;
 
+static Sound* hitSound = NULL;
+
 static const float WALK_FRAME_DURATION = 0.2;
 
-#define toMonster(object) ((MonsterData*)GameObject_getUserData(object))
+#define toMonster(object) ((MonsterData*)getSpecificObjectData(object))
+#define isMonster(object) objectIsOfType(object, OBJECT_MONSTER)
 
-static BOOL isMonster(GameObject* object)
+static void deleteMonsterData(GameObject* monster)
 {
-    return GameObject_bodyHasTag(object, OBJECT_MONSTER);
+    MonsterData* data = toMonster(monster);
+
+    Drawable* d = GameObject_removeDrawable(monster);
+    Drawable_delete(d);
+
+    SpriteAnimation_delete(data->walkLeft);
+    SpriteAnimation_delete(data->walkRight);
+    SpriteAnimation_delete(data->walkUp);
+    SpriteAnimation_delete(data->walkDown);
+
+    free(data);
 }
 
 static GameObject* newMonsterFromSheet(SpriteSheet* sheet, float width, float height, float posX, float posY, float offsetX, float offsetY, float hp)
@@ -61,7 +86,10 @@ static GameObject* newMonsterFromSheet(SpriteSheet* sheet, float width, float he
     SpriteAnimation_start(data->walkUp);
     SpriteAnimation_start(data->walkDown);
 
-    GameObject* monster = GameObject_new(posX, posY);
+    data->state = MONSTER_STATE_NORMAL;
+    data->data.actionGauge = 100;
+    data->data.hp = hp;
+    GameObject* monster = newObject(data, deleteMonsterData, OBJECT_MONSTER, posX, posY);
 
     Drawable* d = Drawable_newFromSpriteAnimationAndSize(data->walkDown, width, height);
     Drawable_setZ(d, posY);
@@ -71,9 +99,6 @@ static GameObject* newMonsterFromSheet(SpriteSheet* sheet, float width, float he
     Body_addTag(b, OBJECT_MONSTER);
     GameObject_addBodyAt(monster, b, offsetX, offsetY);
 
-    data->data.actionGauge = 100;
-    data->data.hp = hp;
-    GameObject_setUserData(monster, data);
     return monster;
 }
 
@@ -194,29 +219,33 @@ GameObject* newMonster(int type, float posX, float posY)
     {
         *monsterSheet = SpriteSheet_new(imageFile, dataFile);
     }
+    if (hitSound == NULL)
+    {
+        hitSound = Sound_new("5_res/audio/flyswatter.wav");
+    }
+
     GameObject* monster = newMonsterFromSheet(*monsterSheet, width, height, posX, posY, offsetX, offsetY, hp);
     return monster;
 }
 
-BOOL damageMonster(GameObject* monster, float damage)
+void damageOrKillMonster(GameObject* monster, float damage)
 {
-    MonsterData* data = toMonster(monster);
-    BOOL dead = data->data.hp - damage <= 0;
-    data->data.hp = max(0, data->data.hp - damage);
-    return dead;
-}
-
-void deleteMonster(GameObject* monster)
-{
-    if (isMonster(monster))
+    if (objectIsDead(monster))
     {
-        MonsterData* data = toMonster(monster);
-        SpriteAnimation_delete(data->walkLeft);
-        SpriteAnimation_delete(data->walkRight);
-        SpriteAnimation_delete(data->walkUp);
-        SpriteAnimation_delete(data->walkDown);
-        GameObject_delete(monster);
+        return;
     }
+    if (CharacterLogic_takeDamage(monster, damage))
+    {
+        // Sound_play(dieSound);
+        killObject(monster);
+        LOG(LOG_USER1, "Hit monster with attack! It died!");
+        return;
+    }
+    else
+    {
+        Sound_play(hitSound);
+    }
+    LOG(LOG_USER1, "Hit monster with attack! Has %i HP left.", (int)toMonster(monster)->data.hp);
 }
 
 void setMonsterLeft(GameObject* monster)
@@ -253,6 +282,7 @@ void setMonsterDown(GameObject* monster)
 
 void deinitMonsters()
 {
+    Sound_delete(hitSound);
     if (shellySheet != NULL)
     {
         SpriteSheet_delete(shellySheet);

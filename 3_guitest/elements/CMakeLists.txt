@@ -6,7 +6,7 @@ project (Elements)
 
 include_directories ("${PROJECT_SOURCE_DIR}")
 
-add_executable(Elements elements.c map1.c avatar.c monster.c attack.c actiongauge.c)
+add_executable(Elements elements.c map1.c avatar.c monster.c attack.c actiongauge.c characterlogic.c objects.c)
 
 find_package(OpenGL)
 target_link_libraries(Elements SmugGraphics SmugPlatform SmugUtils SmugInput SmugEngine SmugAudio glfw ${OPENGL_LIBRARIES} ${MY_LIB_DIR}/libfmodexL.a)

@@ -3,6 +3,8 @@
 #include <graphics/spritesheet.h>
 #include <engine/gameobject.h>
 
+#include <objects.h>
+
 static const char* dirtFile = "5_res/inquisitor/Inq XP MT - Dirt.png";
 // static const char* grassFile = "5_res/inquisitor/Inq XP MT - Long Grass2.png";
 // static const char* mudFile = "5_res/inquisitor/Inq XP MT - Mud.png";
@@ -16,8 +18,6 @@ static SpriteSheet* dirtSheet = NULL;
 // static SpriteSheet* roadSheet1 = NULL;
 // static SpriteSheet* roadSheet2 = NULL;
 
-static GameObject** world = NULL;
-
 static const int TILE_WIDTH = 32;
 static const int TILE_HEIGHT = 32;
 
@@ -25,22 +25,23 @@ static const int MAP_WIDTH = 20;
 static const int MAP_HEIGHT = 15;
 
 #define sprite(type, xi, yi) SpriteSheet_getSpriteXY(type, xi, yi)
-#define landtile(s, x, y) GameObject_newWithDrawable(x * TILE_WIDTH, y * TILE_HEIGHT, Drawable_newFromSpriteAndSize(s, TILE_WIDTH, TILE_HEIGHT), 0.0f, 0.0f)
 #define GRASS_SPRITE sprite(dirtSprites, 0, 0)
+
+static GameObject* landtile(Sprite* s, float x, float y)
+{
+    GameObject* go = newObjectNoData(OBJECT_BACKGROUND, x * TILE_WIDTH, y * TILE_HEIGHT);
+    Drawable* d = Drawable_newFromSpriteAndSize(s, TILE_WIDTH, TILE_HEIGHT);
+    GameObject_addDrawableAt(go, d, 0.0f, 0.0f);
+    return go;
+}
 
 int map1Size()
 {
     return MAP_WIDTH * MAP_HEIGHT;
 }
 
-void deleteMap1()
+void deleteMap1Data()
 {
-    for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++)
-    {
-        GameObject_delete(world[i]);
-    }
-    free(world);
-
     SpriteSheet_delete(dirtSheet);
     // SpriteSheet_delete(grassSheet);
     // SpriteSheet_delete(mudSheet);
@@ -56,7 +57,7 @@ GameObject** createMap1()
     // roadSheet1 = SpriteSheet_new(roadFile1, dataFile);
     // roadSheet2 = SpriteSheet_new(roadFile2, dataFile);
 
-    world = allocatev(GameObject*, MAP_WIDTH * MAP_HEIGHT);
+    GameObject** world = allocatev(GameObject*, MAP_WIDTH * MAP_HEIGHT);
 
     world[0] =  landtile(sprite(dirtSheet, 0, 0), 0, 0);
     world[1] =  landtile(sprite(dirtSheet, 0, 0), 1, 0);

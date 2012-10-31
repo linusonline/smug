@@ -45,11 +45,14 @@ GameObject* getAvatar(float width, float height, float posX, float posY)
         SpriteAnimation_addFrame(walkDown, SpriteSheet_getSpriteXY(avatarSheet, i, 0), WALK_FRAME_DURATION);
     }
 
-    avatar = GameObject_new(posX, posY);
+    avatar = newObjectNoData(OBJECT_AVATAR, posX, posY);
+
     GameObject_addDrawableAt(avatar, Drawable_newFromSpriteAnimationAndSize(walkDown, width, height), -12, -32);
+
     Body* b = Body_newRectangle(width, height);
     Body_addTag(b, OBJECT_AVATAR);
     GameObject_addBodyAt(avatar, b, -12, -32);
+
     return avatar;
 }
 
@@ -80,9 +83,8 @@ void avatarWalk(BOOL walk)
     }
 }
 
-void deleteAvatar()
+void deleteAvatarData()
 {
-    GameObject_delete(avatar);
     SpriteAnimation_delete(walkLeft);
     SpriteAnimation_delete(walkRight);
     SpriteAnimation_delete(walkUp);

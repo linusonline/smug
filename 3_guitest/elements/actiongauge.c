@@ -6,6 +6,8 @@
 #include <graphics/spritesheet.h>
 #include <graphics/sprite.h>
 
+#include <objects.h>
+
 static SpriteSheet* guiSheet = NULL;
 static GameObject* actionGauge = NULL;
 static GameObject* actionGaugeFrame = NULL;
@@ -30,11 +32,11 @@ void createActionGauge(float posX, float posY)
 {
     guiSheet = SpriteSheet_new("5_res/gui/gauge.png", "5_res/gui/gauge.txt");
     Drawable* d = Drawable_newFromSpriteAndSize(SpriteSheet_getSprite(guiSheet, 0), 32, 8);
-    actionGaugeFrame = GameObject_new(posX, posY);
+    actionGaugeFrame = newObjectNoData(OBJECT_GENERIC, posX, posY);
     Drawable_setZ(d, 2000);
     GameObject_addDrawableAt(actionGaugeFrame, d, -16, SPACE_UNDER_AVATAR);
 
-    actionGauge = GameObject_new(0, 0);
+    actionGauge = newObjectNoData(OBJECT_GENERIC, 0, 0);
     gaugeDrawable = Drawable_newFromColorAndSize(0.5, 0.2, 0.0, 1.0, 24, 4);
     Drawable_setZ(gaugeDrawable, 2001);
     GameObject_addDrawableAt(actionGauge, gaugeDrawable, -12, SPACE_UNDER_AVATAR + 2);

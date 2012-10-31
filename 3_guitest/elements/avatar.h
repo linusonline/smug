@@ -5,7 +5,7 @@
 #include <engine/gameobject.h>
 
 GameObject* getAvatar(float width, float height, float posX, float posY);
-void deleteAvatar();
+void deleteAvatarData();
 
 void avatarWalk(BOOL walk);
 void setAvatarLeft();
