@@ -35,12 +35,17 @@ typedef double TIME;
     #define SMUGEXPORT
 #endif /* SMUGEXPORT */
 
-// #include <utils/log.h>
-// For some reason, this unleashes the devil.
-// #define smug_assert(condition) do {ERROR("Assertion failure");} while (0)
-
-#define smug_assert assert
-#include <assert.h>
+#ifdef HARD_ASSERTS
+# include <assert.h>
+# define smug_assert assert
+#else
+# ifdef ASSERTS
+#  include <utils/log.h>
+#  define smug_assert(cond) do { if (!(cond)) { ERROR("Assertion failure: %s", #cond); } } while (0)
+# else
+#  define smug_assert(cont) SMUG_NOOP()
+# endif
+#endif
 
 #endif /* SMUG_COMMON_H */
 
