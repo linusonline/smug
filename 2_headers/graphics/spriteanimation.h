@@ -37,7 +37,7 @@ void SpriteAnimation_pause(SpriteAnimation* self);
 void SpriteAnimation_reset(SpriteAnimation* self);
 
 void SpriteAnimation_setStopCallback(SpriteAnimation* self, SpriteAnimationStopCallback callback, void* anything);
-void SpriteAnimation_callAnimationStopCallbacks()
+void SpriteAnimation_callAnimationStopCallbacks();
 
 Sprite* SpriteAnimation_getCurrentSprite(SpriteAnimation* self);
 Sprite* SpriteAnimation_getSpriteAtIndex(SpriteAnimation* self, int index);
