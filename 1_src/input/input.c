@@ -77,6 +77,7 @@ static void _keyboardCallback(int keyid, int state)
     if (ci == NULL)
     {
         LOG(LOG_INPUT, "%s on unmapped key %i", (userState == SMUG_KEY_PRESS ? "Press" : "Release"), keyid);
+        return;
     }
 
     Controller_setButtonPressed(ci->controller, ci->index, userState == SMUG_KEY_PRESS);
