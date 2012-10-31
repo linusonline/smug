@@ -17,8 +17,8 @@
 #include <common.h>
 #include <graphics/sprite.h>
 
-struct _SpriteSheet;
-typedef struct _SpriteSheet SpriteSheet;
+struct _SheetProxy;
+typedef struct _SheetProxy SpriteSheet;
 
 SpriteSheet* SpriteSheet_new(const char* imageFile, const char* dataFile);
 
