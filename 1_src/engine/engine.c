@@ -21,6 +21,7 @@ int Engine_init()
 {
     gameObjects = LinkedList_new();
     CollisionDetector_initialize();
+    SpriteAnimation_initialize();
 
     isInitialized = TRUE;
     return 1;
@@ -37,6 +38,7 @@ void Engine_terminate()
     LinkedList_doList(gameObjects, GameObject_deleteVoid);
     LinkedList_delete(gameObjects);
     CollisionDetector_terminate();
+    SpriteAnimation_terminate();
 
     isInitialized = FALSE;
 }

@@ -2,10 +2,13 @@
 #include <GL/glfw.h>
 #include <common.h>
 #include <utils/log.h>
+#include <utils/hook.h>
 #include <utils/linkedlist.h>
 #include <graphics/sprite.h>
 
 #include <graphics/spriteanimation.h>
+
+static LinkedList* spriteAnimationHooks = NULL;
 
 typedef struct _SpriteAnimation
 {
@@ -64,7 +67,7 @@ static TIME _getCurrentTimeDiff(SpriteAnimation* self)
     {
         self->pausedAt = _sumDurations(self);
         self->started = FALSE;
-        self->stopCallback(self, self->callbackData);
+        LinkedList_addLast(spriteAnimationHooks, (void*)Hook_new2Params((void (*)(void*, void*))self->stopCallback, self, self->callbackData));
         return self->pausedAt;
     }
     return _timeMod(diff, _sumDurations(self));
@@ -90,6 +93,17 @@ static Sprite* _getSpriteForTimeDiff(SpriteAnimation* self, TIME timeDiff)
         timeDiff -= *duration;
     }
     return sprite;
+}
+
+void SpriteAnimation_initialize()
+{
+    spriteAnimationHooks = LinkedList_new();
+}
+
+void SpriteAnimation_terminate()
+{
+    smug_assert(spriteAnimationHooks != NULL);
+    LinkedList_delete(spriteAnimationHooks);
 }
 
 SpriteAnimation* SpriteAnimation_newEmpty()
@@ -186,4 +200,11 @@ void SpriteAnimation_setStopCallback(SpriteAnimation* self, SpriteAnimationStopC
 {
     self->stopCallback = callback;
     self->callbackData = anything;
+}
+
+void SpriteAnimation_callAnimationStopCallbacks()
+{
+    LinkedList_doList(spriteAnimationHooks, (void (*)(void*))Hook_call);
+    LinkedList_doList(spriteAnimationHooks, (void (*)(void*))Hook_delete2Params);
+    LinkedList_removeAll(spriteAnimationHooks);
 }

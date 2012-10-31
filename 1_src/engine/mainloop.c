@@ -4,6 +4,7 @@
 #include <utils/log.h>
 #include <graphics/graphics.h>
 #include <graphics/renderqueue.h>
+#include <graphics/spriteanimation.h>
 #include <engine/engine.h>
 
 #include <engine/mainloop.h>
@@ -70,6 +71,7 @@ void Mainloop_run()
             // This is the "logic" part of the loop, running at its own FPS.
             nextLogicTick += logicDelay;
             _stepDiscreteTime();
+            SpriteAnimation_callAnimationStopCallbacks();
             if (logicCallback != NULL)
             {
                 logicCallback();
