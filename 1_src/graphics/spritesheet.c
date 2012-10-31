@@ -51,7 +51,7 @@ static BOOL _parseDataFile(const char* fileName, int* width, int* height)
 
 static char* _copyString(const char* string)
 {
-    char* newString = allocatev(char, strlen(string));
+    char* newString = allocatev(char, strlen(string)+1);
     return strcpy(newString, string);
 }
 
@@ -129,14 +129,24 @@ static BOOL _identicalToExisting(void* sheet)
            strcmp(((_SheetProxy*)sheet)->dataFile, existingSheetDataFile) == 0;
 }
 
-static BOOL _sheetExists(const char* imageFile, const char* dataFile)
+static _SheetProxy* _sheetExists(const char* imageFile, const char* dataFile)
 {
     existingSheetImageFile = _copyString(imageFile);
     existingSheetDataFile = _copyString(dataFile);
-    BOOL ret = LinkedList_exists(sheets, _identicalToExisting);
+    LinkedList* existing = LinkedList_getThose(sheets, _identicalToExisting);
     free(existingSheetImageFile);
     free(existingSheetDataFile);
-    return ret;
+    if (LinkedList_isEmpty(existing))
+    {
+        return NULL;
+    }
+    else
+    {
+        smug_assert(LinkedList_length(existing) == 1);
+        _SheetProxy* s = (_SheetProxy*)LinkedList_getFirst(existing);
+        LinkedList_delete(existing);
+        return s;
+    }
 }
 
 _SheetProxy* SpriteSheet_new(const char* imageFile, const char* dataFile)
@@ -146,17 +156,16 @@ _SheetProxy* SpriteSheet_new(const char* imageFile, const char* dataFile)
         sheets = LinkedList_new();
     }
 
-    // TODO: This causes a very strange segfault. Something wrong with _sheetExists.
-    // if (_sheetExists(imageFile, dataFile))
-    // {
-        // ERROR("Tried to load the same SpriteSheet twice!");
-        // Log_indent();
-        // ERROR("Use SpriteSheet_isValid to see if the SpriteSheet is still valid,");
-        // ERROR("and SpriteSheet_reload to recreate it if it is not.");
-        // Log_dedent();
-        // // TODO: Lookup old sheet and return it.
-        // return NULL;
-    // }
+    _SheetProxy* sheet = _sheetExists(imageFile, dataFile);
+    if (sheet != NULL)
+    {
+        WARNING("Tried to load the same SpriteSheet twice!");
+        Log_indent();
+        WARNING("Use SpriteSheet_isValid to see if the SpriteSheet is still valid,");
+        WARNING("and SpriteSheet_reload to recreate it if it is not.");
+        Log_dedent();
+        return sheet;
+    }
 
     _SpriteSheet* newSheet = _new(imageFile, dataFile);
     if (newSheet == NULL)
