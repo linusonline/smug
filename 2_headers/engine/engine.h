@@ -26,6 +26,7 @@ void Engine_addObject(GameObject* newObj);
 void Engine_addObjects(GameObject** objects, int offset, int numObjects);
 void Engine_removeObject(GameObject* obj);
 void Engine_removeAllObjects();
+void Engine_removeAndDeleteAllObjects();
 
 void Engine_drawObjects(RenderQueue* renderQueue);
 void Engine_collideObjects();

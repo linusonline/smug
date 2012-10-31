@@ -102,6 +102,13 @@ void GameObject_setDrawableOffset(GameObject* self, float offsetX, float offsetY
     self->drawableOffsetY = offsetY;
 }
 
+Drawable* GameObject_removeDrawable(GameObject* self)
+{
+    Drawable* d = self->drawable;
+    self->drawable = NULL;
+    return d;
+}
+
 void GameObject_draw(GameObject* self, RenderQueue* renderQueue)
 {
     if (self->drawable != NULL)
@@ -136,6 +143,13 @@ void GameObject_setBodyOffset(GameObject* self, float offsetX, float offsetY)
     self->bodyOffsetX = offsetX;
     self->bodyOffsetY = offsetY;
     _updateBodyPosition(self);
+}
+
+Body* GameObject_removeBody(GameObject* self)
+{
+    Body* b = self->body;
+    self->body = NULL;
+    return b;
 }
 
 BOOL GameObject_bodyHasTag(GameObject* self, int tag)

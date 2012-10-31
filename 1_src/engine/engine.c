@@ -62,6 +62,12 @@ void Engine_removeObject(GameObject* obj)
     LinkedList_removeItem(gameObjects, obj);
 }
 
+void Engine_removeAndDeleteAllObjects()
+{
+    LinkedList_doList(gameObjects, (void (*)(void*))GameObject_delete);
+    Engine_removeAllObjects();
+}
+
 void Engine_removeAllObjects()
 {
     LinkedList_removeAll(gameObjects);
