@@ -117,6 +117,7 @@ void Sound_play(Sound* self)
     smug_assert(Audio_isInitialized());
     result = FMOD_System_PlaySound(fmodSystem, FMOD_CHANNEL_FREE, self->fmodSound, 0, &self->channel);
     FMOD_ERRCHECK(result);
+    LOG(LOG_SOUND, "Played sound on channel %x", self->channel);
 }
 
 void Sound_stop(Sound* self)
