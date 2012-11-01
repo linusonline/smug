@@ -4,15 +4,16 @@
 #include <common.h>
 #include <engine/gameobject.h>
 
-#define MONSTER_SHROOM      2
-#define MONSTER_MINKEY      3
-#define MONSTER_GOLEM       4
-#define MONSTER_SNELL       5
-#define MONSTER_TROLLEY     6
-#define MONSTER_SKELETON    7
-#define MONSTER_FIRESKULL   8
-#define MONSTER_BEE         9
-#define MONSTER_BEETLE      10
+#include <monsters/bee.h>
+#include <monsters/beetle.h>
+#include <monsters/fireskull.h>
+#include <monsters/goblin.h>
+#include <monsters/golem.h>
+#include <monsters/monkey.h>
+#include <monsters/mushroom.h>
+#include <monsters/skeleton.h>
+#include <monsters/snail.h>
+#include <monsters/tortoise.h>
 
 #define MONSTER_STATE_NORMAL    1
 #define MONSTER_STATE_ATTACKING 2

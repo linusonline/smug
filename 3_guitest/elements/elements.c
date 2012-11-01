@@ -25,8 +25,6 @@
 #include <characterlogic.h>
 #include <ambience.h>
 
-#include <monsters/tortoise.h>
-
 static const int INITIAL_WINDOW_WIDTH = 640;
 static const int INITIAL_WINDOW_HEIGHT = 480;
 static int windowWidth = 640;
@@ -261,7 +259,6 @@ static void killGame()
     deleteMap1Data();
     deleteAvatarData();
 
-    deinitMonsters();
     deleteActionGauge();
 }
 
@@ -382,18 +379,18 @@ static void init()
     playerData.hp = 100;
 
     Engine_addObject(newMonsterTortoise(32, 32));
-    Engine_addObject(newMonster(MONSTER_SHROOM, 32, 128));
-    Engine_addObject(newMonster(MONSTER_MINKEY, 32, 256));
-    Engine_addObject(newMonster(MONSTER_GOLEM, 128, 32));
-    Engine_addObject(newMonster(MONSTER_GOLEM, 128, 128));
-    Engine_addObject(newMonster(MONSTER_SNELL, 128, 256));
-    Engine_addObject(newMonster(MONSTER_TROLLEY, 256, 32));
-    Engine_addObject(newMonster(MONSTER_SKELETON, 256, 128));
-    Engine_addObject(newMonster(MONSTER_FIRESKULL, 256, 256));
-    Engine_addObject(newMonster(MONSTER_BEETLE, 32, 384));
-    Engine_addObject(newMonster(MONSTER_FIRESKULL, 128, 384));
-    Engine_addObject(newMonster(MONSTER_FIRESKULL, 256, 384));
-    Engine_addObject(newMonster(MONSTER_BEE, 384, 32));
+    Engine_addObject(newMonsterMushroom(32, 128));
+    Engine_addObject(newMonsterMonkey(32, 256));
+    Engine_addObject(newMonsterGolem(128, 32));
+    Engine_addObject(newMonsterGolem(128, 128));
+    Engine_addObject(newMonsterSnail(128, 256));
+    Engine_addObject(newMonsterGoblin(256, 32));
+    Engine_addObject(newMonsterSkeleton(256, 128));
+    Engine_addObject(newMonsterFireskull(256, 256));
+    Engine_addObject(newMonsterBeetle(32, 384));
+    Engine_addObject(newMonsterFireskull(128, 384));
+    Engine_addObject(newMonsterFireskull(256, 384));
+    Engine_addObject(newMonsterBee(384, 32));
 
     CollisionDetector_collideTags(0, 0, _collisionCallback);
 

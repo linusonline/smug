@@ -23,19 +23,6 @@ typedef struct MonsterData
     Sound* dieSound;
 } MonsterData;
 
-static Sound* gHitSound = NULL;
-static Sound* gDieSound = NULL;
-
-static SpriteSheet* shroomSheet = NULL;
-static SpriteSheet* minkeySheet = NULL;
-static SpriteSheet* golemSheet = NULL;
-static SpriteSheet* snellSheet = NULL;
-static SpriteSheet* trolleySheet = NULL;
-static SpriteSheet* skeletonSheet = NULL;
-static SpriteSheet* fireskullSheet = NULL;
-static SpriteSheet* beeSheet = NULL;
-static SpriteSheet* beetleSheet = NULL;
-
 static const float WALK_FRAME_DURATION = 0.2;
 
 #define toMonster(object) ((MonsterData*)getSpecificObjectData(object))
@@ -108,126 +95,6 @@ GameObject* newMonsterFromSheet(SpriteSheet* sheet, float width, float height, f
     return monster;
 }
 
-GameObject* newMonster(int type, float posX, float posY)
-{
-    SpriteSheet** monsterSheet = NULL;
-    static char* imageFile = NULL;
-    static char* dataFile = NULL;
-    float width, height;
-    float hp;
-    float offsetX, offsetY;
-    switch (type)
-    {
-        case MONSTER_SHROOM:
-            monsterSheet = &shroomSheet;
-            imageFile = "5_res/characters/monsters/shroom32x32.png";
-            dataFile = "5_res/characters/monsters/32x32.txt";
-            width = 32;
-            height = 32;
-            offsetX = -16;
-            offsetY = -32;
-            hp = 50;
-            break;
-        case MONSTER_MINKEY:
-            monsterSheet = &minkeySheet;
-            imageFile = "5_res/characters/monsters/minkey32x32.png";
-            dataFile = "5_res/characters/monsters/32x32.txt";
-            width = 32;
-            height = 32;
-            offsetX = -16;
-            offsetY = -32;
-            hp = 100;
-            break;
-        case MONSTER_GOLEM:
-            monsterSheet = &golemSheet;
-            imageFile = "5_res/characters/monsters/golem32x32.png";
-            dataFile = "5_res/characters/monsters/32x32.txt";
-            width = 32;
-            height = 32;
-            offsetX = -16;
-            offsetY = -32;
-            hp = 200;
-            break;
-        case MONSTER_SNELL:
-            monsterSheet = &snellSheet;
-            imageFile = "5_res/characters/monsters/snell16x16.png";
-            dataFile = "5_res/characters/monsters/16x16.txt";
-            width = 16;
-            height = 16;
-            offsetX = -8;
-            offsetY = -16;
-            hp = 20;
-            break;
-        case MONSTER_TROLLEY:
-            monsterSheet = &trolleySheet;
-            imageFile = "5_res/characters/monsters/trolley16x32.png";
-            dataFile = "5_res/characters/monsters/16x32.txt";
-            width = 16;
-            height = 32;
-            offsetX = -8;
-            offsetY = -32;
-            hp = 70;
-            break;
-        case MONSTER_SKELETON:
-            monsterSheet = &skeletonSheet;
-            imageFile = "5_res/characters/monsters/deathletor16x32.png";
-            dataFile = "5_res/characters/monsters/16x32.txt";
-            width = 16;
-            height = 32;
-            offsetX = -8;
-            offsetY = -32;
-            hp = 60;
-            break;
-        case MONSTER_FIRESKULL:
-            monsterSheet = &fireskullSheet;
-            imageFile = "5_res/characters/monsters/fireskull16x32.png";
-            dataFile = "5_res/characters/monsters/16x32.txt";
-            width = 16;
-            height = 32;
-            offsetX = -8;
-            offsetY = -32;
-            hp = 50;
-            break;
-        case MONSTER_BEE:
-            monsterSheet = &beeSheet;
-            imageFile = "5_res/characters/monsters/bee32x32.png";
-            dataFile = "5_res/characters/monsters/32x32.txt";
-            width = 32;
-            height = 32;
-            offsetX = -16;
-            offsetY = -32;
-            hp = 50;
-            break;
-        case MONSTER_BEETLE:
-            monsterSheet = &beetleSheet;
-            imageFile = "5_res/characters/monsters/beetle32x32.png";
-            dataFile = "5_res/characters/monsters/32x32.txt";
-            width = 32;
-            height = 32;
-            offsetX = -16;
-            offsetY = -32;
-            hp = 100;
-            break;
-        default:
-            smug_assert(FALSE);
-    }
-    if (*monsterSheet == NULL)
-    {
-        *monsterSheet = SpriteSheet_new(imageFile, dataFile);
-    }
-    if (gHitSound == NULL)
-    {
-        gHitSound = SoundFactory_getSound("5_res/audio/flyswatter.wav");
-    }
-    if (gDieSound == NULL)
-    {
-        gDieSound = SoundFactory_getSound("5_res/audio/monster-die.wav");
-    }
-
-    GameObject* monster = newMonsterFromSheet(*monsterSheet, width, height, posX, posY, offsetX, offsetY, hp, gHitSound, gDieSound);
-    return monster;
-}
-
 void damageOrKillMonster(GameObject* monster, float damage)
 {
     if (objectIsDead(monster))
@@ -277,45 +144,5 @@ void setMonsterDown(GameObject* monster)
     if (isMonster(monster))
     {
         Drawable_useSpriteAnimation(GameObject_getDrawable(monster), toMonster(monster)->walkDown);
-    }
-}
-
-void deinitMonsters()
-{
-    if (shroomSheet != NULL)
-    {
-        SpriteSheet_delete(shroomSheet);
-    }
-    if (minkeySheet != NULL)
-    {
-        SpriteSheet_delete(minkeySheet);
-    }
-    if (golemSheet != NULL)
-    {
-        SpriteSheet_delete(golemSheet);
-    }
-    if (snellSheet != NULL)
-    {
-        SpriteSheet_delete(snellSheet);
-    }
-    if (trolleySheet != NULL)
-    {
-        SpriteSheet_delete(trolleySheet);
-    }
-    if (skeletonSheet != NULL)
-    {
-        SpriteSheet_delete(skeletonSheet);
-    }
-    if (fireskullSheet != NULL)
-    {
-        SpriteSheet_delete(fireskullSheet);
-    }
-    if (beeSheet != NULL)
-    {
-        SpriteSheet_delete(beeSheet);
-    }
-    if (beetleSheet != NULL)
-    {
-        SpriteSheet_delete(beetleSheet);
     }
 }
