@@ -23,6 +23,7 @@
 #include <objects.h>
 #include <actiongauge.h>
 #include <characterlogic.h>
+#include <ambience.h>
 
 #include <monsters/tortoise.h>
 
@@ -338,7 +339,6 @@ static void init()
     Log_indent();
     LOG(LOG_SOUND, "Initializing sound...");
     Audio_initialize();
-    LOG(LOG_SOUND, "Loading sounds...");
     LOG(LOG_SOUND, "...done");
     Log_dedent();
 
@@ -392,6 +392,9 @@ static void init()
     CollisionDetector_collideTags(0, 0, _collisionCallback);
 
     Objects_initialize();
+
+    Ambience_init();
+    Ambience_play();
 
     gameState = STATE_NORMAL;
 }
