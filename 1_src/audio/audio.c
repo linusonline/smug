@@ -1,6 +1,7 @@
 #include <audio/myfmod.h>
 
 #include <utils/log.h>
+#include <audio/soundfactory.h>
 
 #include <audio/audio.h>
 
@@ -59,6 +60,7 @@ BOOL Audio_initialize()
         Audio_terminate();
         return FALSE;
     }
+    SoundFactory_initialize();
     isInitialized = TRUE;
     return TRUE;
 }
@@ -68,6 +70,7 @@ void Audio_terminate()
     smug_assert(_invariant());
     smug_assert(Audio_isInitialized());
 
+    SoundFactory_terminate();
     result = FMOD_System_Close(fmodSystem);
     FMOD_ERRCHECK(result);
     result = FMOD_System_Release(fmodSystem);

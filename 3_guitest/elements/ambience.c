@@ -4,6 +4,7 @@
 #include <common.h>
 #include <engine/engine.h>
 #include <audio/audio.h>
+#include <audio/soundfactory.h>
 
 static Sound* loopSound = NULL;
 #define RANDOM_SOUNDS 2
@@ -31,10 +32,9 @@ static void _playNextRandomSound(void* ignored)
 void Ambience_init()
 {
     srand((int)time(NULL));
-    loopSound = Sound_new("5_res/audio/amb-forest.flac");
-    randomSounds[0] = Sound_new("5_res/audio/amb-bird-1.flac");
-    randomSounds[1] = Sound_new("5_res/audio/amb-bird-3.flac");
-    // randomSounds[1] = Sound_new("5_res/audio/amb-bird-2.flac");
+    loopSound = SoundFactory_getSound("5_res/audio/amb-forest.flac");
+    randomSounds[0] = SoundFactory_getSound("5_res/audio/amb-bird-1.flac");
+    randomSounds[1] = SoundFactory_getSound("5_res/audio/amb-bird-3.flac");
 }
 
 void Ambience_play()

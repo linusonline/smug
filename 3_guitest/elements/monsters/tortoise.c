@@ -1,7 +1,7 @@
 #include <common.h>
 #include <engine/gameobject.h>
 #include <graphics/spritesheet.h>
-#include <audio/audio.h>
+#include <audio/soundfactory.h>
 
 #include <monster.h>
 #include <monster_protected.h>
@@ -19,11 +19,11 @@ GameObject* newMonsterTortoise(float posX, float posY)
     }
     if (hitSound == NULL)
     {
-        hitSound = Sound_new("5_res/audio/monster-hit.wav");
+        hitSound = SoundFactory_getSound("5_res/audio/monster-hit.wav");
     }
     if (dieSound == NULL)
     {
-        dieSound = Sound_new("5_res/audio/insect-die.wav");
+        dieSound = SoundFactory_getSound("5_res/audio/insect-die.wav");
     }
 
     return newMonsterFromSheet(shellySheet, 32, 32, posX, posY, -16, -32, 150, hitSound, dieSound);

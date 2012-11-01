@@ -5,6 +5,7 @@
 #include <graphics/spritesheet.h>
 #include <graphics/spriteanimation.h>
 #include <audio/audio.h>
+#include <audio/soundfactory.h>
 
 #include <objects.h>
 #include <monster.h>
@@ -216,11 +217,11 @@ GameObject* newMonster(int type, float posX, float posY)
     }
     if (gHitSound == NULL)
     {
-        gHitSound = Sound_new("5_res/audio/flyswatter.wav");
+        gHitSound = SoundFactory_getSound("5_res/audio/flyswatter.wav");
     }
     if (gDieSound == NULL)
     {
-        gDieSound = Sound_new("5_res/audio/monster-die.wav");
+        gDieSound = SoundFactory_getSound("5_res/audio/monster-die.wav");
     }
 
     GameObject* monster = newMonsterFromSheet(*monsterSheet, width, height, posX, posY, offsetX, offsetY, hp, gHitSound, gDieSound);
@@ -281,7 +282,6 @@ void setMonsterDown(GameObject* monster)
 
 void deinitMonsters()
 {
-    Sound_delete(gHitSound);
     if (shroomSheet != NULL)
     {
         SpriteSheet_delete(shroomSheet);
