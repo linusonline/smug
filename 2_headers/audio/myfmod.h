@@ -13,4 +13,13 @@
 # undef __CYGWIN32__
 #endif
 
+#define FMOD_ERRCHECK(result) \
+do \
+{ \
+    if (result != FMOD_OK) \
+    { \
+        ERROR("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result)); \
+    } \
+} while (0)
+
 #endif /* SMUG_MYFMOD_H */

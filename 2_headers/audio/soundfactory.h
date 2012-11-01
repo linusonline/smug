@@ -2,7 +2,7 @@
 #define SMUG_AUDIO_SOUNDFACTORY_H
 
 #include <common.h>
-#include <audio/audio.h>
+#include <audio/sound.h>
 
 void SoundFactory_initialize();
 void SoundFactory_terminate();

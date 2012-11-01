@@ -5,12 +5,6 @@
 
 #include <audio/audio.h>
 
-typedef struct _Sound
-{
-    FMOD_SOUND* fmodSound;
-    FMOD_CHANNEL* channel;
-} _Sound;
-
 static FMOD_SYSTEM *fmodSystem = NULL;
 static FMOD_RESULT result = 0;
 static BOOL isInitialized = FALSE;
@@ -21,19 +15,11 @@ static BOOL _invariant()
            (fmodSystem == NULL && !isInitialized);
 }
 
-static BOOL _invariantSound(Sound* self)
+// "Friend" of Sound.
+FMOD_SYSTEM* Audio_getSystem()
 {
-    return _invariant() && ((self != NULL && self->fmodSound != NULL) || self == NULL);
+    return fmodSystem;
 }
-
-#define FMOD_ERRCHECK(result) \
-do \
-{ \
-    if (result != FMOD_OK) \
-    { \
-        ERROR("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result)); \
-    } \
-} while (0)
 
 BOOL Audio_initialize()
 {
@@ -85,69 +71,4 @@ BOOL Audio_isInitialized()
 {
     smug_assert(_invariant());
     return isInitialized;
-}
-
-Sound* Sound_new(const char* fileName)
-{
-    smug_assert(_invariant());
-    smug_assert(Audio_isInitialized());
-
-    Sound* newSound = allocate(Sound);
-    result = FMOD_System_CreateSound(fmodSystem, fileName, FMOD_HARDWARE, 0, &newSound->fmodSound);
-    if (result != FMOD_OK)
-    {
-        FMOD_ERRCHECK(result);
-        free(newSound);
-        return NULL;
-    }
-    newSound->channel = NULL;
-    smug_assert(_invariantSound(newSound));
-    return newSound;
-}
-
-void Sound_delete(Sound* self)
-{
-    smug_assert(_invariantSound(self));
-    smug_assert(Audio_isInitialized());
-    if (self == NULL)
-    {
-        return;
-    }
-    result = FMOD_Sound_Release(self->fmodSound);
-    FMOD_ERRCHECK(result);
-    free(self);
-}
-
-void Sound_play(Sound* self)
-{
-    smug_assert(_invariantSound(self));
-    smug_assert(Audio_isInitialized());
-    if (self == NULL)
-    {
-        WARNING("Sound is not loaded.");
-        return;
-    }
-    result = FMOD_System_PlaySound(fmodSystem, FMOD_CHANNEL_FREE, self->fmodSound, 0, &self->channel);
-    FMOD_ERRCHECK(result);
-    LOG(LOG_SOUND, "Played sound on channel %x", self->channel);
-}
-
-void Sound_stop(Sound* self)
-{
-    smug_assert(_invariantSound(self));
-    smug_assert(Audio_isInitialized());
-}
-
-void Sound_setLoop(Sound* self, BOOL loop)
-{
-    smug_assert(_invariantSound(self));
-    smug_assert(Audio_isInitialized());
-    if (self == NULL)
-    {
-        WARNING("Sound is not loaded.");
-        return;
-    }
-    FMOD_MODE mode = loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
-    result = FMOD_Sound_SetMode(self->fmodSound, mode);
-    FMOD_ERRCHECK(result);
 }

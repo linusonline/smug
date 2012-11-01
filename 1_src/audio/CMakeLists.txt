@@ -4,5 +4,5 @@
 cmake_minimum_required (VERSION 2.6)
 project (SmugAudio)
 
-add_library(SmugAudio audio.c soundfactory.c)
+add_library(SmugAudio audio.c soundfactory.c sound.c)
 target_link_libraries (SmugAudio SmugUtils ${MY_LIB_DIR}/libfmodexL.a)

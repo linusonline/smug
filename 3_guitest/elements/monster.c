@@ -4,7 +4,7 @@
 #include <engine/gameobject.h>
 #include <graphics/spritesheet.h>
 #include <graphics/spriteanimation.h>
-#include <audio/audio.h>
+#include <audio/sound.h>
 #include <audio/soundfactory.h>
 
 #include <objects.h>
