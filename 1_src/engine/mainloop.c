@@ -72,6 +72,7 @@ void Mainloop_run()
             nextLogicTick += logicDelay;
             _stepDiscreteTime();
             SpriteAnimation_callAnimationStopCallbacks();
+            Engine_checkDelayedCallbacks();
             if (logicCallback != NULL)
             {
                 logicCallback();

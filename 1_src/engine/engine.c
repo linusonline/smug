@@ -3,12 +3,15 @@
 #include <graphics/graphics.h>
 #include <graphics/drawable.h>
 #include <utils/linkedlist.h>
+#include <utils/timer.h>
 #include <engine/collisiondetector.h>
+#include <engine/mainloop.h>
 
 #include <engine/engine.h>
 
 static BOOL isInitialized = FALSE;
 static LinkedList* gameObjects = NULL;
+static LinkedList* timers = NULL;
 
 static RenderQueue* currentRenderQueue = NULL;
 
@@ -20,6 +23,7 @@ static void _addDrawableVoid(void* gameobject)
 int Engine_init()
 {
     gameObjects = LinkedList_new();
+    timers = LinkedList_new();
     CollisionDetector_initialize();
     SpriteAnimation_initialize();
 
@@ -37,6 +41,8 @@ void Engine_terminate()
     smug_assert(isInitialized);
     LinkedList_doList(gameObjects, GameObject_deleteVoid);
     LinkedList_delete(gameObjects);
+    LinkedList_doList(timers, Timer_deleteVoid);
+    LinkedList_delete(timers);
     CollisionDetector_terminate();
     SpriteAnimation_terminate();
 
@@ -91,4 +97,29 @@ void Engine_collideObjects()
 void Engine_doForAllObjects(void (*function)(GameObject*))
 {
     LinkedList_doList(gameObjects, (void (*)(void*))function);
+}
+
+void Engine_delayCallback(void(*callback)(void*), void* argument, TIME delay)
+{
+    Timer* newTimer = Timer_new(callback, argument, delay);
+    LinkedList_addLast(timers, newTimer);
+    Timer_start(newTimer, Mainloop_getTime());
+}
+
+static TIME timeForTimerCheck = 0.0;
+void _checkTimer(void* timer)
+{
+    Timer_check((Timer*)timer, timeForTimerCheck);
+}
+
+static BOOL _isTimerFinished(void* timer)
+{
+    return Timer_isFinished((Timer*)timer);
+}
+
+void Engine_checkDelayedCallbacks()
+{
+    timeForTimerCheck = Mainloop_getTime();
+    LinkedList_doList(timers, _checkTimer);
+    LinkedList_removeThose(timers, _isTimerFinished);
 }

@@ -33,6 +33,9 @@ void Engine_collideObjects();
 
 void Engine_doForAllObjects(void (*function)(GameObject*));
 
+void Engine_delayCallback(void(*callback)(void*), void* argument, TIME delay);
+void Engine_checkDelayedCallbacks();
+
 #endif /* SMUG_ENGINE_ENGINE_H */
 
 /**@}*/
