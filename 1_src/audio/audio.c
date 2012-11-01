@@ -22,7 +22,7 @@ static BOOL _invariant()
 
 static BOOL _invariantSound(Sound* self)
 {
-    return _invariant() && self != NULL && self->fmodSound != NULL;
+    return _invariant() && ((self != NULL && self->fmodSound != NULL) || self == NULL);
 }
 
 #define FMOD_ERRCHECK(result) \
@@ -106,6 +106,10 @@ void Sound_delete(Sound* self)
 {
     smug_assert(_invariantSound(self));
     smug_assert(Audio_isInitialized());
+    if (self == NULL)
+    {
+        return;
+    }
     result = FMOD_Sound_Release(self->fmodSound);
     FMOD_ERRCHECK(result);
     free(self);
@@ -115,6 +119,11 @@ void Sound_play(Sound* self)
 {
     smug_assert(_invariantSound(self));
     smug_assert(Audio_isInitialized());
+    if (self == NULL)
+    {
+        WARNING("Sound is not loaded.");
+        return;
+    }
     result = FMOD_System_PlaySound(fmodSystem, FMOD_CHANNEL_FREE, self->fmodSound, 0, &self->channel);
     FMOD_ERRCHECK(result);
     LOG(LOG_SOUND, "Played sound on channel %x", self->channel);
