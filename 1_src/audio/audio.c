@@ -139,4 +139,12 @@ void Sound_setLoop(Sound* self, BOOL loop)
 {
     smug_assert(_invariantSound(self));
     smug_assert(Audio_isInitialized());
+    if (self == NULL)
+    {
+        WARNING("Sound is not loaded.");
+        return;
+    }
+    FMOD_MODE mode = loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
+    result = FMOD_Sound_SetMode(self->fmodSound, mode);
+    FMOD_ERRCHECK(result);
 }
