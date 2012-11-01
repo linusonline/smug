@@ -10,6 +10,7 @@ void Timer_delete(Timer* self);
 void Timer_deleteVoid(void* self);
 void Timer_start(Timer* self, TIME currentTime);
 BOOL Timer_check(Timer* self, TIME currentTime); // Check if it's time to make the callback.
+void Timer_call(Timer* self, TIME currentTime);
 BOOL Timer_isFinished(Timer* self);
 
 #endif /* SMUG_UTILS_TIMER_H */

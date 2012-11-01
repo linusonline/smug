@@ -63,31 +63,28 @@ BOOL Timer_check(Timer* self, TIME currentTime)
     if (self->lastCallback > 0)
     {
         // A repeated timer which has already been run once.
-        if (currentTime >= self->lastCallback + self->interval)
-        {
-            self->callback(self->argument);
-            self->lastCallback = currentTime;
-        }
-        return FALSE;
+        return currentTime >= self->lastCallback + self->interval;
     }
-    else if (currentTime >= self->started + self->delay)
+    else
     {
         // A timer that has not yet been run
-        self->callback(self->argument);
-        if (self->interval > 0)
-        {
-            // Repeated timer.
-            self->lastCallback = currentTime;
-            return FALSE;
-        }
-        else
-        {
-            // One-shot timer.
-            self->started = -1.0;
-            return TRUE;
-        }
+        return currentTime >= self->started + self->delay;
     }
-    return FALSE;
+}
+
+void Timer_call(Timer* self, TIME currentTime)
+{
+    if (self->interval < 0)
+    {
+        // One-shot timer should stop.
+        self->started = -1.0;
+    }
+    else
+    {
+        // Repeated timer should continue.
+        self->lastCallback = currentTime;
+    }
+    self->callback(self->argument);
 }
 
 BOOL Timer_isFinished(Timer* self)

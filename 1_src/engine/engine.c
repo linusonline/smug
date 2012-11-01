@@ -12,6 +12,7 @@
 static BOOL isInitialized = FALSE;
 static LinkedList* gameObjects = NULL;
 static LinkedList* timers = NULL;
+static LinkedList* timersToCall = NULL;
 
 static RenderQueue* currentRenderQueue = NULL;
 
@@ -24,6 +25,7 @@ int Engine_init()
 {
     gameObjects = LinkedList_new();
     timers = LinkedList_new();
+    timersToCall = LinkedList_new();
     CollisionDetector_initialize();
     SpriteAnimation_initialize();
 
@@ -43,6 +45,7 @@ void Engine_terminate()
     LinkedList_delete(gameObjects);
     LinkedList_doList(timers, Timer_deleteVoid);
     LinkedList_delete(timers);
+    LinkedList_delete(timersToCall);
     CollisionDetector_terminate();
     SpriteAnimation_terminate();
 
@@ -107,9 +110,17 @@ void Engine_delayCallback(void(*callback)(void*), void* argument, TIME delay)
 }
 
 static TIME timeForTimerCheck = 0.0;
+void _callTimer(void* timer)
+{
+    Timer_call((Timer*)timer, timeForTimerCheck);
+}
+
 void _checkTimer(void* timer)
 {
-    Timer_check((Timer*)timer, timeForTimerCheck);
+    if (Timer_check((Timer*)timer, timeForTimerCheck))
+    {
+        LinkedList_addLast(timersToCall, timer);
+    }
 }
 
 static BOOL _isTimerFinished(void* timer)
@@ -121,5 +132,7 @@ void Engine_checkDelayedCallbacks()
 {
     timeForTimerCheck = Mainloop_getTime();
     LinkedList_doList(timers, _checkTimer);
+    LinkedList_doList(timersToCall, _callTimer);
     LinkedList_removeThose(timers, _isTimerFinished);
+    LinkedList_removeAll(timersToCall);
 }
