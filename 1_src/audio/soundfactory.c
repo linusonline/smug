@@ -47,10 +47,6 @@ Sound* SoundFactory_getSound(const char* fileName)
     return sound;
 }
 
-// void SoundFactory_releaseSound(Sound* sound)
-// {
-// }
-
 static void _deleteStringAndSound(void* string, void* sound)
 {
     free((char*)string);
