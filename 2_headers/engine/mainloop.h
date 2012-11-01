@@ -22,6 +22,8 @@ void Mainloop_exit();
 void Mainloop_setLogicCallback(LogicCallback callback);
 void Mainloop_setLogicFps(float fps);
 float Mainloop_getLogicFps();
+TIME Mainloop_getTime();
+TIME Mainloop_getRealTime();
 
 #endif /* SMUG_ENGINE_MAINLOOP_H */
 

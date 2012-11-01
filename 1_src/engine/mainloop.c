@@ -113,3 +113,13 @@ float Mainloop_getLogicFps()
 {
     return 1.0 / logicDelay;
 }
+
+TIME Mainloop_getTime()
+{
+    return _getDiscreteTime();
+}
+
+TIME Mainloop_getRealTime()
+{
+    return _getTime();
+}
