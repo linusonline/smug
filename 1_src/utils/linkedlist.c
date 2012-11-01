@@ -305,6 +305,30 @@ BOOL LinkedList_removeItem(LinkedList* self, void* item)
     return FALSE;
 }
 
+LinkedList* LinkedList_removeThose(LinkedList* self, BOOL(*pred)(void*))
+{
+    smug_assert(_invariant(self));
+
+    LinkedList* those = LinkedList_new();
+
+    Node* node = self->first;
+    while(NULL != node)
+    {
+        if (pred(node->item))
+        {
+            LinkedList_addLast(those, node->item);
+            Node* nextNode = node->next;
+            LinkedList_remove(self, node);
+            node = nextNode;
+        }
+        else
+        {
+            node = node->next;
+        }
+    }
+    return those;
+}
+
 void LinkedList_doList(LinkedList* self, void (*func)(void*))
 {
     smug_assert(_invariant(self));

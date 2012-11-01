@@ -198,6 +198,8 @@ void LinkedList_doListIf(LinkedList* self, void (*func)(void*), BOOL (*pred)(voi
  */
 LinkedList* LinkedList_getThose(LinkedList* self, BOOL (*pred)(void*));
 
+LinkedList* LinkedList_removeThose(LinkedList* self, BOOL(*pred)(void*));
+
 /**
  * Returns a mapping of the list according to a mapping function.
  *
