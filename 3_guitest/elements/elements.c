@@ -330,6 +330,11 @@ static void _collisionCallback(GameObject* obj1, GameObject* obj2)
     }
 }
 
+static void onStart()
+{
+    Ambience_play();
+}
+
 static void init()
 {
     gameState = STATE_STARTUP;
@@ -365,6 +370,7 @@ static void init()
     ControllerScheme_setButtonCallbackForController(schemeAttacking, theController, _buttonCallbackAttacking);
 
     Mainloop_setLogicCallback(_logicCallback);
+    Mainloop_setEngineStartedCallback(onStart);
 
     avatar = getAvatar(24, 32, 320, 240);
     Engine_init();
@@ -394,7 +400,6 @@ static void init()
     Objects_initialize();
 
     Ambience_init();
-    Ambience_play();
 
     gameState = STATE_NORMAL;
 }
