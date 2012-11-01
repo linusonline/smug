@@ -20,6 +20,7 @@ void Mainloop_run(void);
 void Mainloop_exit();
 
 void Mainloop_setLogicCallback(LogicCallback callback);
+void Mainloop_setEngineStartedCallback(LogicCallback callback);
 void Mainloop_setLogicFps(float fps);
 float Mainloop_getLogicFps();
 TIME Mainloop_getTime();

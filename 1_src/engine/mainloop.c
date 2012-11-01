@@ -40,6 +40,12 @@ void Mainloop_exit()
     keepRunning = FALSE;
 }
 
+static LogicCallback engineStartedCallback = NULL;
+void Mainloop_setEngineStartedCallback(LogicCallback callback)
+{
+    engineStartedCallback = callback;
+}
+
 void Mainloop_setLogicCallback(LogicCallback callback)
 {
     logicCallback = callback;
@@ -62,8 +68,15 @@ void Mainloop_run()
 
     RenderQueue* renderQueue = RenderQueue_new();
 
+    BOOL firstLoop = TRUE;
     while (keepRunning)
     {
+        if (firstLoop && engineStartedCallback)
+        {
+            _stepDiscreteTime();
+            engineStartedCallback();
+            firstLoop = FALSE;
+        }
         time = _getTime();
 
         if (time >= nextLogicTick)
