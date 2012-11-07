@@ -176,29 +176,25 @@ static void attack()
 
 static BOOL _buttonCallbackAttacking(Controller* controller, int buttonIndex, int state)
 {
-    LOG(LOG_USER1, "Attack button callback!");
     smug_assert(controller == theController);
     switch (buttonIndex)
     {
         case BUTTON_EXIT:
-            Mainloop_exit();
-            break;
+            return FALSE;
         case BUTTON_UP:
         case BUTTON_DOWN:
         case BUTTON_LEFT:
         case BUTTON_RIGHT:
         case BUTTON_ATTACK:
             // These should do nothing while the player is attacking.
-            break;
+            return TRUE;
         default:
-            smug_assert(FALSE);
+            return FALSE;
     }
-    return TRUE;
 }
 
 static BOOL _buttonCallbackNormal(Controller* controller, int buttonIndex, int state)
 {
-    LOG(LOG_USER1, "Normal button callback!");
     smug_assert(controller == theController);
     int reverse = 1;
     if (state == SMUG_KEY_RELEASE)
@@ -210,22 +206,22 @@ static BOOL _buttonCallbackNormal(Controller* controller, int buttonIndex, int s
         case BUTTON_UP:
             moveVertically += -1 * reverse;
             alignAvatar();
-            break;
+            return TRUE;
         case BUTTON_DOWN:
             moveVertically += 1 * reverse;
             alignAvatar();
-            break;
+            return TRUE;
         case BUTTON_LEFT:
             moveHorizontally += -1 * reverse;
             alignAvatar();
-            break;
+            return TRUE;
         case BUTTON_RIGHT:
             moveHorizontally += 1 * reverse;
             alignAvatar();
-            break;
+            return TRUE;
         case BUTTON_EXIT:
             Mainloop_exit();
-            break;
+            return TRUE;
         case BUTTON_ATTACK:
             if (state == SMUG_KEY_PRESS)
             {
@@ -235,11 +231,10 @@ static BOOL _buttonCallbackNormal(Controller* controller, int buttonIndex, int s
                     attack();
                 }
             }
-            break;
+            return TRUE;
         default:
-            smug_assert(FALSE);
+            return FALSE;
     }
-    return TRUE;
 }
 
 static void _resizeCallback(int width, int height)
