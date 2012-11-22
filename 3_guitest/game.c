@@ -556,16 +556,14 @@ static void init()
     DEBUG("");
     DEBUG("==============================");
 
-    camera = Camera_new();
-    camera->posX = INITIAL_WINDOW_WIDTH / 2;
-    camera->posY = INITIAL_WINDOW_HEIGHT / 2;
-
     Graphics_initialize(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, FALSE);
     Graphics_setCoordinateSystemForWindow(-WORLD_WIDTH/2, -WORLD_HEIGHT/2, WORLD_WIDTH, WORLD_HEIGHT);
     Graphics_setBackgroundColor(0.5, 0.0, 0.5);
-    Graphics_useCamera(camera);
     Graphics_setWindowResizeCallback(_resizeCallback);
     // setCoordinateSystemInPixelsPerUnit(1.3, 1.3, 20.0, 20.0);
+    camera = Graphics_getCamera();
+    camera->posX = INITIAL_WINDOW_WIDTH / 2;
+    camera->posY = INITIAL_WINDOW_HEIGHT / 2;
 
     Input_initialize();
     theController = Controller_new(0, 10, 1);
