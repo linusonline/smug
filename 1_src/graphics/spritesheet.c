@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include <common.h>
+#include <utils/general.h>
 #include <utils/log.h>
 #include <utils/linkedlist.h>
 #include <graphics/sprite.h>
@@ -49,17 +50,11 @@ static BOOL _parseDataFile(const char* fileName, int* width, int* height)
     return TRUE;
 }
 
-static char* _copyString(const char* string)
-{
-    char* newString = allocatev(char, strlen(string)+1);
-    return strcpy(newString, string);
-}
-
 static _SpriteSheet* _new(const char* imageFile, const char* dataFile)
 {
     int spriteWidth;
     int spriteHeight;
-    if (dataFile != NULL)
+    if (*dataFile != NULL_CHAR)
     {
         if (!_parseDataFile(dataFile, &spriteWidth, &spriteHeight))
         {
@@ -86,7 +81,7 @@ static _SpriteSheet* _new(const char* imageFile, const char* dataFile)
 
     LOG(LOG_SPRITESHEET, "Successfully loaded Spritesheet image file.");
 
-    if (dataFile == NULL)
+    if (*dataFile == NULL_CHAR)
     {
         spriteWidth = Texture_getWidth(texture);
         spriteHeight = Texture_getHeight(texture);
@@ -131,8 +126,8 @@ static BOOL _identicalToExisting(void* sheet)
 
 static _SheetProxy* _sheetExists(const char* imageFile, const char* dataFile)
 {
-    existingSheetImageFile = _copyString(imageFile);
-    existingSheetDataFile = _copyString(dataFile);
+    existingSheetImageFile = copyString(imageFile);
+    existingSheetDataFile = copyString(dataFile);
     LinkedList* existing = LinkedList_getThose(sheets, _identicalToExisting);
     free(existingSheetImageFile);
     free(existingSheetDataFile);
@@ -149,11 +144,22 @@ static _SheetProxy* _sheetExists(const char* imageFile, const char* dataFile)
     }
 }
 
-_SheetProxy* SpriteSheet_new(const char* imageFile, const char* dataFile)
+char* newZeroLengthString()
+{
+    char* c = allocate(char);
+    *c = NULL_CHAR;
+    return c;
+}
+
+_SheetProxy* SpriteSheet_newUnloaded(const char* imageFile, const char* dataFile)
 {
     if (sheets == NULL)
     {
         sheets = LinkedList_new();
+    }
+    if (dataFile == NULL)
+    {
+        dataFile = newZeroLengthString();
     }
 
     _SheetProxy* sheet = _sheetExists(imageFile, dataFile);
@@ -167,18 +173,18 @@ _SheetProxy* SpriteSheet_new(const char* imageFile, const char* dataFile)
         return sheet;
     }
 
-    _SpriteSheet* newSheet = _new(imageFile, dataFile);
-    if (newSheet == NULL)
-    {
-        return NULL;
-    }
-
     _SheetProxy* data = allocate(_SheetProxy);
-    data->sheet = newSheet;
-    data->fileName = _copyString(imageFile);
-    data->dataFile = _copyString(dataFile);
+    data->fileName = copyString(imageFile);
+    data->dataFile = copyString(dataFile);
     LinkedList_addLast(sheets, data);
     return data;
+}
+
+_SheetProxy* SpriteSheet_new(const char* imageFile, const char* dataFile)
+{
+    _SheetProxy* newProxy = SpriteSheet_newUnloaded(imageFile, dataFile);
+    SpriteSheet_reload(newProxy);
+    return newProxy;
 }
 
 BOOL SpriteSheet_isValid(_SheetProxy* self)
@@ -190,6 +196,11 @@ void SpriteSheet_reload(_SheetProxy* self)
 {
     smug_assert(!SpriteSheet_isValid(self));
     self->sheet = _new(self->fileName, self->dataFile);
+
+    if (self->sheet == NULL)
+    {
+        WARNING("Could not load spritesheet from file %s with data in file %s", self->fileName, self->dataFile);
+    }
 }
 
 Sprite* SpriteSheet_getSprite(_SheetProxy* self, int index)

@@ -20,44 +20,70 @@ static void deinit()
     deinitTest();
 }
 
-void SpriteSheet_new_shouldReturnNonNull(CuTest* tc)
+void SpriteSheet_new_shouldReturnValidSheet(CuTest* tc)
 {
     init();
 
     SpriteSheet* ss = SpriteSheet_new("../5_res/unittests/landscape.png", "../5_res/unittests/landscape.txt");
     CuAssertTrue(tc, ss != NULL);
+    CuAssertTrue(tc, SpriteSheet_isValid(ss));
     SpriteSheet_delete(ss);
 
     deinit();
 }
 
-void SpriteSheet_new_shouldReturnNonNullOnNullDataFile(CuTest* tc)
+void SpriteSheet_new_shouldReturnValidSheetOnNullDataFile(CuTest* tc)
 {
     init();
 
     SpriteSheet* ss = SpriteSheet_new("../5_res/unittests/landscape.png", NULL);
     CuAssertTrue(tc, ss != NULL);
+    CuAssertTrue(tc, SpriteSheet_isValid(ss));
     SpriteSheet_delete(ss);
 
     deinit();
 }
 
-void SpriteSheet_new_shouldReturnNullOnNonexistingImage(CuTest* tc)
+void SpriteSheet_new_shouldReturnInvalidSheetOnImageFileReadError(CuTest* tc)
 {
     init();
 
     SpriteSheet* ss = SpriteSheet_new("idontexist.png", "../5_res/unittests/landscape.txt");
-    CuAssertTrue(tc, ss == NULL);
+    CuAssertTrue(tc, ss != NULL);
+    CuAssertTrue(tc, !SpriteSheet_isValid(ss));
 
     deinit();
 }
 
-void SpriteSheet_new_shouldReturnNullOnNonexistingDataFile(CuTest* tc)
+void SpriteSheet_new_shouldReturnInvalidSheetOnDataFileReadError(CuTest* tc)
 {
     init();
 
     SpriteSheet* ss = SpriteSheet_new("../5_res/unittests/landscape.png", "idontexist.txt");
-    CuAssertTrue(tc, ss == NULL);
+    CuAssertTrue(tc, ss != NULL);
+    CuAssertTrue(tc, !SpriteSheet_isValid(ss));
+
+    deinit();
+}
+
+void SpriteSheet_newUnloaded_shouldReturnInvalidSheet(CuTest* tc)
+{
+    init();
+
+    SpriteSheet* ss = SpriteSheet_newUnloaded("../5_res/unittests/landscape.png", "../5_res/unittests/landscape.txt");
+    CuAssertTrue(tc, ss != NULL);
+    CuAssertTrue(tc, !SpriteSheet_isValid(ss));
+
+    deinit();
+}
+
+void SpriteSheet_reload_shouldValidateSheet(CuTest* tc)
+{
+    init();
+
+    SpriteSheet* ss = SpriteSheet_newUnloaded("../5_res/unittests/landscape.png", "../5_res/unittests/landscape.txt");
+    SpriteSheet_reload(ss);
+    CuAssertTrue(tc, SpriteSheet_isValid(ss));
 
     deinit();
 }
@@ -105,10 +131,12 @@ CuSuite* SpriteSheetTest_GetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
 
-	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnNonNull);
-	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnNonNullOnNullDataFile);
-	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnNullOnNonexistingImage);
-	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnNullOnNonexistingDataFile);
+	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnValidSheet);
+	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnValidSheetOnNullDataFile);
+	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnInvalidSheetOnImageFileReadError);
+	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldReturnInvalidSheetOnDataFileReadError);
+	SUITE_ADD_TEST(suite, SpriteSheet_newUnloaded_shouldReturnInvalidSheet);
+	SUITE_ADD_TEST(suite, SpriteSheet_reload_shouldValidateSheet);
 	SUITE_ADD_TEST(suite, SpriteSheet_new_shouldYieldRightNumberOfSprites);
 	SUITE_ADD_TEST(suite, SpriteSheet_getSprite_shouldReturnSameObjectForSameIndex);
 	SUITE_ADD_TEST(suite, SpriteSheet_getSprite_shouldReturnSpriteForValidIndex);
