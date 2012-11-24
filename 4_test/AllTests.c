@@ -25,6 +25,7 @@ CuSuite* BinaryTreeTest_GetSuite();
 CuSuite* MapTest_GetSuite();
 CuSuite* LogTest_GetSuite();
 CuSuite* StringConsoleTest_GetSuite();
+CuSuite* StreamTest_GetSuite();
 
 CuSuite* ImageTest_GetSuite();
 CuSuite* RenderBatchTest_GetSuite();
@@ -45,6 +46,7 @@ void RunAllTests(void)
 	CuSuiteAddSuite(suite, MapTest_GetSuite());
 	CuSuiteAddSuite(suite, LogTest_GetSuite());
 	CuSuiteAddSuite(suite, StringConsoleTest_GetSuite());
+	CuSuiteAddSuite(suite, StreamTest_GetSuite());
 
 	CuSuiteAddSuite(suite, ImageTest_GetSuite());
 	CuSuiteAddSuite(suite, RenderBatchTest_GetSuite());
