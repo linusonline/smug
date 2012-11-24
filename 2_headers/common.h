@@ -21,6 +21,7 @@ typedef double TIME;
 #ifndef NULL
     #define NULL (0)
 #endif
+#define NULL_CHAR ('\0')
 
 #include <stdlib.h>
 #define allocate(type) ((type*)malloc(sizeof(type)))
