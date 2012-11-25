@@ -26,6 +26,11 @@ static BOOL isWhiteSpaceOrEof(char* c)
     return _eof(c) || isWsCharacter(c);
 }
 
+static BOOL isDigit(const char* c)
+{
+    return *c >= 48 && *c <= 57;
+}
+
 Stream* Stream_new(char* string)
 {
     Stream* newStream = allocate(Stream);
@@ -124,4 +129,15 @@ char* Stream_readString(Stream* self)
     {
         return Stream_readUntilWs(self);
     }
+}
+
+int Stream_readInt(Stream* self)
+{
+    Stream_eatWhiteSpace(self);
+    int n = atoi(self->buffer + self->position);
+    while (isDigit(self->buffer + self->position))
+    {
+        self->position++;
+    }
+    return n;
 }

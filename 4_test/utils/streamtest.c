@@ -254,6 +254,34 @@ void Stream_readString_shouldIgnoreNonStartingQuotes(CuTest* tc)
     Stream_delete(s);
 }
 
+void Stream_readInt_shouldReturnZeroOnNonDigit(CuTest* tc)
+{
+    Stream* s = Stream_new("one1");
+    int i = Stream_readInt(s);
+    char* str = Stream_readString(s);
+    CuAssertTrue(tc, i == 0 && strcmp(str, "one1") == 0);
+    free(str);
+    Stream_delete(s);
+}
+
+void Stream_readInt_shouldParseDigit(CuTest* tc)
+{
+    Stream* s = Stream_new("1");
+    int i = Stream_readInt(s);
+    CuAssertTrue(tc, i == 1 && Stream_eof(s));
+    Stream_delete(s);
+}
+
+void Stream_readInt_shouldParseDigitsUpToNonDigit(CuTest* tc)
+{
+    Stream* s = Stream_new("12a");
+    int i = Stream_readInt(s);
+    char* str = Stream_readString(s);
+    CuAssertTrue(tc, i == 12 && strcmp(str, "a") == 0);
+    free(str);
+    Stream_delete(s);
+}
+
 CuSuite* StreamTest_GetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -288,6 +316,9 @@ CuSuite* StreamTest_GetSuite()
 	SUITE_ADD_TEST(suite, Stream_readString_shouldReadFromStartingQuoteToEndingQuote);
 	SUITE_ADD_TEST(suite, Stream_readString_shouldIncludeQuotes);
 	SUITE_ADD_TEST(suite, Stream_readString_shouldIgnoreNonStartingQuotes);
+	SUITE_ADD_TEST(suite, Stream_readInt_shouldReturnZeroOnNonDigit);
+	SUITE_ADD_TEST(suite, Stream_readInt_shouldParseDigit);
+	SUITE_ADD_TEST(suite, Stream_readInt_shouldParseDigitsUpToNonDigit);
 
 	return suite;
 }

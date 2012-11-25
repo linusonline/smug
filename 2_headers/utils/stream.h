@@ -22,5 +22,6 @@ char* Stream_readChars(Stream* self, int numChars);
 
 char* Stream_readUntilWs(Stream* self);
 char* Stream_readString(Stream* self);
+int Stream_readInt(Stream* self);
 
 #endif /* SMUG_UTILS_STREAM_H */
