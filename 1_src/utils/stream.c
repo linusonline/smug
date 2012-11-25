@@ -1,4 +1,5 @@
 #include <string.h>
+#include <ctype.h>
 
 #include <common.h>
 #include <utils/general.h>
@@ -12,7 +13,7 @@ typedef struct _Stream {
 
 static BOOL isWsCharacter(char* c)
 {
-    return *c == 32 || *c == 13 || *c == 10 || *c == 9;
+    return isspace(*c);
 }
 
 static BOOL _eof(char* c)
