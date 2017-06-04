@@ -30,6 +30,7 @@ static Generic* _getGeneric(GameObject* object)
 
 static void _nullDeleter(GameObject* ignored)
 {
+    smug_assert(ignored == NULL);
 }
 
 void Objects_initialize()

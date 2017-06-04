@@ -1,0 +1,19 @@
+Attack mechanics/decoration
+    Animation: attack
+    Sound: attack
+    Sound: <monster> hit by attack
+    Sound: <monster> dies
+    Attacks for monsters
+        Sound: <monster> attacking
+        Animation: <monster> attacking
+        Animation: player gets hit
+        Sound: player gets hit
+        Sound: player dies
+
+Map editor (just landscape)
+    Map editor with monsters and/or spawn points.
+
+Panning for maps larger than screen.
+
+Walkable/unwalkable tiles
+    Collision handling for when player walks into unwalkable tile object.

@@ -1,0 +1,6 @@
+Allocation responsibilities
+    Sprite: SpriteSheet (flyweight)
+    SpriteAnimation: creator
+    Drawable: GameObject (when owned), creator (if no owner)
+    Image: creator (only SpriteSheet so far)
+    GameObject: Engine (when added), creator (when not added)

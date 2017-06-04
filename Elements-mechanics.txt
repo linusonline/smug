@@ -1,0 +1,6 @@
+Player's action gauge doesn't appear until player is within line of sight of a monster, OR until player attacks.
+    Line of sight = some triangular area in front of monster.
+    When monsters are attacked, they immediately turn to face the player.
+When player moves out of line of sight of monsters, there is a short delay until action gauge disappears.
+    Monsters are programmed to keep the player within their line of sight if they can.
+When action gauge appears, it is full.

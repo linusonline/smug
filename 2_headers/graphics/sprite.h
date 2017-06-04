@@ -36,6 +36,9 @@ Sprite* Sprite_newEmpty();
 
 void Sprite_addRenderData(Sprite* self, RenderBatch* renderBatch, float posX, float posY, float width, float height, float z);
 
+int Sprite_getPixelWidth(Sprite* self);
+int Sprite_getPixelHeight(Sprite* self);
+
 /**
  * Return the texture the sprite draws its graphic from.
  * @relates Sprite

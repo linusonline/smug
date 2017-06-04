@@ -45,6 +45,16 @@ void Sprite_addRenderData(Sprite* self, RenderBatch* renderBatch, float posX, fl
                                 Texture_pixelToTextureCoordY(self->texture, self->rect.y + self->rect.h));
 }
 
+int Sprite_getPixelWidth(Sprite* self)
+{
+    return rectangle_getW(self->rect);
+}
+
+int Sprite_getPixelHeight(Sprite* self)
+{
+    return rectangle_getH(self->rect);
+}
+
 Texture* Sprite_getTexture(Sprite* self)
 {
     smug_assert(self != NULL);

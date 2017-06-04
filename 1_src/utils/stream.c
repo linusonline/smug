@@ -1,5 +1,6 @@
 #include <string.h>
 #include <ctype.h>
+#include <stdio.h>
 
 #include <common.h>
 #include <utils/general.h>
@@ -7,6 +8,7 @@
 
 typedef struct _Stream {
 	char* buffer;
+    FILE* file;
 	int position;
     BOOL copied;
 } _String;
@@ -35,6 +37,7 @@ Stream* Stream_new(char* string)
 {
     Stream* newStream = allocate(Stream);
     newStream->buffer = string;
+    newStream->file = NULL;
     newStream->position = 0;
     newStream->copied = FALSE;
     return newStream;
@@ -56,22 +59,53 @@ void Stream_delete(Stream* self)
     free(self);
 }
 
+BOOL isString(Stream* self)
+{
+    return self->buffer != NULL;
+}
+
 BOOL Stream_eof(Stream* self)
 {
-    return _eof(self->buffer + self->position);
+    if (isString(self))
+    {
+        return _eof(self->buffer + self->position);
+    }
+    else
+    {
+        return feof(self->file);
+    }
 }
 
 BOOL Stream_readToken(Stream* self, const char* token)
 {
     Stream_eatWhiteSpace(self);
     int tokenLen = strlen(token);
-    if (strncmp(self->buffer + self->position, token, tokenLen) == 0 && isWhiteSpaceOrEof(self->buffer + self->position + tokenLen))
+    if (isString(self))
     {
-        self->position += tokenLen;
-        Stream_eatWhiteSpace(self);
-        return TRUE;
+        if (strncmp(self->buffer + self->position, token, tokenLen) == 0 && isWhiteSpaceOrEof(self->buffer + self->position + tokenLen))
+        {
+            self->position += tokenLen;
+            Stream_eatWhiteSpace(self);
+            return TRUE;
+        }
+        return FALSE;
     }
-    return FALSE;
+    else
+    {
+        int oldPos = ftell(self->file);
+        int tokenPos = 0;
+        char c = fgetc(self->file);
+        while (tokenPos < tokenLen && token[tokenPos] == c)
+        {
+            c = fgetc(self->file);
+            if (feof(self->file))
+            {
+                break;
+            }
+            tokenPos++;
+        }
+        if (tokenPos == tokenLen && isWhiteSpaceOr
+    }
 }
 
 void Stream_eatWhiteSpace(Stream* self)
